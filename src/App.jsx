@@ -5,7 +5,8 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import OverviewPage from "./pages/Overview/OverviewPage";
 import DataExplorer from "./pages/DataExplorer/DataExplorer";
-import EmergencyDeptPage from "./pages/DataExplorer/EmergencyDeptPage"; // ⬅️ New import
+import EmergencyDeptPage from "./pages/DataExplorer/EmergencyDeptPage"; 
+import CaseDataPage from "./pages/DataExplorer/CaseDataPage"; 
 
 function App() {
   return (
@@ -15,13 +16,15 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<OverviewPage />} />
-          <Route path="/data-explorer" element={<Navigate to="/data-explorer/ed-visits" replace />} />
+          <Route path="/data-explorer" element={<Navigate to="/data-explorer/emergency-dept" replace />} />
 
-          {/* Route override for /ed-visits */}
-          <Route path="/data-explorer/ed-visits" element={<EmergencyDeptPage />} />
+          {/* Route override for emergency dept */}
+          <Route path="/data-explorer/emergency-dept" element={<EmergencyDeptPage />} />
 
           {/* Default fallback for other topics */}
           <Route path="/data-explorer/:topic" element={<DataExplorer />} />
+          <Route path="/data-explorer/cases" element={<CaseDataPage />} />
+
         </Routes>
       </main>
       <Footer />

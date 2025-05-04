@@ -6,7 +6,7 @@ const OverviewGrid = () => {
     {
       title: "ED Visits & Admissions",
       description: "Explore emergency department trends across boroughs.",
-      link: "/data-explorer/ed-visits", // internal route
+      link: "/data-explorer/emergency-dept", // internal route
     },
     {
       title: "Explore our Github Repository",

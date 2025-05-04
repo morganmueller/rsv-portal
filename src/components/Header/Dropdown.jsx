@@ -7,7 +7,7 @@ const Dropdown = () => {
   const location = useLocation();
 
   // Extract current topic from pathname
-  const currentTopic = location.pathname.split("/")[2] || "ed-visits";
+  const currentTopic = location.pathname.split("/")[2] || "emergency-dept";
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -22,7 +22,7 @@ const Dropdown = () => {
       onChange={handleChange}
       value={currentTopic}
     >
-      <option value="ed-visits">Emergency Department Visits & Admits</option>
+      <option value="emergency-dept">Emergency Department Visits & Admits</option>
       <option value="cases">Case Data & Demographics</option>
       <option value="deaths">COVID-19 Deaths</option>
     </select>
