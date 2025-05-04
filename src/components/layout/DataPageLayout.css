@@ -1,0 +1,109 @@
+.data-page {
+  background-color: #f9fafb;
+  width: 100%;
+}
+
+/* White top section */
+.data-section-wrapper {
+  background-color: #ffffff;
+  width: 100%;
+  padding: 48px 0;
+}
+
+/* Inner container with dynamic side padding */
+.data-section-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Dynamic font sizes */
+.data-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-family: "Inter-Bold", Helvetica, sans-serif;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.data-subtitle {
+  color: #4B5563;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.data-divider {
+  width: 100%;
+  height: 1.5px;
+  background-color: #e5e7eb;
+  border: none;
+  margin-bottom: 24px;
+}
+
+/* Gray background section */
+.data-highlight {
+  background-color: #f9fafb;
+  width: 100%;
+}
+
+/* Content block with fluid padding */
+.data-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 48px) clamp(16px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Top filter controls */
+.data-controls-wrapper {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.data-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+/* Optional compact mode */
+.data-page.compact .data-section-container {
+  padding: 0 clamp(16px, 4vw, 40px);
+}
+
+.data-page.compact .data-container {
+  padding: clamp(24px, 4vw, 40px);
+  gap: 32px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .data-controls-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .data-title {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .data-subtitle {
+    font-size: 14px;
+    text-align: center;
+  }
+}

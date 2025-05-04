@@ -1,0 +1,28 @@
+.view-toggle-group {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+  
+  .view-toggle {
+    border: none;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  
+  .view-toggle:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .view-toggle.active {
+    background-color: #111827;
+    color: #ffffff;
+  }
+  

@@ -1,0 +1,84 @@
+.chart-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  /* padding: 32px; */
+  margin-bottom: 48px;
+  width: 100%;
+  max-width: 1120px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.chart-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.chart-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #4b5563;
+}
+
+.chart-content {
+  display: flex;
+  justify-content: flex-start; /* align left */
+  padding-left: 0; /* ensure no padding offset */
+  gap: 24px;
+}
+
+
+.chart-sidebar {
+  flex: 0 0 120px; /* or 20% */
+}
+
+
+
+
+  
+  .chart-fade-wrapper {
+    transition: opacity 0.6s ease;
+  }
+  
+  .chart-fade-wrapper.fade-in {
+    opacity: 1;
+  }
+  
+  .chart-fade-wrapper.fade-out {
+    opacity: 0;
+  }
+  .chart-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .chart-content {
+      flex-direction: column;
+    }
+  
+    .chart-sidebar {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+  
+    .chart-title {
+      font-size: 20px;
+    }
+  
+    .chart-subtitle {
+      font-size: 14px;
+    }
+  }
+  
+
+  
+ 
+  

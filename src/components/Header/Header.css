@@ -1,0 +1,268 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* === HEADER SECTION === */
+
+.header-section {
+  width: 100%;
+  padding: 40px 0;
+  background: linear-gradient(90deg,#1e40af, #336eed);
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.header-image-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 240px;
+  padding-right: 100px; 
+}
+
+.header-image {
+  width: 150%;
+  max-width: 460px; /* ✅ Increased from 160px */
+  height: auto;
+  object-fit: contain;
+}
+
+.header-content {
+  width: 100%;
+  max-width: 700px;
+  padding-left: 16px;
+  position: relative;
+}
+
+.header-content::before {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.header-title {
+  color: #ffffff;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 36px;
+  margin-bottom: 8px;
+}
+
+.header-subtitle {
+  color: #ffffff;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 24px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+}
+
+/* === BASE BUTTON === */
+.outline-button {
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  height: 52px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* === ACTIVE BUTTON === */
+.outline-button.active {
+  background: white;
+  color: #1e40af;
+  border: none;
+}
+
+/* === DROPDOWN === */
+
+.data-dropdown-wrapper {
+  margin-top: 8px;
+  width: 250px;
+  max-width: 100%;
+}
+
+.data-topic-select {
+  padding: 10px 36px 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  background-color: #ffffff;
+  color: #1f2937;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' fill='none' stroke='%234B5563' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  cursor: pointer;
+  min-width: 280px;
+  white-space: nowrap;
+}
+
+
+.data-topic-select:hover {
+  border-color: #9ca3af;
+}
+
+.data-topic-select:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+option {
+  white-space: normal;
+}
+
+/* === FULL DROPDOWN PANEL (OPTIONAL) === */
+.dropdown-section {
+  background: white;
+  width: 100%;
+  padding: 32px 80px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.dropdown-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin-top: 16px;
+  margin-left: 28px;
+  padding: 16px;
+  position: relative;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dropdown-link {
+  font-size: 14px;
+  color: #1f2937;
+  text-decoration: none;
+  padding: 8px 12px;
+  display: block;
+  border-radius: 4px;
+}
+
+.dropdown-link:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-icon {
+  position: absolute;
+  top: 16px;
+  left: 260px;
+  height: 24px;
+  width: 24px;
+}
+
+.dropdown-title {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  font-family: "Inter", Helvetica;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* === RESPONSIVE === */
+
+@media (max-width: 1024px) {
+  .header-content {
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .header-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .outline-button {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 8px;
+  }
+
+  .data-dropdown-wrapper {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 16px;
+  }
+
+  .header-title {
+    font-size: 28px;
+    line-height: 32px;
+    text-align: center;
+  }
+
+  .header-subtitle {
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-container {
+    padding: 0 16px;
+  }
+
+  .outline-button {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .header-section {
+    padding: 32px 0;
+  }
+}

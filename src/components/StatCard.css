@@ -1,0 +1,79 @@
+.stat-card {
+    background-color: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 280px;
+    max-width: 360px;
+    position: relative;
+    height: 180px; 
+  }
+  
+  .stat-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .stat-card-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .stat-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+  }
+  
+  .stat-card-year {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  
+  /* Centered subtitle around 1/3 height */
+  .stat-subtitle {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
+    margin: 24px 0 16px; /* pushes toward 1/3 height */
+  }
+  
+  /* Two column layout below subtitle */
+  .stat-columns {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .stat-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .stat-percent {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 4px 0;
+  }
+  
+  .stat-change {
+    font-size: 13px;
+    color: #b36b31;
+  }
+  
