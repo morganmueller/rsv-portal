@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const AboutSection = () => (
   <div className="footer-section about">
