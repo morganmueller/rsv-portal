@@ -7,7 +7,7 @@ const ChartContainer = ({ title, subtitle, chart, sidebar, footer }) => {
     <div className="chart-container">
       <div className="chart-header">
         <div className="chart-title-section">
-          <h2 className="chart-title">{title}</h2>
+          {/* <h2 className="chart-title">{title}</h2> */}
           {subtitle && <p className="chart-subtitle">{subtitle}</p>}
         </div>
       </div>
@@ -27,7 +27,7 @@ const ChartContainer = ({ title, subtitle, chart, sidebar, footer }) => {
 ChartContainer.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.node,
-  chart: PropTypes.node.isRequired,
+  chart: PropTypes.node,
   sidebar: PropTypes.node,
   footer: PropTypes.node,
 };

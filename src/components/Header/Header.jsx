@@ -21,10 +21,10 @@ const Header = () => {
   <div className="header-container">
     <div className="header-content">
       <h1 className="header-title">
-        Respiratory Virus Data Portal
+      Respiratory Illness Data Tracker
       </h1>
       <p className="header-subtitle">
-        Comprehensive data insights for COVID-19, RSV, and Influenza in New York City
+      Data insights for respiratory illnesses in New York City
       </p>
 
       <HeaderButtons activeButton={activeButton} />

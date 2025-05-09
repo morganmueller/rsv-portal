@@ -1,0 +1,106 @@
+{
+    "overview": {
+      "title": "Respiratory Virus Overview",
+      "subtitle": "Explore Acute Respiratory Virus data in NYC",
+      "indicators": {
+        "title": "Emergency Department Key Indicators"
+      },
+      "charts": {
+        "monthlyARIChart": {
+          "title": "Acute Respiratory Infection Overview",
+          "subtitle": " {edType} have {trend} since last week"
+        }
+      }
+    },
+    "emergencyDeptPage": {
+      "mainTitle": "Emergency Department Visits & Admissions",
+      "mainSubtitle": "Trends and characteristics of Emergency Department use for COVID-19, influenza, and RSV",
+   
+
+      "summarySection": {
+        "summaryTitle": "Emergency Department Summary"
+      },
+      "charts": {
+        "seasonalEdVisits": {
+          "title": "{virus} Emergency Department {view}",
+          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+        },
+        "percentEdVisitsByAge": {
+          "title": "{virus} Emergency Department Visits by Age Group",
+          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+        },
+        "percentEdVisitsByGeo": {
+          "title": "{virus} Emergency Department Visits by Borough",
+          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+        }
+
+      }
+    },
+    "caseDataPage": {
+      "mainTitle": "Laboratory Surveillance",
+      "mainSubtitle": "Trends and characteristics of COVID-19, influenza, and RSV laboratory reports",
+   
+
+      "summarySection": {
+        "summaryTitle": "Case Data Summary"
+      },
+
+      "charts": {
+        "seasonalComparison": {
+          "title": "{virus} Laboratory Reports by Season",
+          "subtitle": "Reports for the week of {date} have {trend} since the previous week"
+          
+        },
+        "reportsByTestType": {
+          "title": "{virus} Laboratory Reports by Test Type",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        },
+        "reportsByAge": {
+          "title": "{virus} Laboratory Reports by Age Group",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        },
+        "reportsByBorough": {
+          "title": "{virus} Laboratory Reports by Borough",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        },
+        "reportsByRE": {
+          "title": "{virus} COVID-19 Laboratory Reports by Race and Ethnicity",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        }
+        
+
+      }
+    },
+    "CovidDeathPage": {
+      "mainTitle": "COVID-19 Death Surveillance",
+      "mainSubtitle": "Trends and characteristics of COVID-19 deaths",
+   
+
+      "summarySection": {
+        "summaryTitle": "Case Data Summary"
+      },
+
+      "charts": {
+        "seasonalComparison": {
+          "title": "COVID-19 Deaths by Season",
+          "subtitle": "Deaths for the week of {date} have {trend} since the previous week"
+          
+        },
+        "deathsByAge": {
+          "title": "COVID-19 Deaths by Age Group",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        },
+        "deathsByBorough": {
+          "title": "COVID-19 Deaths by Borough",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        },
+        "deathsByRE": {
+          "title": "COVID-19 Deaths by Race and Ethnicity",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+        }
+        
+
+      }
+    }
+}
+  

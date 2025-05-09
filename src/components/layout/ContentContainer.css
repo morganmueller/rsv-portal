@@ -1,3 +1,7 @@
+body {
+  color: #1f2937; /* Tailwind gray-800 */
+}
+
 .content-container {
     background-color: #ffffff;
     width: 80%;
@@ -73,5 +77,22 @@
   .content-container.fade-out {
     opacity: 0;
     transform: translateY(16px);
+  }
+  
+
+  .trend-text {
+    font-weight: 600;
+  }
+  
+  .trend-up {
+    color: #B91C1C; /* red-700 (bad trend) */
+  }
+  
+  .trend-down {
+    color: #059669; /* green-600 (good trend) */
+  }
+  
+  .trend-neutral {
+    color: #6B7280; /* gray-500 */
   }
   

@@ -1,16 +1,17 @@
 .stat-card {
-    background-color: #f9fafb;
-    border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-width: 280px;
-    max-width: 360px;
-    position: relative;
-    height: 180px; 
-  }
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  max-width: calc((100% - 48px) / 3); /* 3 cards + 2 gaps of 24px = 100% */
+  min-width: 0;
+  position: relative;
+  height: 180px;
+}
+
   
   .stat-card-header {
     display: flex;

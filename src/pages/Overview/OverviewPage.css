@@ -88,3 +88,21 @@
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 32px;
 }
+
+
+
+.trend-text {
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #B91C1C; /* red-700 (bad) */
+}
+
+.trend-down {
+  color: #059669; /* green-600 (good) */
+}
+
+.trend-neutral {
+  color: #6B7280; /* gray-500 */
+}

@@ -1,7 +1,25 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
+import { getText } from "../../utils/contentUtils";
 import "./ContentContainer.css";
+
+// Locally re-apply resolveText here
+const resolveText = (input, variables = {}) => {
+  const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
+  if (typeof raw !== "string") return raw;
+
+  return raw.replace(/{(\w+)}/g, (_, key) => {
+    const val = variables[key] ?? `{${key}}`;
+
+    if (key === "trend") {
+      const direction = variables.trendDirection || "neutral";
+      return `<span class='trend-text trend-${direction}'>${val}</span>`;
+    }
+
+    return val;
+  });
+};
 
 const ContentContainer = ({
   title,
@@ -9,7 +27,7 @@ const ContentContainer = ({
   subtitleVariables = {},
   children,
   className = "",
-  animateOnScroll = false,
+  animateOnScroll = true,
   infoIcon = false,
   downloadIcon = false,
   modalTitle = "More Info",
@@ -36,7 +54,7 @@ const ContentContainer = ({
 
   const renderedSubtitle =
     typeof subtitle === "string"
-      ? subtitle.replace(/{(\w+)}/g, (_, key) => subtitleVariables[key] || "")
+      ? resolveText(subtitle, subtitleVariables)
       : subtitle;
 
   return (
@@ -70,13 +88,19 @@ const ContentContainer = ({
               )}
             </div>
           </div>
-          {renderedSubtitle && <p className="content-subtitle">{renderedSubtitle}</p>}
+          {typeof renderedSubtitle === "string" ? (
+            <p
+              className="content-subtitle"
+              dangerouslySetInnerHTML={{ __html: renderedSubtitle }}
+            />
+          ) : (
+            <p className="content-subtitle">{renderedSubtitle}</p>
+          )}
         </div>
       )}
 
       <div className="content-body">{children}</div>
 
-      {/* Info Modal */}
       {infoIcon && modalContent && (
         <InfoModal
           isOpen={isModalOpen}
@@ -86,7 +110,6 @@ const ContentContainer = ({
         />
       )}
 
-      {/* Download Modal */}
       {downloadIcon && onDownloadClick && (
         <InfoModal
           isOpen={isDownloadModalOpen}
@@ -98,7 +121,7 @@ const ContentContainer = ({
               <button
                 className="toggle-button active"
                 onClick={() => {
-                  onDownloadClick(); // ✅ trigger passed-in download handler
+                  onDownloadClick();
                   setIsDownloadModalOpen(false);
                 }}
                 style={{ marginTop: "12px" }}

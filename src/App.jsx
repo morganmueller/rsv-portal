@@ -7,6 +7,7 @@ import OverviewPage from "./pages/Overview/OverviewPage";
 import DataExplorer from "./pages/DataExplorer/DataExplorer";
 import EmergencyDeptPage from "./pages/DataExplorer/EmergencyDeptPage"; 
 import CaseDataPage from "./pages/DataExplorer/CaseDataPage"; 
+import CovidDeathPage from "./pages/DataExplorer/CovidDeathPage"; 
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           {/* Default fallback for other topics */}
           <Route path="/data-explorer/:topic" element={<DataExplorer />} />
           <Route path="/data-explorer/cases" element={<CaseDataPage />} />
+          <Route path="/data-explorer/deaths" element={<CovidDeathPage />} />
 
         </Routes>
       </main>

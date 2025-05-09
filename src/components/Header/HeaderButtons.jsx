@@ -22,7 +22,7 @@ const HeaderButtons = ({ activeButton }) => {
         className={`outline-button ${activeButton === "info" ? "active" : ""}`}
         onClick={() => navigate("/about")}
       >
-        More Info
+        About
       </button>
     </div>
   );

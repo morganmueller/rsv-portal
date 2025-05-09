@@ -22,8 +22,8 @@ const Dropdown = () => {
       onChange={handleChange}
       value={currentTopic}
     >
-      <option value="emergency-dept">Emergency Department Visits & Admits</option>
-      <option value="cases">Case Data & Demographics</option>
+      <option value="emergency-dept">Emergency Department Visits and Admits</option>
+      <option value="cases">Lab-Reported Cases</option>
       <option value="deaths">COVID-19 Deaths</option>
     </select>
   );

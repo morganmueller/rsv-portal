@@ -20,7 +20,7 @@ const VirusFilterGroup = ({ onChange }) => {
   };
 
   return (
-    <div style={{ display: "flex", gap: "12px", margin: "24px 0" }}>
+    <div style={{ display: "flex", gap: "12px" }}>
       {virusOptions.map(({ label, icon }) => (
         <VirusFilterButton
           key={label}

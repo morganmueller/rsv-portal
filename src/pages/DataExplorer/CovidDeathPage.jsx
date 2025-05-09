@@ -2,13 +2,14 @@ import React from "react";
 import { PageStateProvider } from "../../components/hooks/usePageState";
 import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage"; 
 import caseDataPageConfig from "../../pages/config/CaseDataPage.config";
+import covidDeathPageConfig from "../config/CovidDeathPage.config";
 
-const CaseDataPage = () => {
+const CovidDeathPage = () => {
   return (
-    <PageStateProvider initialData={caseDataPageConfig.data}>
-      <ConfigDrivenPage config={caseDataPageConfig} />
+    <PageStateProvider initialData={covidDeathPageConfig.data}>
+      <ConfigDrivenPage config={covidDeathPageConfig} />
     </PageStateProvider>
   );
 };
 
-export default CaseDataPage;
+export default CovidDeathPage;
