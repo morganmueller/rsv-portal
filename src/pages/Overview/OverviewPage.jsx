@@ -71,7 +71,7 @@ const OverviewPage = () => {
         modalTitle="About These Metrics"
         modalContent={
           <MarkdownRenderer 
-            filePath="../../content/modals/metric-explainer.md"
+            filePath="/content/modals/metric-explainer.md"
             showTitle={true}
             sectionTitle="ARI Visits"
           />

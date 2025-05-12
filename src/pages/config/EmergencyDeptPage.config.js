@@ -9,7 +9,7 @@ const edPageConfig = {
     viewToggle: true,
   },
   summary: {
-    markdownPath: "../../public/content/sections/edSectionText.md",
+    markdownPath: "/content/sections/edSectionText.md",
     title: "Page Overview",
     lastUpdated: "05/01/2025",
     showTrendArrow: true,
@@ -27,7 +27,7 @@ const edPageConfig = {
       downloadIcon: true,
       modal: {
         title: "{virus} Seasonal ED {view}",
-        markdownPath: "../../public/content/modals/emergency-dept-explainer.md",
+        markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
         type: "edSeasonalComparisonChart", // or change to "simpleEDChart" if you rename it
@@ -50,7 +50,7 @@ const edPageConfig = {
       downloadIcon: true,
       modal: {
         title: "{virus} ED {view} by Age Group",
-        markdownPath: "../../public/content/modals/emergency-dept-explainer.md",
+        markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
         type: "edSeasonalComparisonChart", // or change to "simpleEDChart" if you rename it
@@ -73,7 +73,7 @@ const edPageConfig = {
       downloadIcon: true,
       modal: {
         title: " {virus} ED {view} by Borough",
-        markdownPath: "../../public/content/modals/emergency-dept-explainer.md",
+        markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
         type: "edSeasonalComparisonChart", // or change to "simpleEDChart" if you rename it

@@ -7,7 +7,7 @@ const covidDeathPageConfig = {
     },
     summary: {
       title: "Covid Death Page Overview",
-      markdownPath: "../../public/content/sections/covidDeathSectionText.md",
+      markdownPath: "/content/sections/covidDeathSectionText.md",
       lastUpdated: "05/01/2025",
       showTrendArrow: true,
       showSecondayTitle: false,
@@ -25,7 +25,7 @@ const covidDeathPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "COVID-19 Deaths by Season",
-          markdownPath: "../../public/content/modals/covid-deaths-explainer.md",
+          markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -45,7 +45,7 @@ const covidDeathPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "COVID-19 Deaths by Age Group",
-          markdownPath: "../../public/content/modals/covid-deaths-explainer.md",
+          markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -65,7 +65,7 @@ const covidDeathPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "COVID-19 Deaths by Borough",
-          markdownPath: "../../public/content/modals/covid-deaths-explainer.md",
+          markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -85,7 +85,7 @@ const covidDeathPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "COVID-19 Deaths by Race & Ethnicity",
-          markdownPath: "../../public/content/modals/covid-deaths-explainer.md",
+          markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",

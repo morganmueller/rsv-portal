@@ -1,10 +1,6 @@
 import React from "react";
 import StatCard from "../StatCard";
 import "./StatGrid.css";
-import covidIcon from "../../../public/assets/covid-vector.svg";
-import fluIcon from "../../../public/assets/flu-vector.svg";
-import rsvIcon from "../../../public/assets/rsv-vector.svg";
-import ariIcon from "../../../public/assets/ari-vector.svg";
 
 const StatGrid = () => {
   return (
@@ -13,7 +9,7 @@ const StatGrid = () => {
         <StatCard
           title="Acute Respiratory Infections"
           year="2025"
-          icon={ariIcon}
+          icon="/assets/ari-vector.svg"
           visitPercent="3.8%"
           admitPercent="2.5%"
           visitChange="9%"
@@ -34,7 +30,7 @@ const StatGrid = () => {
         <StatCard
           title="COVID-19"
           year="2025"
-          icon={covidIcon}
+          icon="/assets/covid-vector.svg"
           visitPercent="1.2%"
           admitPercent="0.8%"
           visitChange="12%"
@@ -45,7 +41,7 @@ const StatGrid = () => {
         <StatCard
           title="Influenza"
           year="2025"
-          icon={fluIcon}
+          icon="/assets/flu-vector.svg"
           visitPercent="4.3%"
           admitPercent="3.1%"
           visitChange="8%"
@@ -56,7 +52,7 @@ const StatGrid = () => {
         <StatCard
           title="RSV"
           year="2025"
-          icon={rsvIcon}
+          icon="/assets/rsv-vector.svg"
           visitPercent="2.3%"
           admitPercent="1.2%"
           visitChange="5%"

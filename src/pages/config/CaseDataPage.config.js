@@ -7,7 +7,7 @@ const caseDataPageConfig = {
     },
     summary: {
       title: "Page Overview",
-      markdownPath: "../../public/content/sections/caseDataSectionText.md",
+      markdownPath: "/content/sections/caseDataSectionText.md",
       lastUpdated: "05/01/2025",
       showTrendArrow: true,
       showSecondayTitle: false,
@@ -25,7 +25,7 @@ const caseDataPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "{virus} Laboratory Reports by Season",
-          markdownPath: "../../public/content/modals/cases-explainer.md",
+          markdownPath: "/content/modals/cases-explainer.md"
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -45,7 +45,7 @@ const caseDataPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "{virus} Laboratory Reports by Test Type",
-          markdownPath: "../../public/content/modals/cases-explainer.md",
+          markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -65,7 +65,7 @@ const caseDataPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "{virus} Laboratory Reports by Age Group",
-          markdownPath: "../../public/content/modals/cases-explainer.md",
+          markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -85,7 +85,7 @@ const caseDataPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "{virus} Laboratory Reports by Borough",
-          markdownPath: "../../public/content/modals/cases-explainer.md",
+          markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",
@@ -105,7 +105,7 @@ const caseDataPageConfig = {
         animateOnScroll: true,
         modal: {
           title: "{virus} Laboratory Reports by Race and Ethnicity",
-          markdownPath: "../../public/content/modals/cases-explainer.md",
+          markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
           type: "edSeasonalComparisonChart",

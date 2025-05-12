@@ -44,23 +44,32 @@ const MarkdownRenderer = ({
   useEffect(() => {
     const load = async () => {
       try {
-        const markdown = rawContent || (await fetch(filePath).then(res => res.text()));
+        let markdown = rawContent;
 
-// First interpolate full markdown so headers contain resolved text
-const interpolatedMarkdown = interpolate(markdown, variables);
+        if (!markdown) {
+          const response = await fetch(filePath);
+          if (!response.ok) {
+            throw new Error(`Markdown file not found or inaccessible: ${filePath}`);
+          }
+          markdown = await response.text();
+        }
 
-// Then extract the section using already-interpolated heading
-const contentToRender = sectionTitle
-  ? extractSection(interpolatedMarkdown, sectionTitle) || `### ${sectionTitle}\n_Section not found._`
-  : interpolatedMarkdown;
+        // First interpolate full markdown so headers contain resolved text
+        const interpolatedMarkdown = interpolate(markdown, variables);
 
-setHtml(marked.parse(contentToRender));
+        // Then extract the section using already-interpolated heading
+        const contentToRender = sectionTitle
+          ? extractSection(interpolatedMarkdown, sectionTitle) ||
+            `### ${sectionTitle}\n_Section not found._`
+          : interpolatedMarkdown;
 
+        setHtml(marked.parse(contentToRender));
       } catch (err) {
         console.error("Failed to load markdown:", err);
-        setHtml("<p>Unable to load content.</p>");
+        setHtml(`<p style="color:red;"><strong>Error:</strong> ${err.message}</p>`);
       }
     };
+    console.log("Loading markdown from:", filePath);
 
     load();
   }, [filePath, rawContent, sectionTitle, variables]);
