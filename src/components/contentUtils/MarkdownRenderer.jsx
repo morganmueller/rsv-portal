@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { marked } from "marked";
 
-// Extracts a specific ## Heading section
-const extractSection = (markdown, sectionTitle) => {
+// Extract a specific ## Section and optionally strip render directives
+const extractSection = (markdown, sectionTitle, stripRenderDirectives = false) => {
   const lines = markdown.split("\n");
   const result = [];
   let capture = false;
@@ -17,19 +17,22 @@ const extractSection = (markdown, sectionTitle) => {
         capture = true;
         continue;
       } else if (capture) {
-        break; // end capture on next heading
+        break;
       }
     }
-    if (capture) result.push(line);
+
+    if (capture) {
+      const isRenderDirective = /^render:\s*/i.test(line.trim());
+      if (stripRenderDirectives && isRenderDirective) continue;
+      result.push(line);
+    }
   }
 
   return result.join("\n").trim();
 };
 
-// Replaces {tokens} with values
-const interpolate = (markdown, variables = {}) => {
-  return markdown.replace(/{(\w+)}/g, (_, key) => variables[key] ?? `{${key}}`);
-};
+const interpolate = (markdown, variables = {}) =>
+  markdown.replace(/{(\w+)}/g, (_, key) => variables[key] ?? `{${key}}`);
 
 const MarkdownRenderer = ({
   filePath,
@@ -37,7 +40,8 @@ const MarkdownRenderer = ({
   sectionTitle,
   showTitle = false,
   className = "markdown-body",
-  variables = {}
+  variables = {},
+  stripRenderDirectives = false
 }) => {
   const [html, setHtml] = useState("");
 
@@ -46,7 +50,7 @@ const MarkdownRenderer = ({
       try {
         let markdown = rawContent;
 
-        if (!markdown) {
+        if (!markdown && filePath) {
           const response = await fetch(filePath);
           if (!response.ok) {
             throw new Error(`Markdown file not found or inaccessible: ${filePath}`);
@@ -54,25 +58,22 @@ const MarkdownRenderer = ({
           markdown = await response.text();
         }
 
-        // First interpolate full markdown so headers contain resolved text
-        const interpolatedMarkdown = interpolate(markdown, variables);
+        const interpolated = interpolate(markdown, variables);
 
-        // Then extract the section using already-interpolated heading
-        const contentToRender = sectionTitle
-          ? extractSection(interpolatedMarkdown, sectionTitle) ||
+        const content = sectionTitle
+          ? extractSection(interpolated, sectionTitle, stripRenderDirectives) ||
             `### ${sectionTitle}\n_Section not found._`
-          : interpolatedMarkdown;
+          : interpolated;
 
-        setHtml(marked.parse(contentToRender));
+        setHtml(marked.parse(content));
       } catch (err) {
         console.error("Failed to load markdown:", err);
         setHtml(`<p style="color:red;"><strong>Error:</strong> ${err.message}</p>`);
       }
     };
-    console.log("Loading markdown from:", filePath);
 
     load();
-  }, [filePath, rawContent, sectionTitle, variables]);
+  }, [filePath, rawContent, sectionTitle, variables, stripRenderDirectives]);
 
   return (
     <div className={className}>
@@ -88,7 +89,8 @@ MarkdownRenderer.propTypes = {
   sectionTitle: PropTypes.string,
   showTitle: PropTypes.bool,
   className: PropTypes.string,
-  variables: PropTypes.object
+  variables: PropTypes.object,
+  stripRenderDirectives: PropTypes.bool
 };
 
 export default MarkdownRenderer;

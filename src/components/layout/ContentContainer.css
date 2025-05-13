@@ -3,96 +3,114 @@ body {
 }
 
 .content-container {
-    background-color: #ffffff;
-    width: 80%;
-    padding: 16px 40px; /* Reduce top/bottom padding from 24/48 to 16 */
-    margin-bottom: 32px; /* Slightly reduce margin between stacked containers */
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-  
-  .content-header {
-    margin-bottom: 16px; /* Reduce vertical gap between header and content */
-  }
-  
-  .content-title {
-    font-size: 20px;
-    font-family: "Inter-Bold", Helvetica, sans-serif;
-    color: #1f2937;
-    margin-bottom: 4px; /* Minimize space under title */
-  }
-  
-  .content-subtitle {
-    font-size: 16px;
-    font-family: "Inter-Regular", Helvetica, sans-serif;
-    color: #4b5563;
-    margin: 0;
-  }
-  
-  .content-body {
-    width: 100%;
-    padding: 0; /* Avoid extra space inside body */
-  }
-  .content-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .icon {
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-  }
-  
-  .info-icon {
-    height: 20px;
-    margin-left: 8px;
-  }
-  
-  .download-icon {
-    height: 16px;
-    margin-left: 12px;
-  }
-  
-  
-  
-  
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .content-container.fade-in {
-    animation: fadeUp 0.6s ease forwards;
-  }
-  
-  .content-container.fade-out {
+  background-color: #ffffff;
+  width: 85%;
+  max-width: 1280px;
+  padding: 16px 40px;
+  margin: 0 auto 32px auto;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.content-header {
+  margin-bottom: 16px;
+}
+
+.content-title {
+  font-size: 20px;
+  font-family: "Inter-Bold", Helvetica, sans-serif;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.content-subtitle {
+  font-size: 16px;
+  font-family: "Inter-Regular", Helvetica, sans-serif;
+  color: #4b5563;
+  margin: 0;
+}
+
+.content-body {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.content-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.info-icon {
+  height: 20px;
+  margin-left: 8px;
+}
+
+.download-icon {
+  height: 16px;
+  margin-left: 12px;
+}
+
+@keyframes fadeUp {
+  from {
     opacity: 0;
     transform: translateY(16px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .trend-text {
-    font-weight: 600;
-  }
-  
-  .trend-up {
-    color: #B91C1C; /* red-700 (bad trend) */
-  }
-  
-  .trend-down {
-    color: #059669; /* green-600 (good trend) */
-  }
-  
-  .trend-neutral {
-    color: #6B7280; /* gray-500 */
-  }
-  
+.content-container.fade-in {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.content-container.fade-out {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.trend-text {
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #B91C1C; /* red-700 (bad trend) */
+}
+
+.trend-down {
+  color: #059669; /* green-600 (good trend) */
+}
+
+.trend-neutral {
+  color: #6B7280; /* gray-500 */
+}
+
+/* Chart container fixes for responsive centering */
+.chart-container,
+.chart-content,
+.chart-body,
+.chart-vega,
+.chart-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.chart-vega canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
+}

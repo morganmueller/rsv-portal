@@ -1,0 +1,91 @@
+.about-page {
+  padding: 2rem;
+  font-family: "Inter", sans-serif;
+}
+
+.intro-section {
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  text-align: left;
+}
+
+.intro-section h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.card-section {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center section header */
+}
+
+.card-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  text-align: left;
+  width: 100%;
+  max-width: 800px;
+  padding-left: 1rem;
+  box-sizing: border-box;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center; /* Center the cards */
+}
+
+.info-card {
+  flex: 1 1 250px;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.markdown-paragraph-section {
+  margin: 2rem auto;
+  padding: 1rem 0;
+  max-width: 800px;
+}
+
+.markdown-paragraph-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* ✅ Responsive tweaks */
+@media (max-width: 768px) {
+  .about-page {
+    padding: 1rem;
+  }
+
+  .intro-section h2,
+  .card-section h2,
+  .markdown-paragraph-section h2 {
+    font-size: 1.125rem;
+  }
+
+  .card-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-card {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .intro-section,
+  .markdown-paragraph-section {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+}

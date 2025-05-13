@@ -6,7 +6,7 @@ const InfoBox = ({ title, children }) => {
   return (
     <div className="info-box">
       {title && <h3 className="info-box-title">{title}</h3>}
-      <p>{children}</p>
+      <div>{children}</div>
     </div>
   );
 };

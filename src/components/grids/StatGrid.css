@@ -5,29 +5,18 @@
   width: 100%;
 }
 
-.top-row {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  flex-wrap: wrap;
-  align-items: stretch;
-  width: 100%;
-}
-
+.top-row,
 .bottom-row {
   display: flex;
-  flex-direction: row;
   gap: 24px;
-  flex-wrap: nowrap; /* prevent wrapping */
-  justify-content: space-between;
-  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-
 .stat-info-box {
-  flex: 1;
-  min-width: 280px;
-  max-width: 600px;
+  flex: 0 1 624px; /* 2 cards + 1 gap */
+  max-width: 624px;
+    min-width: 0;
   background-color: #f9fafb;
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -35,6 +24,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .stat-info-title {
@@ -48,4 +38,48 @@
   font-size: 14px;
   color: #4b5563;
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .bottom-row,
+  .top-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-info-box {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+
+.stat-info-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.stat-info-description {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .bottom-row,
+  .top-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-info-box {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1;
+  }
 }

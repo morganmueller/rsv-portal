@@ -3,7 +3,7 @@
       "title": "Respiratory Virus Overview",
       "subtitle": "Explore Acute Respiratory Virus data in NYC",
       "indicators": {
-        "title": "Emergency Department Key Indicators"
+        "title": "Emergency Department Trends"
       },
       "charts": {
         "monthlyARIChart": {
@@ -37,7 +37,7 @@
       }
     },
     "caseDataPage": {
-      "mainTitle": "Laboratory Surveillance",
+      "mainTitle": "Laboratory-Reported Cases",
       "mainSubtitle": "Trends and characteristics of COVID-19, influenza, and RSV laboratory reports",
    
 
@@ -101,6 +101,32 @@
         
 
       }
-    }
+    },
+
+      "aboutPage": {
+        "mainTitle": "About the Respiratory Virus Tracker",
+        "mainSubtitle": "Learn about respiratory illnesses and how to use this site.",
+        "summary": {
+          "title": "About This Project"
+        },
+        "sections": {
+          "learn": { "title": "Learn about Respiratory Illnesses" },
+          "aboutTracker": { "title": "About the Tracker" },
+          "prevention": { "title": "Prevention and Vaccination Information" },
+          "providers": { "title": "Information for Providers" },
+          "seasonality": { "title": "Respiratory Virus Seasonality" },
+          "transparency": { "title": "Data Transparency" }
+        },
+        "cards": {
+          "covid": { "title": "COVID-19" },
+          "flu": { "title": "Influenza" },
+          "rsv": { "title": "RSV" },
+          "covidProvider": { "title": "COVID-19" },
+          "fluProvider": { "title": "Influenza" },
+          "rsvProvider": { "title": "RSV" }
+        }
+      }
+    
+    
 }
   

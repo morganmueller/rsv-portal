@@ -2,41 +2,51 @@
   margin-top: 24px;
   width: 100%;
   background-color: #ffffff;
+  overflow-x: hidden; /* ⬅️ Prevent child overflow */
+  box-sizing: border-box;
 }
 
-/* This should already exist in your global styles */
 .overview-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 48px 80px;
+  width: 100%;
+  max-width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 1.5rem;
 }
 
+.overview-container * {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-wrap: anywhere; /* ⬅️ Handles long strings/URLs */
+  word-break: break-word;
+}
 
 .overview-title {
   font-size: 32px;
   font-family: "Inter-Bold", Helvetica, sans-serif;
   color: #1f2937;
-  margin-bottom: 24px; /* a little more breathing space */
+  margin-bottom: 24px;
+  width: 100%;
 }
 
 .overview-columns {
   display: flex;
   flex-wrap: wrap;
-  gap: 64px; /* ✅ this is where you create the nice space between columns */
+  gap: 64px;
   margin-top: 24px;
   width: 100%;
 }
 
 .overview-column {
-  flex: 1;
-  min-width: 300px;
+  flex: 1 1 300px; /* ⬅️ Allows columns to shrink responsively */
+  min-width: 0;   /* ⬅️ Prevents overflow when inside a flex row */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px; /* ✅ this gives gap between title and paragraph inside each column */
+  gap: 24px;
 }
 
 .overview-column h2 {
@@ -52,4 +62,15 @@
   font-size: 16px;
   line-height: 24px;
   text-align: left;
+}
+
+@media (max-width: 768px) {
+  .overview-container {
+    padding: 1rem;
+  }
+
+  .overview-columns {
+    flex-direction: column;
+    gap: 32px;
+  }
 }

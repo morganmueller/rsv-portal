@@ -14,7 +14,7 @@ const StatGrid = () => {
           admitPercent="2.5%"
           visitChange="9%"
           admitChange="6%"
-          subtitle="Emergency Department"
+          subtitle=""
           backgroundColor="#F4C4A5"
         />
         <div className="stat-info-box">

@@ -1,0 +1,72 @@
+@media (max-width: 768px) {
+    /* Layout Containers */
+    .stat-card,
+    .stat-info-box,
+    .trend-summary-container,
+    .content-container,
+    .data-container,
+    .data-section-container {
+      padding: 16px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  
+    /* Typography */
+    .stat-card-title,
+    .trend-title,
+    .trend-date,
+    .trend-status,
+    .content-title,
+    .data-title,
+    .data-subtitle {
+      font-size: 16px;
+    }
+  
+    .stat-percent {
+      font-size: 22px;
+    }
+  
+    .stat-label,
+    .stat-change {
+      font-size: 12px;
+    }
+  
+    /* Flex Layouts */
+    .top-row,
+    .bottom-row,
+    .data-controls-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+  
+    .data-controls-row {
+      align-items: stretch;
+    }
+  
+    /* Icons and Buttons */
+    .stat-card-icon,
+    .filter-icon {
+      width: 20px;
+      height: 20px;
+    }
+  
+    .filter-button,
+    .view-toggle {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+  
+    /* Spacing Tweaks */
+    .stat-subtitle,
+    .trend-status {
+      margin-bottom: 8px;
+    }
+  
+    .stat-grid,
+    .data-container {
+      gap: 1.5rem;
+    }
+  }
+  

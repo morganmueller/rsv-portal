@@ -8,6 +8,8 @@ import DataExplorer from "./pages/DataExplorer/DataExplorer";
 import EmergencyDeptPage from "./pages/DataExplorer/EmergencyDeptPage"; 
 import CaseDataPage from "./pages/DataExplorer/CaseDataPage"; 
 import CovidDeathPage from "./pages/DataExplorer/CovidDeathPage"; 
+import AboutPage from "./pages/About/AboutPage"; 
+import "../src/styles/mobile.css"
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<OverviewPage />} />
           <Route path="/data-explorer" element={<Navigate to="/data-explorer/emergency-dept" replace />} />
+          <Route path="/about" element={<AboutPage />} />
 
           {/* Route override for emergency dept */}
           <Route path="/data-explorer/emergency-dept" element={<EmergencyDeptPage />} />

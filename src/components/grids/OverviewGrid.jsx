@@ -14,8 +14,8 @@ const OverviewGrid = () => {
       link: "https://github.com/nychealth/respiratory-data-portal", // external link
     },
     {
-      title: "Prevention Measures",
-      description: "Learn about best practices to avoid respiratory viruses",
+      title: "COVID-19 Wastewater Surveillance",
+      description: "View NYC COVID-19 wastewater surveillance through the New York State dashboard",
       link: "/about#prevention", // anchor or route
     },
   ];

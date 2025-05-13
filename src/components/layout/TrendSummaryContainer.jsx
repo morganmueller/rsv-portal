@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { usePageState } from "../../components/hooks/usePageState";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 import "./TrendSummaryContainer.css";
 
@@ -13,10 +12,11 @@ const TrendSummaryContainer = ({
   showTitle = false,
   children,
   metricLabel,
+  virus = "COVID-19",
+  view = "visits",
 }) => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-  const { activeVirus, view } = usePageState();
 
   useEffect(() => {
     if (!animateOnScroll) return;
@@ -56,7 +56,7 @@ const TrendSummaryContainer = ({
             {arrow}
           </span>
           <span className="trend-text">
-            {activeVirus} {resolvedMetricLabel} are{" "}
+            {virus} {resolvedMetricLabel} are{" "}
             <strong>{trendText}</strong>
           </span>
         </div>
@@ -66,7 +66,7 @@ const TrendSummaryContainer = ({
         <MarkdownRenderer
           filePath={markdownPath}
           sectionTitle={sectionTitle}
-          showTitle={false} 
+          showTitle={false}
           className="markdown-body"
         />
       )}
@@ -83,6 +83,8 @@ TrendSummaryContainer.propTypes = {
   markdownPath: PropTypes.string,
   showTitle: PropTypes.bool,
   metricLabel: PropTypes.string,
+  virus: PropTypes.string,
+  view: PropTypes.string,
   children: PropTypes.node,
   animateOnScroll: PropTypes.bool,
 };
