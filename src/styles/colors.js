@@ -22,8 +22,8 @@ const colors = {
     greenPrimary: "#065F46",
     greenAccent: "#139D72",
     greenMuted: "#059669",
-    orangePrimary: "#FF6600",
-    orangeAccent: "#B36C31",
+    orangePrimary: "#d97706",
+    orangeAccent: "#fbbf24",
     orangeMuted: "#FF6C0B",
   
     // Semantic backgrounds

@@ -1,0 +1,51 @@
+{
+    "overview": {
+      "title": "Respiratory Virus Overview",
+      "subtitle": "Explore Acute Respiratory Virus data in NYC.",
+      "indicators": {
+        "title": "Emergency Department Key Indicators"
+      },
+      "charts": {
+        "monthlyARIChart": {
+          "title": "Acute Respiratory Infections Over the Last Three Months"
+        }
+      }
+    },
+
+    "emergencyDeptPage": {
+      "mainTitle": "Emergency Department Visits & Admissions",
+      "mainSubtitle": "This section shows emergency department data filtered by viral respiratory illness.",
+   
+
+      "summarySection": {
+        "summaryTitle": "Emergency Department Summary"
+      },
+
+      "charts": {
+        "seasonalComparison": {
+          "title": "Seasonal Emergency Department Visits by Week Compared with Previous Three Seasons",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season."
+        }
+
+      }
+    },
+
+    "caseDataPage": {
+      "mainTitle": "Case Data and Demographics",
+      "mainSubtitle": "Explore case data by virus type, age, borough, and demographics in NYC.",
+   
+
+      "summarySection": {
+        "summaryTitle": "Case Data Summary"
+      },
+
+      "charts": {
+        "seasonalComparison": {
+          "title": "Seasonal Case Count by Week Compared with Previous Three Seasons",
+          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season."
+        }
+
+      }
+    }
+}
+  

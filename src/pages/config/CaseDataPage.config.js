@@ -16,6 +16,25 @@ const caseDataPageConfig = {
     },
     sections: [
       {
+        id: "case-intro-text",
+        title: "Understanding NYC Case Data",
+        subtitle: "A quick guide to what's shown below.",
+        animateOnScroll: true,
+        infoIcon: true,
+        modal: {
+          title: "How to Read This Page",
+          markdownPath: "content/modals/cases-intro.md"
+        },
+        chart: {
+          type: "edSeasonalComparisonChart",  
+          props: {
+            dataSourceKey: "seasonalEDData",
+            virus: "{virus}",
+          },
+          footer: ""  
+        }
+      },
+      {
         id: "case-reports-season",
         title: "caseDataPage.charts.seasonalComparison.title",
         subtitle: "caseDataPage.charts.seasonalComparison.subtitle",

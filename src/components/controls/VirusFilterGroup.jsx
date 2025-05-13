@@ -8,7 +8,8 @@ import "./VirusFilterButton.css";
 const virusOptions = [
   { label: "COVID-19", icon: covidIcon },
   { label: "Influenza", icon: fluIcon },
-  { label: "RSV", icon: rsvIcon }
+  { label: "RSV", icon: rsvIcon },
+  { label: "Parainfluenza", icon: fluIcon},
 ];
 
 const VirusFilterGroup = ({ onChange }) => {
