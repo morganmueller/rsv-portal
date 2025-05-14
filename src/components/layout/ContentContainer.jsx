@@ -4,7 +4,6 @@ import InfoModal from "../popups/InfoModal";
 import { getText } from "../../utils/contentUtils";
 import "./ContentContainer.css";
 
-// Locally re-apply resolveText here
 const resolveText = (input, variables = {}) => {
   const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
   if (typeof raw !== "string") return raw;
@@ -27,6 +26,7 @@ const ContentContainer = ({
   subtitleVariables = {},
   children,
   className = "",
+  background = "white", // ✅ default to white
   animateOnScroll = true,
   infoIcon = false,
   downloadIcon = false,
@@ -60,7 +60,7 @@ const ContentContainer = ({
   return (
     <div
       ref={ref}
-      className={`content-container ${className} ${
+      className={`content-container background-${background} ${className} ${
         animateOnScroll ? (isVisible ? "fade-in" : "fade-out") : ""
       }`}
     >
@@ -142,6 +142,7 @@ ContentContainer.propTypes = {
   subtitleVariables: PropTypes.object,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  background: PropTypes.oneOf(["white", "gray", "transparent"]),
   animateOnScroll: PropTypes.bool,
   infoIcon: PropTypes.bool,
   downloadIcon: PropTypes.bool,

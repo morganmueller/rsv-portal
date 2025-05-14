@@ -1,6 +1,6 @@
 {
     "overview": {
-      "title": "Respiratory Virus Overview",
+      "title": "Acute Respiratory Infections Overview",
       "subtitle": "Explore Acute Respiratory Virus data in NYC",
       "indicators": {
         "title": "Emergency Department Trends"
@@ -8,7 +8,7 @@
       "charts": {
         "monthlyARIChart": {
           "title": "Acute Respiratory Infection Overview",
-          "subtitle": " {edType} have {trend} since last week"
+          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
         }
       }
     },
@@ -47,24 +47,24 @@
 
       "charts": {
         "seasonalComparison": {
-          "title": "{virus} Laboratory Reports by Season",
+          "title": "{virus} Laboratory-Reported Cases by Season",
           "subtitle": "Reports for the week of {date} have {trend} since the previous week"
           
         },
         "reportsByTestType": {
-          "title": "{virus} Laboratory Reports by Test Type",
+          "title": "{virus} Laboratory-Reported Cases by Test Type",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         },
         "reportsByAge": {
-          "title": "{virus} Laboratory Reports by Age Group",
+          "title": "{virus} Laboratory-Reported Cases by Age Group",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         },
         "reportsByBorough": {
-          "title": "{virus} Laboratory Reports by Borough",
+          "title": "{virus} Laboratory-Reported Cases by Borough",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         },
         "reportsByRE": {
-          "title": "{virus} COVID-19 Laboratory Reports by Race and Ethnicity",
+          "title": "{virus} COVID-19 Laboratory-Reported Cases by Race and Ethnicity",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         }
         

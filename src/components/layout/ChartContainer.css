@@ -29,16 +29,29 @@
 
 .chart-content {
   display: flex;
-  justify-content: flex-start; /* align left */
-  padding-left: 0; /* ensure no padding offset */
+  justify-content: flex-start; 
+  padding-left: 0; 
   gap: 24px;
 }
 
 
 .chart-sidebar {
-  flex: 0 0 120px; /* or 20% */
+  flex: 0 0 120px; 
 }
 
+
+.chart-vega {
+  width: 100%;
+  max-width: 100%;
+  min-width: 300px; 
+  flex: 1; 
+}
+
+
+.chart-body {
+  flex: 1;
+  min-width: 0;
+}
 
 
 

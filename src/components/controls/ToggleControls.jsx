@@ -1,18 +1,15 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import "./ToggleControls.css";
 
-const ToggleControls = ({ data, onToggle }) => {
-  const [view, setView] = useState("visits");
-
+const ToggleControls = ({ data, view, onToggle }) => {
   const handleToggle = (type) => {
-    setView(type);
-    if (onToggle) onToggle(type);
+    if (onToggle && type !== view) onToggle(type);
   };
 
   const peak = useMemo(() => {
-    if (!data || data.length === 0) return null;
-    const max = data.reduce((a, b) => a[view] > b[view] ? a : b);
+    if (!data || data.length === 0 || !view) return null;
+    const max = data.reduce((a, b) => (a[view] > b[view] ? a : b));
     return {
       value: max[view].toLocaleString(),
       date: new Date(max.week).toLocaleDateString("en-US", {
@@ -50,7 +47,8 @@ const ToggleControls = ({ data, onToggle }) => {
 
 ToggleControls.propTypes = {
   data: PropTypes.array.isRequired,
-  onToggle: PropTypes.func,
+  view: PropTypes.string.isRequired,
+  onToggle: PropTypes.func.isRequired,
 };
 
 export default ToggleControls;

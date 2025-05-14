@@ -1,7 +1,6 @@
 import React from "react";
 import { PageStateProvider } from "../../components/hooks/usePageState";
 import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage"; 
-import caseDataPageConfig from "../../pages/config/CaseDataPage.config";
 import covidDeathPageConfig from "../config/CovidDeathPage.config";
 
 const CovidDeathPage = () => {

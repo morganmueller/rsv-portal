@@ -15,7 +15,7 @@ const ViewToggleGroup = ({ activeView, onChange }) => {
         className={`view-toggle ${activeView === "admits" ? "active" : ""}`}
         onClick={() => onChange("admits")}
       >
-        Admits
+        Admissions
       </button>
     </div>
   );

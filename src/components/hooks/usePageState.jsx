@@ -8,9 +8,9 @@ export const PageStateContext = createContext();
 export const usePageState = () => useContext(PageStateContext);
 
 // 3. Provider
-export const PageStateProvider = ({ children, initialData }) => {
-  const [activeVirus, setActiveVirus] = useState("COVID-19");
+export const PageStateProvider = ({ children, initialData = [], enableVirusToggle = true }) => {
   const [view, setView] = useState("visits");
+  const [activeVirus, setActiveVirus] = useState(enableVirusToggle ? "COVID-19" : null);
 
   const handleDownload = () => {
     const filtered = initialData.map(({ week, season, visits }) => ({
@@ -18,7 +18,8 @@ export const PageStateProvider = ({ children, initialData }) => {
       season,
       [view]: visits
     }));
-    downloadCSV(filtered, `${activeVirus.toLowerCase()}-${view}-seasonal.csv`);
+    const virusPrefix = enableVirusToggle && activeVirus ? `${activeVirus.toLowerCase()}-` : "";
+    downloadCSV(filtered, `${virusPrefix}${view}-seasonal.csv`);
   };
 
   return (
@@ -29,3 +30,4 @@ export const PageStateProvider = ({ children, initialData }) => {
     </PageStateContext.Provider>
   );
 };
+

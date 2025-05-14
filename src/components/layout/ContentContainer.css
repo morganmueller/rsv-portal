@@ -114,3 +114,23 @@ body {
   max-width: 100%;
   display: block;
 }
+
+
+.background-white {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.background-gray {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.background-transparent {
+  background-color: transparent;
+  border-radius: 0px;
+  box-shadow: none;
+}

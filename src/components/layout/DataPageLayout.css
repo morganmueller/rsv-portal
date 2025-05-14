@@ -7,7 +7,8 @@
 .data-section-wrapper {
   background-color: #ffffff;
   width: 100%;
-  padding: 48px 0;
+  padding: 12px 0;
+  max-height: 280px;
 }
 
 /* Inner container with dynamic side padding */
