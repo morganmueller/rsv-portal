@@ -40,8 +40,23 @@ export function formatDate(dateString) {
   });
 }
 
-function capitalize(word) {
+export function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
   
+export function capitalizeFirstHtml(str) {
+  if (!str) return str;
+
+  // Find the first visible character that is not inside a tag
+  const tagRegex = /(<[^>]+>)*([^<])/;
+  const match = str.match(tagRegex);
+  if (!match) return str;
+
+  const index = str.indexOf(match[2]);
+  return (
+    str.slice(0, index) +
+    match[2].toUpperCase() +
+    str.slice(index + 1)
+  );
+}

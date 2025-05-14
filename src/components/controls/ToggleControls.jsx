@@ -19,6 +19,12 @@ const ToggleControls = ({ data, view, onToggle }) => {
     };
   }, [view, data]);
 
+  const viewLabels = {
+    visits: "Visits",
+    admits: "Admissions",
+  };
+  
+
   return (
     <div className="toggle-controls">
       <button
@@ -31,12 +37,12 @@ const ToggleControls = ({ data, view, onToggle }) => {
         className={`toggle-button ${view === "admits" ? "active" : ""}`}
         onClick={() => handleToggle("admits")}
       >
-        Admits
+        Admissions
       </button>
 
       {peak && (
         <div className="chart-peak">
-          <p className="peak-label">Peak {view.charAt(0).toUpperCase() + view.slice(1)}</p>
+          <p className="peak-label">Peak {viewLabels[view]}</p>
           <p className="peak-value">{peak.value}</p>
           <p className="peak-date">{peak.date}</p>
         </div>

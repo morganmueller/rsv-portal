@@ -85,18 +85,38 @@ body {
 }
 
 .trend-up {
-  color: #B91C1C; /* red-700 (bad trend) */
+  font-weight: 700;
+  background-color: #f3f4f6; 
+  border-radius: 4px;
+  padding: 2px 6px;
+
+  color: #B91C1C; 
 }
 
 .trend-down {
-  color: #059669; /* green-600 (good trend) */
+  background-color: #f3f4f6; 
+  border-radius: 4px;
+  font-weight: 700;  
+  padding: 2px 6px;
+  color: #059669; 
 }
 
 .trend-neutral {
-  color: #6B7280; /* gray-500 */
+  background-color: #f3f4f6; 
+  border-radius: 4px;
+  padding: 2px 6px;
+
+  color: #6B7280; 
 }
 
-/* Chart container fixes for responsive centering */
+.bg-highlight {
+  background-color: #f3f4f6; 
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 700;
+}
+
+
 .chart-container,
 .chart-content,
 .chart-body,

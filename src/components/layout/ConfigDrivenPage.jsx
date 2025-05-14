@@ -10,13 +10,14 @@ import ContentContainer from "./ContentContainer";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 import MarkdownCardSection from "../cards/MarkdownCardSection";
 import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
-import { tokens } from "../../styles/tokens"; // adjust path as needed
+import { tokens } from "../../styles/tokens";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
 import {
   getTrendFromTimeSeries,
   generateTrendSubtitle,
   formatDate,
+  capitalizeFirstHtml,
 } from "../../utils/trendUtils";
 
 import StatGrid from "../grids/StatGrid";
@@ -33,15 +34,18 @@ const viewColorMap = {
   admits: tokens.colors.rose600,
 };
 
+const viewDisplayLabels = {
+  visits: "Visits",
+  admits: "Admissions",
+};
+
 const resolveText = (input, variables = {}) => {
-  const raw =
-    typeof input === "string" && input.includes(".") ? getText(input) : input;
+  const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
   return typeof raw === "string"
     ? raw.replace(/{(\w+)}/g, (_, key) => variables[key] ?? `{${key}}`)
     : raw;
 };
 
-// Interpolates strings like "{view}" => "visits"
 const interpolateTokens = (value, vars) => {
   if (typeof value === "string") {
     return value.replace(/{(\w+)}/g, (_, key) => vars[key] ?? `{${key}}`);
@@ -49,9 +53,6 @@ const interpolateTokens = (value, vars) => {
   return value;
 };
 
-
-
-// Recursively interpolates all string values in an object
 const interpolateObject = (obj, vars) =>
   JSON.parse(JSON.stringify(obj), (_, value) => interpolateTokens(value, vars));
 
@@ -88,7 +89,7 @@ const ConfigDrivenPage = ({ config }) => {
         config.showTopControls === false ? null :
         (useStateNeeded ? <TopControls controls={controls} /> : null)
       }
-      >
+    >
       {summary?.markdownPath && (
         <TrendSummaryContainer
           sectionTitle={resolveText(summary.titleKey || summary.title)}
@@ -103,11 +104,12 @@ const ConfigDrivenPage = ({ config }) => {
       )}
 
       {sections.map((section, idx) => {
-      const key = section.id || idx; 
+        const key = section.id || idx;
 
         const textVars = {
           virus: activeVirus,
-          view,
+          view, // logic value
+          displayView: `<span class="bg-highlight">${viewDisplayLabels[view]}</span>`,
         };
 
         const interpolatedProps = interpolateObject(section.chart?.props || {}, textVars);
@@ -122,22 +124,29 @@ const ConfigDrivenPage = ({ config }) => {
           ? getTrendFromTimeSeries(filteredData, trendKey)
           : null;
 
-        const trend =
-          trendObj && typeof trendObj === "object"
-            ? `${trendObj.label}${trendObj.value ? ` ${trendObj.value}%` : ""}`
-            : trendObj ?? "not available";
+        const rawLabel = trendObj?.label || "";
+        const rawValue = trendObj?.value ? ` ${trendObj.value}%` : "";
+        const trendClass =
+          trendObj?.direction === "up"
+            ? "trend-up"
+            : trendObj?.direction === "down"
+            ? "trend-down"
+            : "trend-neutral";
+
+        const trend = trendObj
+          ? `<span class="${trendClass}">${rawLabel}${rawValue}</span>`
+          : trendObj ?? "not available";
 
         const trendDirection = trendObj?.direction;
 
         const fullVars = {
           ...textVars,
-          date: formatDate(filteredData.at?.(-1)?.week),
+          date: `<span class="bg-highlight">${formatDate(filteredData.at?.(-1)?.week)}</span>`,
           trend,
           trendDirection,
-          viewColor: viewColorMap[view]
+          viewColor: viewColorMap[view],
         };
 
-        // Skip hidden or overview-only blocks
         if (section.renderAs === "overview" || section.renderAs === "hidden") return null;
 
         if (section.renderAs === "custom") {
@@ -146,8 +155,8 @@ const ConfigDrivenPage = ({ config }) => {
             <ContentContainer
               key={key}
               title={resolveText(section.titleKey)}
-              subtitle={resolveText(section.subtitle, textVars)}
-              subtitleVariables={textVars}
+              subtitle={resolveText(section.subtitle, fullVars)}
+              subtitleVariables={fullVars}
               animateOnScroll={section.animateOnScroll !== false}
               background={section.background || "white"}
             >
@@ -195,13 +204,15 @@ const ConfigDrivenPage = ({ config }) => {
           view,
         };
 
-        const computedSubtitle = section.subtitle
+        const rawSubtitle = section.subtitle
           ? resolveText(section.subtitle, fullVars)
           : generateTrendSubtitle({
               view,
               trendObj,
               latestWeek: filteredData.at?.(-1)?.week,
             });
+
+        const computedSubtitle = capitalizeFirstHtml(rawSubtitle);
 
         return (
           <SectionWithChart

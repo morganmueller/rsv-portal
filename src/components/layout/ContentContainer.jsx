@@ -67,7 +67,14 @@ const ContentContainer = ({
       {(title || subtitle) && (
         <div className="content-header">
           <div className="content-title-row">
+            {typeof title === "string" ? (
+            <h3
+              className="content-title"
+              dangerouslySetInnerHTML={{ __html: title }}
+            />
+          ) : (
             <h3 className="content-title">{title}</h3>
+          )}
             <div className="content-title-icons">
               {infoIcon && (
                 <img

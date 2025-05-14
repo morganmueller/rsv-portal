@@ -253,16 +253,44 @@ option {
 }
 
 @media (max-width: 600px) {
-  .header-container {
-    padding: 0 16px;
+  .header-section {
+    padding: 16px 0; /* reduced from 32px */
+  }
+
+  .header-title {
+    font-size: 22px;
+    line-height: 26px;
+    margin-bottom: 4px;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 12px;
+  }
+
+  .header-image-wrapper {
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+    justify-content: center;
+  }
+
+  .header-image {
+    max-width: 120px;
+    width: 100%;
+    justify-content: center;
+
+  }
+
+  .header-buttons {
+    margin-bottom: 4px;
+    gap: 8px;
   }
 
   .outline-button {
-    font-size: 14px;
-    padding: 10px 16px;
-  }
-
-  .header-section {
-    padding: 32px 0;
+    font-size: 13px;
+    padding: 8px 12px;
+    height: auto;
   }
 }

@@ -1,149 +1,142 @@
-#  NYC Respiratory Virus Data Tracker
+NYC Respiratory Virus Data Tracker
 
-This project powers a responsive, modular dashboard for the NYC Department of Health and Mental Hygiene (DOHMH), visualizing respiratory virus trends across COVID-19, Influenza, RSV, ARI, and more. It supports seasonal comparisons, chart explainers, plain-language summaries, and interactive data filtering.
+This project powers a responsive, modular dashboard for the NYC Department of Health and Mental Hygiene (DOHMH), visualizing respiratory virus trends across COVID-19, Influenza, RSV, Acute Respiratory Infections (ARI), and more. Features include seasonal comparisons, dynamic chart loading, plain-language summaries, and interactive toggles for virus and metric filtering.
 
 ---
 
 ## 📁 Project Structure
-  /components
-  * cards/ # Stat cards (e.g. COVID, Flu)
-  * charts/ # Vega-lite chart wrappers
-  * contentUtils/ # Markdown rendering & text utilities
-  * controls/ # Virus and view toggle components
-  * grids/ # Layout grid components
-  * layout/ # Page layouts, container logic
-  * popups/ # Info modal components
-  
-  /public/content
-  * sections/ # Summary markdown (e.g. edSectionText.md)
-  * modals/ # Chart explainer markdown
-  
-  /data
-  * edPageConfig.js # Config for Emergency Dept page
-  * caseDataPageConfig.js
-  * covidDeathPageConfig.js
-  
-  /utils
-  * chartRegistry.js # Dynamic chart registry
-  * contentUtils.js # Dot notation text resolver
-  * downloadUtils.js # CSV export helper
-  * trendUtils.js # Calculates week-over-week trends
-  * loadMarkdownWithMeta.js
+
+/components
+cards/ → Stat cards (e.g. COVID, Flu, RSV)
+charts/ → Vega-Lite chart wrappers
+contentUtils/ → Markdown rendering & text interpolation
+controls/ → Virus + view toggle components
+grids/ → Grid layout helpers (e.g. StatGrid)
+layout/ → Page scaffolds (DataPageLayout, SectionWithChart)
+popups/ → Info modals
+
+/public/content
+sections/ → Summary markdown (e.g. edSectionText.md)
+modals/ → Chart explainer markdown
+
+/data
+edPageConfig.js
+caseDataPageConfig.js
+covidDeathPageConfig.js
+
+/utils
+chartRegistry.js → Chart type map for config system
+contentUtils.js → Text key resolver (dot notation)
+downloadUtils.js → CSV download helper
+trendUtils.js → Computes week-over-week percent change
+
+yaml
+Copy
+Edit
+
+---
 
 ## ⚙️ Config-Driven Architecture
-The ConfigDrivenPage system enables you to build a fully functional data dashboard page from a simple configuration object. This promotes consistency and makes it easier to scale or maintain new pages without duplicating rendering logic.
 
-Below is a commented example configuration for a page:
-### Example
+All data pages are dynamically rendered based on a config object passed to `<ConfigDrivenPage />`. This reduces duplication and centralizes logic for scalability.
+
+### 🔧 Example Config
 
 ```js
 {
-  id: "emergencyDeptPage", // Unique ID for the page (used for routing, styling, etc.)
-
-  titleKey: "emergencyDeptPage.mainTitle", 
-  // i18n-compatible key that maps to a human-readable page title in `text.json`.
+  id: "emergencyDeptPage",
+  titleKey: "emergencyDeptPage.mainTitle",
+  subtitleKey: "emergencyDeptPage.mainSubtitle",
 
   summary: {
-    title: "Page Overview", // Optional heading for the summary block.
-    markdownPath: "../../public/content/sections/edSectionText.md", 
-    // Markdown file rendered at the top of the page as a summary or intro.
-    lastUpdated: "05/10/2025", // Optional date string.
-    showTrendArrow: true, // Optional: show upward/downward trend icon.
-    animateOnScroll: true // Optional: controls fade-in animation.
+    title: "Emergency Department Summary",
+    markdownPath: "/content/sections/edSectionText.md",
+    lastUpdated: "05/10/2025",
+    showTrendArrow: true,
+    animateOnScroll: true,
+    metricLabel: "visits"
+  },
+
+  controls: {
+    virusToggle: true,
+    viewToggle: true
   },
 
   sections: [
     {
-      title: "emergencyDeptPage.charts.seasonalEdVisits.title",
-      // Title shown above the chart. Can be a key from text.json or raw string.
-
+      id: "seasonal-ed",
+      title: "emergencyDeptPage.charts.seasonalComparison.title",
+      subtitle: "emergencyDeptPage.charts.seasonalComparison.subtitle",
       chart: {
-        type: "edSeasonalComparisonChart", 
-        // Must match a key in `chartRegistry.js`, which maps to a React chart component.
-
+        type: "edSeasonalComparisonChart",
         props: {
-          dataSourceKey: "seasonalEDData", 
-          // Key from the `data` section below. Chart receives `props.data`.
-          virus: "{virus}", 
-          // Template values are dynamically filled in based on page state (e.g. user toggles).
-          view: "{view}" 
+          dataSourceKey: "seasonalEDData",
+          virus: "{virus}",
+          view: "{view}"
         }
       },
-
       modal: {
-        title: "Seasonal ED {view}", 
-        // Title for the help/info modal triggered by the (i) button.
-        markdownPath: "../../public/content/modals/emergency-dept-explainer.md" 
-        // Markdown content shown in the modal body.
+        title: "Seasonal ED {view}",
+        markdownPath: "/content/modals/emergency-dept-explainer.md"
       },
-
-      infoIcon: true,       // Show modal info button
-      downloadIcon: true,   // Show download button
-      trendEnabled: true,   // Enables automatic trend detection/labeling
-      animateOnScroll: true // Enables scroll-triggered fade-in
+      infoIcon: true,
+      downloadIcon: true,
+      trendEnabled: true,
+      animateOnScroll: true
     }
   ],
 
   data: {
     seasonalEDData: [
       { week: "2025-01-01", visits: 12500, admits: 3100 },
-      { week: "2025-01-08", visits: 13000, admits: 3200 },
-      // Data format must match what the chart expects.
+      { week: "2025-01-08", visits: 13000, admits: 3200 }
     ]
-  },
-
-  controls: {
-    virusToggle: true, // Optional UI toggle to switch between viruses (e.g. COVID-19, RSV)
-    viewToggle: true   // Optional UI toggle to switch between "visits" and "admits"
   }
 }
-
-```
-
-🛠 How It Works
-The page layout (ConfigDrivenPage.jsx) uses this config to render the header, summary, interactive controls, and charts.
-
-Chart components are mapped by type in chartRegistry.js and automatically receive the right props.
-
-You can interpolate {virus}, {view}, {trend}, etc., in strings—these are resolved at runtime using current app state.
-
-
-
-🔍 Key Features
+🧠 Key Features
 ✅ Markdown-Powered Content
-Summary and modal content lives in .md files under /public/content/
+Markdown-based summaries and chart explainers
 
-Supports {view}, {virus}, {trend} templating in markdown
+Located in /public/content/sections/ and /modals/
 
-Optional ## Section targeting with fallback if not found
+Supports template tags like {virus}, {view}, {trend} within markdown
 
-✅ Interactive Controls
-virusToggle: Filter by virus
+Modal content rendered using MarkdownRenderer
 
-viewToggle: Switch between ED visits and admits
+✅ Interactive Toggles
+virusToggle: Filter by respiratory virus
 
-Shared state provided via usePageState()
+viewToggle: Switch between visit and admission rates
 
-✅ Chart Modularization
-All charts are registered in /utils/chartRegistry.js
+Shared state handled with usePageState()
 
-Components accept data, view, virus via props
+✅ Chart System
+Charts registered in /utils/chartRegistry.js
 
-Uses react-vega and Vega-Lite JSON specs
+Vega-Lite based chart components (using react-vega)
 
-✅ Responsive Layout
-Grids use clamp()-based fluid spacing
+Config defines type and props, data passed automatically
 
-Breakpoints and CSS modules for scoped styles
+✅ Trend Detection & Labels
+Uses getTrendFromTimeSeries(data, metric) from trendUtils.js
 
-Components support fade-in animations on scroll
+Auto-calculates up/down arrows and percent change for summaries
 
-📊 Trend & Export Logic
-Trends are computed via getTrendFromTimeSeries(data, metric)
+{trend} placeholder available in subtitles
 
-Downloadable CSVs generated by downloadCSV(data, filename)
+✅ CSV Downloads
+Charts support export via downloadCSV(data, filename) from downloadUtils.js
 
-Summary cards and subtitles automatically show up/down arrows and percent change
+Triggered through download icon in chart header
 
+🧩 Runtime Text Resolution
+All titles and subtitles are stored in text.json and accessed via dot notation (e.g. overview.charts.monthlyARIChart.title)
 
+Resolved using getText(path) from contentUtils.js
 
+🖼️ UI & Styling
+CSS Modules for component-scoped styles
+
+Markdown styled via markdown.css
+
+Header includes route-aware buttons and dropdown topic selector

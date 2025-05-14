@@ -2,7 +2,7 @@
   background-color: #f9fafb;
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 16px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   flex: 0 1 300px;
@@ -10,14 +10,14 @@
   min-width: 260px;
   box-sizing: border-box;
   position: relative;
-  height: 100%;
+  height: auto;
 }
 
 .stat-card-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .stat-card-icon {
@@ -32,54 +32,77 @@
   flex: 1;
 }
 
-.stat-card-year {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-.stat-subtitle {
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #4b5563;
-  margin: 24px 0 16px;
-}
-
-.stat-columns {
+.stat-block {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  width: 100%;
-}
-
-.stat-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
+  margin-top: 12px;
+  gap: 12px;
 }
 
 .stat-percent {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.stat-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: right;
+  flex: 1;
 }
 
 .stat-label {
   font-size: 14px;
-  font-weight: 500;
   color: #4b5563;
-  margin: 4px 0;
+  line-height: 1.2;
 }
 
-.stat-change {
+.stat-trend {
   font-size: 13px;
-  color: #b36b31;
+  color: #6b7280;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-style: bold;
+}
+
+.stat-trend-row {
+  font-weight: 700;
+  font-size: 13px;
+  color: #4e535c;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.stat-trend-row .stat-date {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.stat-date {
+  font-size: 12px;
+  color: #717780;
+  margin-top: 2px;
+}
+
+.stat-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 12px 0 4px;
 }
 
 @media (max-width: 768px) {
   .stat-card {
     max-width: 100%;
     flex: 1 1 100%;
-    height: auto;
   }
 }

@@ -4,15 +4,13 @@ import "./StatCard.css";
 
 const StatCard = ({
   title,
-  year,
   icon,
   visitPercent,
   admitPercent,
   visitChange,
   admitChange,
-  visitIcon,
-  admitIcon,
-  subtitle,
+  visitDate,
+  admitDate,
   backgroundColor = colors.gray100,
 }) => {
   const themeColors = {
@@ -30,7 +28,7 @@ const StatCard = ({
     const isUp = num >= 0;
     const arrow = isUp ? "▲" : "▼";
     const color = isUp ? colors.orangeAccent : colors.greenMuted;
-    return <span style={{ color, marginLeft: 4 }}>{arrow}</span>;
+    return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };
 
   return (
@@ -38,31 +36,28 @@ const StatCard = ({
       <div className="stat-card-header">
         {icon && <img className="stat-card-icon" src={icon} alt={`${title} icon`} />}
         <div className="stat-card-title">{title}</div>
-        <div className="stat-card-year">{year}</div>
       </div>
 
-      <div className="stat-subtitle">{subtitle}</div>
-
-      <div className="stat-columns">
-        <div className="stat-column">
-          <div className="stat-percent" style={{ color: statColor }}>
-            {visitPercent}
-          </div>
-          <div className="stat-label">Visits</div>
-          <div className="stat-change">
-          {getChangeArrow(visitChange)}
-            {visitChange}
+      <div className="stat-block">
+        <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
+        <div className="stat-detail">
+          <div className="stat-label">of emergency dept visits</div>
+          <div className="stat-trend-row">
+            {getChangeArrow(visitChange)}
+            {visitChange} · <span className="stat-date">{visitDate}</span>
           </div>
         </div>
-        <div className="stat-column">
-          <div className="stat-percent" style={{ color: statColor }}>
-            {admitPercent}
-          </div>
-          <div className="stat-label">Admits</div>
-          <div className="stat-change">
-          {getChangeArrow(admitChange)}
+      </div>
 
-            {admitChange}
+      <hr className="stat-divider" />
+
+      <div className="stat-block">
+        <div className="stat-percent" style={{ color: statColor }}>{admitPercent}</div>
+        <div className="stat-detail">
+          <div className="stat-label">of emergency dept admissions</div>
+          <div className="stat-trend-row">
+            {getChangeArrow(admitChange)}
+            {admitChange} · <span className="stat-date">{admitDate}</span>
           </div>
         </div>
       </div>
