@@ -93,6 +93,7 @@ All data pages are dynamically rendered based on a config object passed to `<Con
     ]
   }
 }
+```
 🧠 Key Features
 ✅ Markdown-Powered Content
 Markdown-based summaries and chart explainers
