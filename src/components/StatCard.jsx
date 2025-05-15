@@ -1,5 +1,5 @@
 import React from "react";
-import colors from "../styles/colors";
+import { getThemeByTitle } from "../utils/themeUtils"; // <-- updated import
 import "./StatCard.css";
 
 const StatCard = ({
@@ -11,37 +11,31 @@ const StatCard = ({
   admitChange,
   visitDate,
   admitDate,
-  backgroundColor = colors.gray100,
 }) => {
-  const themeColors = {
-    "COVID-19": colors.bluePrimary,
-    "Influenza": colors.purplePrimary,
-    "RSV": colors.greenPrimary,
-    "ARI": colors.orangePrimary,
-    "Acute Respiratory Infections": colors.orangePrimary,
-  };
-
-  const statColor = themeColors[title] || colors.gray800;
+  const { color: statColor, background: cardBackground, icon: defaultIcon } = getThemeByTitle(title);
+  const iconSrc = icon || defaultIcon;
 
   const getChangeArrow = (change) => {
     const num = parseFloat(change);
     const isUp = num >= 0;
     const arrow = isUp ? "▲" : "▼";
-    const color = isUp ? colors.orangeAccent : colors.greenMuted;
+    const color = isUp ? "#B36C31" : "#059669"; // optionally import from tokens if consistent
     return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };
 
   return (
-    <div className="stat-card" style={{ backgroundColor }}>
+    <div className="stat-card" style={{ backgroundColor: cardBackground }}>
       <div className="stat-card-header">
-        {icon && <img className="stat-card-icon" src={icon} alt={`${title} icon`} />}
+        {iconSrc && <img className="stat-card-icon" src={iconSrc} alt={`${title} icon`} />}
         <div className="stat-card-title">{title}</div>
       </div>
 
       <div className="stat-block">
         <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
         <div className="stat-detail">
-          <div className="stat-label">of emergency dept visits</div>
+          <div className="stat-label" style={{ color: statColor }}>
+            of emergency department visits
+          </div>
           <div className="stat-trend-row">
             {getChangeArrow(visitChange)}
             {visitChange} · <span className="stat-date">{visitDate}</span>
@@ -54,7 +48,9 @@ const StatCard = ({
       <div className="stat-block">
         <div className="stat-percent" style={{ color: statColor }}>{admitPercent}</div>
         <div className="stat-detail">
-          <div className="stat-label">of emergency dept admissions</div>
+          <div className="stat-label" style={{ color: statColor }}>
+            of emergency department admissions
+          </div>
           <div className="stat-trend-row">
             {getChangeArrow(admitChange)}
             {admitChange} · <span className="stat-date">{admitDate}</span>

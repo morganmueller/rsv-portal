@@ -10,6 +10,12 @@
           "title": "Acute Respiratory Infection Overview",
           "subtitle": "{view} for the week of {date} have {trend} since the previous week"
         }
+      },
+      "statCards": {
+        "ari": { "title": "Acute Respiratory Infections" },
+        "covid": { "title": "COVID-19" },
+        "flu": { "title": "Influenza" },
+        "rsv": { "title": "RSV" }
       }
     },
     "emergencyDeptPage": {
@@ -103,9 +109,9 @@
       }
     },
 
-      "aboutPage": {
+    "aboutPage": {
         "mainTitle": "About the Respiratory Virus Tracker",
-        "mainSubtitle": "Learn about respiratory illnesses and how to use this site.",
+        "mainSubtitle": "Learn about respiratory illnesses and how to use this site",
         "summary": {
           "title": "About This Project"
         },

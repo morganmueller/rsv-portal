@@ -1,6 +1,9 @@
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
-import { tokens } from "../../styles/tokens"; // adjust path if needed
+import { tokens } from "../../styles/tokens";
+const { covid, flu, rsv } = tokens.colorScales;
+
+
 
 const LineChart = ({
   data,
@@ -10,9 +13,8 @@ const LineChart = ({
   tooltipFields,
   virus,
   color,
-
 }) => {
-  const { colors, typography } = tokens;
+  const { colors, typography, spacing } = tokens;
 
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
@@ -21,16 +23,14 @@ const LineChart = ({
   };
 
   const virusColorRangeMap = {
-    "COVID-19": [colors.bluePrimary, colors.blueSecondary, colors.blueAccent],
-    "Influenza": [colors.purplePrimary, colors.purpleAccent, colors.gray600],
-    "RSV": [colors.greenPrimary, colors.greenAccent, colors.greenMuted],
+    "COVID-19": tokens.colorScales.covid,
+    "Influenza": tokens.colorScales.flu,
+    "RSV": tokens.colorScales.rsv,
   };
 
   const defaultColor = colors.gray600;
   const selectedColor = color || virusColorMap[virus] || defaultColor;
-  const selectedRange = virusColorRangeMap[virus] || [selectedColor];
 
-  // 🔍 Only filter data if virus prop is set and `virus` field exists in data
   const filteredData =
     virus && data.some((d) => d.virus)
       ? data.filter((d) => d.virus === virus)
@@ -48,7 +48,7 @@ const LineChart = ({
         titleColor: colors.gray800,
         grid: false,
         domainColor: colors.gray300,
-        tickColor: colors.gray300
+        tickColor: colors.gray300,
       },
       legend: {
         labelFont: typography.body,
@@ -56,50 +56,76 @@ const LineChart = ({
         labelColor: colors.gray600,
         titleColor: colors.gray700,
         symbolSize: 100,
-        symbolStrokeWidth: 2
+        symbolStrokeWidth: 2,
       },
       view: {
-        stroke: "transparent"
+        stroke: "transparent",
       },
-      line: {
-        strokeWidth: 3
-      },
-      point: {
-        filled: true,
-        fill: selectedColor,
-        stroke: colors.white,
-        strokeWidth: 1,
-        size: 50
+    },
+    layer: [
+      ...(colorField
+        ? [] // no area if multiple lines
+        : [{
+            mark: {
+              type: "area",
+              interpolate: "monotone",
+              opacity: 0.15,
+              color: selectedColor
+            },
+            encoding: {
+              x: {
+                field: "{xField}",
+                type: "temporal",
+                axis: { title: null },
+                scale: { padding: 10 },
+              },
+              y: {
+                field: "{yField}",
+                type: "quantitative",
+                axis: {
+                  title: null,
+                  tickCount: 4,
+                },
+              }
+            }
+          }]
+      ),
+      {
+        mark: {
+          type: "line",
+          point: true,
+          interpolate: "monotone",
+          strokeWidth: 3,
+        },
+        encoding: {
+          x: {
+            field: "{xField}",
+            type: "temporal",
+            axis: { title: null },
+            scale: { padding: 10 },
+          },
+          y: {
+            field: "{yField}",
+            type: "quantitative",
+            axis: {
+              title: null,
+              tickCount: 4,
+            },
+          },
+          color: colorField
+            ? {
+                field: "{colorField}",
+                type: "nominal",
+                scale: { range: virusColorRangeMap[virus] || viridisCovidColors },
+              }
+            : { value: selectedColor },
+          tooltip: tooltipFields?.map((field) => ({
+            field,
+            type: field === xField ? "temporal" : "nominal",
+          })),
+        },
       }
-    },
-    mark: {
-      type: "line",
-      point: true,
-      interpolate: "monotone"
-    },
-    encoding: {
-      x: {
-        field: "{xField}",
-        type: "temporal",
-        axis: { title: null }
-      },
-      y: {
-        field: "{yField}",
-        type: "quantitative",
-        axis: { title: null }
-      },
-      color: colorField
-        ? {
-            field: "{colorField}",
-            type: "nominal",
-            scale: { range: selectedRange }
-          }
-        : { value: selectedColor },
-      tooltip: tooltipFields?.map((field) => ({
-        field,
-        type: field === xField ? "temporal" : "nominal"
-      }))
-    }
+    ],
   };
 
   return (
@@ -109,6 +135,15 @@ const LineChart = ({
         specTemplate={specTemplate}
         dynamicFields={{ xField, yField, colorField }}
       />
+      <div
+        style={{
+          fontSize: typography.fontSizeBase,
+          color: colors.gray500,
+          marginTop: spacing.sm,
+        }}
+      >
+        Source: NYC Health Department Syndromic Surveillance
+      </div>
     </div>
   );
 };

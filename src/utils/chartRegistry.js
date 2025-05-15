@@ -4,7 +4,7 @@ import LineChart from "../components/charts/LineChart";
 
 const chartRegistry = {
   edSeasonalComparisonChart: SeasonalEDChart, 
-  ExampleChart: ExampleChart, // key must match config
+  ExampleChart: ExampleChart, 
   lineChart: LineChart,
 
 };

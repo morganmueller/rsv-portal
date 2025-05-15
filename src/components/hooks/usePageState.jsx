@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import { downloadCSV } from "../../utils/downloadUtils";
 
-// 1. Context
+
 export const PageStateContext = createContext();
 
-// 2. Hook
+
 export const usePageState = () => useContext(PageStateContext);
 
-// 3. Provider
 export const PageStateProvider = ({ children, initialData = [], enableVirusToggle = true }) => {
   const [view, setView] = useState("visits");
   const [activeVirus, setActiveVirus] = useState(enableVirusToggle ? "COVID-19" : null);

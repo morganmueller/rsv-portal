@@ -42,6 +42,7 @@ const edPageConfig = {
     {
       id: "percent-ed-visits-age",
       title: "emergencyDeptPage.charts.percentEdVisitsByAge.title",
+      subtitle: "emergencyDeptPage.charts.percentEdVisitsByAge.subtitle", 
       trendEnabled: true,
       infoIcon: true,
       downloadIcon: true,
@@ -65,6 +66,7 @@ const edPageConfig = {
     {
       id: "percent-ed-visits-geo",
       title: "emergencyDeptPage.charts.percentEdVisitsByGeo.title",
+      subtitle: "emergencyDeptPage.charts.percentEdVisitsByGeo.subtitle",
       trendEnabled: true,
       infoIcon: true,
       downloadIcon: true,

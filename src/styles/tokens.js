@@ -13,7 +13,7 @@ const colors = {
   gray900: "#1F2937",
   grayTransparent: "rgba(0, 0, 0, 0)",
 
-  // Brand / Accent
+  // Main / Accent
   bluePrimary: "#1E40AF",
   blueSecondary: "#2563EB",
   blueAccent: "#0075FF",
@@ -27,9 +27,10 @@ const colors = {
   orangeMuted: "#FF6C0B",
 
   // Semantic backgrounds
-  bgLightGreen: "#DBEDC3",
-  bgLightOrange: "#EAA360",
-  bgLightPurple: "#ECFDF5",
+  bgLightBlue: "#EFF6FF",
+  bgLightGreen: "#ECFDF5",
+  bgLightOrange: "#F4C4A5",
+  bgLightPurple: "#F5F3FF",
   bgMutedPink: "#F4C4A5",
   bgMutedPurple: "#F5F3FF",
   bgMutedGray: "#ADAEBC",
@@ -60,10 +61,24 @@ const shadows = {
   md: "0 4px 6px rgba(0,0,0,0.1)",
 };
 
+const colorScales = {
+  covid: [
+    "#3B0F70", "#4F32B3", "#386CB0", "#2B83BA", "#66C2A5"
+  ],
+  flu: [
+    "#3F007D", "#6A51A3", "#807DBA", "#9E9AC8", "#BCBDDC"
+  ],
+  rsv: [
+    "#00441B", "#1B7837", "#41AB5D", "#78C679", "#C2E699"
+  ]
+};
+
+
 export const tokens = {
   colors,
   spacing,
   typography,
   radii,
   shadows,
+  colorScales
 };
