@@ -23,13 +23,14 @@ const LineChart = ({
   };
 
   const virusColorRangeMap = {
-    "COVID-19": tokens.colorScales.covid,
-    "Influenza": tokens.colorScales.flu,
-    "RSV": tokens.colorScales.rsv,
+    "COVID-19": covid,
+    "Influenza": flu,
+    "RSV": rsv,
   };
 
   const defaultColor = colors.gray600;
-  const selectedColor = color || virusColorMap[virus] || defaultColor;
+  const selectedColor =
+  tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
 
   const filteredData =
     virus && data.some((d) => d.virus)
