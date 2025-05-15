@@ -36,7 +36,8 @@ const overviewConfig = {
           xField: "week",
           yField: "{view}", // will be "visits" or "admits"
           tooltipFields: ["week", "visits", "admits"],
-          color: "{view}" === "admits" ? "#FF6600" : "#1E40AF"
+          color: "orangePrimary"
+
 
         },
         footer: "Source: NYC Health Department Syndromic Surveillance",
