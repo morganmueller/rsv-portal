@@ -3,7 +3,25 @@ import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
 const { covid, flu, rsv } = tokens.colorScales;
 
+/**
+ * Infer appropriate time format for x-axis labels based on temporal resolution.
+ */
+const getXAxisFormat = (data, xField) => {
+  if (!data || data.length < 2) return "%b %d";
 
+  const first = new Date(data[0][xField]);
+  const second = new Date(data[1][xField]);
+  const delta = Math.abs(second - first);
+
+  const oneDay = 86400000;
+  const oneWeek = oneDay * 7;
+  const oneMonth = oneDay * 28;
+
+  if (delta <= oneDay) return "%b %d";
+  if (delta <= oneWeek + oneDay) return "%b %d";
+  if (delta <= oneMonth) return "%b";
+  return "%b %Y";
+};
 
 const LineChart = ({
   data,
@@ -30,12 +48,14 @@ const LineChart = ({
 
   const defaultColor = colors.gray600;
   const selectedColor =
-  tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
+    tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
 
   const filteredData =
     virus && data.some((d) => d.virus)
       ? data.filter((d) => d.virus === virus)
       : data;
+
+  const axisFormat = getXAxisFormat(filteredData, xField);
 
   const specTemplate = {
     width: "container",
@@ -65,32 +85,34 @@ const LineChart = ({
     },
     layer: [
       ...(colorField
-        ? [] // no area if multiple lines
-        : [{
-            mark: {
-              type: "area",
-              interpolate: "monotone",
-              opacity: 0.15,
-              color: selectedColor
-            },
-            encoding: {
-              x: {
-                field: "{xField}",
-                type: "temporal",
-                axis: { title: null },
-                scale: { padding: 10 },
+        ? [] // no area layer for multiseries
+        : [
+            {
+              mark: {
+                type: "area",
+                interpolate: "monotone",
+                opacity: 0.15,
+                color: selectedColor,
               },
-              y: {
-                field: "{yField}",
-                type: "quantitative",
-                axis: {
-                  title: null,
-                  tickCount: 4,
+              encoding: {
+                x: {
+                  field: "{xField}",
+                  type: "temporal",
+                  axis: {
+                    title: null,
+                    format: axisFormat,
+                    tickCount: 6,
+                  },
+                  scale: { padding: 10 },
                 },
-              }
-            }
-          }]
-      ),
+                y: {
+                  field: "{yField}",
+                  type: "quantitative",
+                  axis: { title: null, tickCount: 4 },
+                },
+              },
+            },
+          ]),
       {
         mark: {
           type: "line",
@@ -102,30 +124,39 @@ const LineChart = ({
           x: {
             field: "{xField}",
             type: "temporal",
-            axis: { title: null },
+            axis: {
+              title: null,
+              format: axisFormat,
+              tickCount: 6,
+            },
             scale: { padding: 10 },
           },
           y: {
             field: "{yField}",
             type: "quantitative",
-            axis: {
-              title: null,
-              tickCount: 4,
-            },
+            axis: { title: null, tickCount: 4 },
           },
           color: colorField
             ? {
                 field: "{colorField}",
                 type: "nominal",
-                scale: { range: virusColorRangeMap[virus] || viridisCovidColors },
+                scale: {
+                  range: virusColorRangeMap[virus] || undefined,
+                },
               }
             : { value: selectedColor },
-          tooltip: tooltipFields?.map((field) => ({
-            field,
-            type: field === xField ? "temporal" : "nominal",
-          })),
+          tooltip: tooltipFields?.map((field) => {
+            const sample = filteredData[0]?.[field];
+            const type =
+              field === xField
+                ? "temporal"
+                : typeof sample === "number"
+                ? "quantitative"
+                : "nominal";
+            return { field, type };
+          }),
         },
-      }
+      },
     ],
   };
 

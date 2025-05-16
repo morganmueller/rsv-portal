@@ -18,7 +18,7 @@ const StatCard = ({
   const getChangeArrow = (change) => {
     const num = parseFloat(change);
     const isUp = num >= 0;
-    const arrow = isUp ? "▲" : "▼";
+    const arrow = isUp ? "Up (▲)" : "Down (▼)";
     const color = isUp ? "#B36C31" : "#059669"; // optionally import from tokens if consistent
     return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };
@@ -31,17 +31,18 @@ const StatCard = ({
       </div>
 
       <div className="stat-block">
-        <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
-        <div className="stat-detail">
-          <div className="stat-label" style={{ color: statColor }}>
-            of emergency department visits
-          </div>
-          <div className="stat-trend-row">
-            {getChangeArrow(visitChange)}
-            {visitChange} · <span className="stat-date">{visitDate}</span>
-          </div>
-        </div>
-      </div>
+  <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
+  <div className="stat-detail">
+    <div className="stat-label" style={{ color: statColor, textAlign: "left" }}>
+      of Visits
+    </div>
+    <div className="stat-trend-row">
+      {getChangeArrow(visitChange)}
+      {visitChange} · <span className="stat-date">{visitDate}</span>
+    </div>
+  </div>
+</div>
+
 
       <hr className="stat-divider" />
 
@@ -49,7 +50,7 @@ const StatCard = ({
         <div className="stat-percent" style={{ color: statColor }}>{admitPercent}</div>
         <div className="stat-detail">
           <div className="stat-label" style={{ color: statColor }}>
-            of emergency department admissions
+            of Admissions
           </div>
           <div className="stat-trend-row">
             {getChangeArrow(admitChange)}
