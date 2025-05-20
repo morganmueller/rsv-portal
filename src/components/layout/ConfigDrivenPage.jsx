@@ -18,7 +18,9 @@ import {
   generateTrendSubtitle,
   formatDate,
   capitalizeFirstHtml,
+  getTrendInfo,
 } from "../../utils/trendUtils";
+import { loadConfigWithData } from "../../utils/loadConfigWithData";
 
 import StatGrid from "../grids/StatGrid";
 import OverviewGrid from "../grids/OverviewGrid";
@@ -27,11 +29,6 @@ import ToggleControls from "../controls/ToggleControls";
 const customComponents = {
   StatGrid,
   OverviewGrid,
-};
-
-const viewColorMap = {
-  visits: tokens.colors.bluePrimary,
-  admits: tokens.colors.rose600,
 };
 
 const viewDisplayLabels = {
@@ -57,12 +54,10 @@ const interpolateObject = (obj, vars) =>
   JSON.parse(JSON.stringify(obj), (_, value) => interpolateTokens(value, vars));
 
 const ConfigDrivenPage = ({ config }) => {
-  const { titleKey, subtitleKey, summary, sections = [], data = {}, controls = {} } = config;
+  const { titleKey, subtitleKey, summary, sections = [], controls = {} } = config;
+  const useStateNeeded = controls?.virusToggle || controls?.viewToggle || config?.type === "data";
+  const pageState = useStateNeeded ? usePageState(config.data, controls) : {};
 
-  const useStateNeeded =
-    controls?.virusToggle || controls?.viewToggle || config?.type === "data";
-
-  const pageState = useStateNeeded ? usePageState(data, controls) : {};
   const {
     activeVirus = "COVID-19",
     view = "visits",
@@ -70,7 +65,25 @@ const ConfigDrivenPage = ({ config }) => {
     setView = () => {},
   } = pageState;
 
+  const [hydratedConfig, setHydratedConfig] = useState(null);
   const [markdownContent, setMarkdownContent] = useState("");
+
+  useEffect(() => {
+    if (config.data) {
+      setHydratedConfig(config);
+      return;
+    }
+
+    const selectedVirus = activeVirus || config.defaultVirus || "COVID-19";
+    const selectedView = view || config.defaultView || "visits";
+
+    console.log("[ConfigDrivenPage] selectedVirus:", selectedVirus);
+    console.log("[ConfigDrivenPage] selectedView:", selectedView);
+
+    loadConfigWithData(config, { virus: selectedVirus, view: selectedView })
+      .then(setHydratedConfig)
+      .catch(console.error);
+  }, [config, activeVirus, view]);
 
   useEffect(() => {
     if (summary?.markdownPath) {
@@ -80,6 +93,9 @@ const ConfigDrivenPage = ({ config }) => {
         .catch((err) => console.error("Failed to load markdown:", err));
     }
   }, [summary?.markdownPath]);
+
+  if (!hydratedConfig) return <div>Loading...</div>;
+  const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
 
   return (
     <DataPageLayout
@@ -103,29 +119,73 @@ const ConfigDrivenPage = ({ config }) => {
         />
       )}
 
-      {sections.map((section, idx) => {
+{hydratedSections
+  .filter(section => {
+    const allowed = section.showIfVirus;
+    return (
+      !allowed ||
+      (Array.isArray(allowed)
+        ? allowed.includes(activeVirus)
+        : allowed === activeVirus)
+    );
+  })
+  .map((section, idx) => {
+
         const key = section.id || idx;
 
         const textVars = {
           virus: activeVirus,
-          view, // logic value
+          view,
           displayView: `<span class="bg-highlight">${viewDisplayLabels[view]}</span>`,
         };
 
         const interpolatedProps = interpolateObject(section.chart?.props || {}, textVars);
-        const rawData = data[interpolatedProps.dataSourceKey] || [];
+        const dataSourceKey =
+          section.dataSourceKey ||
+          interpolatedProps.dataSourceKey ||
+          (section.chart?.props?.dataSourceKey ?? null);
+        
+        const filteredData =
+          dataSourceKey && data[dataSourceKey] ? data[dataSourceKey] : [];
+        
+       
+          const isArray = Array.isArray(filteredData);
+          console.log(
+            `[Section: ${section.id}] Using hydrated data:`,
+            isArray ? filteredData.length : Object.keys(filteredData).length,
+            isArray ? "rows" : "keys"
+          );
+          
+        if (section.renderAs === "overview" || section.renderAs === "hidden") return null;
 
-        const filteredData = rawData.filter(
-          (d) => !d.virus || d.virus === activeVirus
-        );
+        if (section.renderAs === "custom") {
+          const CustomComponent = customComponents[section.component];
+          if (!CustomComponent) return null;
 
-        const trendKey = view === "admits" ? "admits" : "visits";
-        const trendObj = section.trendEnabled
-          ? getTrendFromTimeSeries(filteredData, trendKey)
-          : null;
+          const shouldPassData = CustomComponent.length > 0;
 
-        const rawLabel = trendObj?.label || "";
-        const rawValue = trendObj?.value ? ` ${trendObj.value}%` : "";
+          return (
+            <ContentContainer
+              key={key}
+              title={resolveText(section.titleKey)}
+              subtitle={resolveText(section.subtitle, textVars)}
+              subtitleVariables={textVars}
+              animateOnScroll={section.animateOnScroll !== false}
+              background={section.background || "white"}
+            >
+              {shouldPassData ? <CustomComponent data={filteredData} /> : <CustomComponent />}
+            </ContentContainer>
+          );
+        }
+
+        const trendKey = section.chart?.props?.yField || view;
+        const trendObj = section.trendEnabled ? getTrendFromTimeSeries(filteredData, trendKey) : null;
+        const trendInfo = getTrendInfo({
+          trendDirection: trendObj?.direction,
+          metricLabel: viewDisplayLabels[view],
+          virus: activeVirus,
+        });
+
         const trendClass =
           trendObj?.direction === "up"
             ? "trend-up"
@@ -133,63 +193,25 @@ const ConfigDrivenPage = ({ config }) => {
             ? "trend-down"
             : "trend-neutral";
 
-        const trend = trendObj
-          ? `<span class="${trendClass}">${rawLabel}${rawValue}</span>`
-          : trendObj ?? "not available";
-
-        const trendDirection = trendObj?.direction;
+        const latestWeek = filteredData.at?.(-1)?.week || filteredData.at?.(-1)?.date;
 
         const fullVars = {
           ...textVars,
-          date: `<span class="bg-highlight">${formatDate(filteredData.at?.(-1)?.week)}</span>`,
-          trend,
-          trendDirection,
-          viewColor: viewColorMap[view],
+          date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
+          trend: trendObj
+            ? `<span class="${trendClass}">${trendObj.label} ${trendObj.value}%</span>`
+            : "not available",
+          trendDirection: trendObj?.direction,
+          arrow: trendInfo?.arrow,
+          directionText: trendInfo?.directionText,
+          trendColor: trendInfo?.trendColor,
         };
 
-        if (section.renderAs === "overview" || section.renderAs === "hidden") return null;
+        const rawSubtitle = section.subtitle
+          ? resolveText(section.subtitle, fullVars)
+          : generateTrendSubtitle({ view, trendObj, latestWeek });
 
-        if (section.renderAs === "custom") {
-          const CustomComponent = customComponents[section.component];
-          return CustomComponent ? (
-            <ContentContainer
-              key={key}
-              title={resolveText(section.titleKey)}
-              subtitle={resolveText(section.subtitle, fullVars)}
-              subtitleVariables={fullVars}
-              animateOnScroll={section.animateOnScroll !== false}
-              background={section.background || "white"}
-            >
-              <CustomComponent />
-            </ContentContainer>
-          ) : null;
-        }
-
-        if (section.renderAs === "cards") {
-          return (
-            <MarkdownCardSection
-              key={key}
-              title={resolveText(section.titleKey)}
-              markdown={markdownContent}
-              sectionTitle={section.markdownSection}
-              cards={section.cards.map((card) => ({
-                ...card,
-                title: resolveText(card.titleKey),
-              }))}
-            />
-          );
-        }
-
-        if (section.renderAs === "paragraph") {
-          return (
-            <MarkdownParagraphSection
-              key={key}
-              title={resolveText(section.titleKey)}
-              markdown={markdownContent}
-              sectionTitle={section.markdownSection}
-            />
-          );
-        }
+        const computedSubtitle = capitalizeFirstHtml(rawSubtitle);
 
         const ChartComponent = chartRegistry[section.chart?.type];
         if (!ChartComponent) {
@@ -202,17 +224,8 @@ const ConfigDrivenPage = ({ config }) => {
           data: filteredData,
           virus: activeVirus,
           view,
+          colorMap: tokens.colorScales?.[activeVirus],
         };
-
-        const rawSubtitle = section.subtitle
-          ? resolveText(section.subtitle, fullVars)
-          : generateTrendSubtitle({
-              view,
-              trendObj,
-              latestWeek: filteredData.at?.(-1)?.week,
-            });
-
-        const computedSubtitle = capitalizeFirstHtml(rawSubtitle);
 
         return (
           <SectionWithChart

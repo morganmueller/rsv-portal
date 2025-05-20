@@ -1,39 +1,39 @@
 .trend-summary-container {
-  background-color: #ffffff;
+  background-color: var(--white);
   width: 85%;
-  padding: 16px 40px;
-  margin: 0 auto 32px auto;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  margin: 0 auto var(--spacing-xl) auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   box-sizing: border-box;
 }
 
 .trend-header {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
 }
 
 .trend-title {
-  font-size: 20px;
-  font-family: "Inter-Bold", Helvetica, sans-serif;
-  color: #1f2937;
-  margin-bottom: 4px;
+  font-size: var(--font-size-lg, 20px);
+  font-family: var(--font-heading);
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xs);
 }
 
 .trend-date {
-  font-size: 16px;
-  font-family: "Inter-Regular", Helvetica, sans-serif;
-  color: #4b5563;
+  font-size: var(--font-size-md, 16px);
+  font-family: var(--font-body);
+  color: var(--gray-700);
   margin: 0;
 }
 
 .trend-status {
   display: flex;
   align-items: center;
-  font-size: 16px;
-  font-family: "Inter-Regular", Helvetica, sans-serif;
-  color: #374151;
-  gap: 8px;
-  margin-bottom: 12px;
+  font-size: var(--font-size-md, 16px);
+  font-family: var(--font-body);
+  color: var(--gray-800);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .trend-arrow {
@@ -66,6 +66,6 @@
 @media (max-width: 768px) {
   .trend-summary-container {
     width: 100%;
-    padding: 16px 20px;
+    padding: var(--spacing-md) var(--spacing-lg);
   }
 }

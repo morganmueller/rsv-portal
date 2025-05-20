@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
+import { getTrendInfo } from "../../utils/getTrendInfo";
 import "./TrendSummaryContainer.css";
 
 const TrendSummaryContainer = ({
@@ -31,11 +32,12 @@ const TrendSummaryContainer = ({
     return () => node && observer.unobserve(node);
   }, [animateOnScroll]);
 
-  const trendText =
-    trendDirection === "up" ? "higher than last week" : "lower than last week";
-  const arrow = trendDirection === "up" ? "▲" : "▼";
-  const trendColor = trendDirection === "up" ? "#DC2626" : "#059669";
   const resolvedMetricLabel = metricLabel || view;
+  const trend = getTrendInfo({
+    trendDirection,
+    metricLabel: resolvedMetricLabel,
+    virus,
+  });
 
   return (
     <div
@@ -50,14 +52,14 @@ const TrendSummaryContainer = ({
         </p>
       )}
 
-      {trendDirection && (
+      {trend && (
         <div className="trend-status">
-          <span className="trend-arrow" style={{ color: trendColor }}>
-            {arrow}
+          <span className="trend-arrow" style={{ color: trend.trendColor }}>
+            {trend.arrow}
           </span>
-          <span className="trend-text">
-            {virus} {resolvedMetricLabel} are{" "}
-            <strong>{trendText}</strong>
+          <span className="trend-text" style={{ color: trend.trendColor }}>
+            {trend.label}
+            <strong>{trend.directionText}</strong>
           </span>
         </div>
       )}
@@ -79,7 +81,7 @@ const TrendSummaryContainer = ({
 TrendSummaryContainer.propTypes = {
   sectionTitle: PropTypes.string,
   date: PropTypes.string,
-  trendDirection: PropTypes.oneOf(["up", "down"]),
+  trendDirection: PropTypes.oneOf(["up", "down", "same"]),
   markdownPath: PropTypes.string,
   showTitle: PropTypes.bool,
   metricLabel: PropTypes.string,

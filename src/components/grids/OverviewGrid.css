@@ -1,19 +1,19 @@
 .overview-grid {
-  margin-top: 48px;
+  margin-top: var(--spacing-xl);
   display: flex;
   justify-content: center;
   align-items: stretch;
-  gap: 24px;
+  gap: var(--spacing-lg);
   flex-wrap: wrap;
 }
 
 .grid-card {
-  flex: 1 1 280px; /* flex-grow, flex-shrink, flex-basis */
+  flex: 1 1 280px;
   max-width: 360px;
-  background-color: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background-color: var(--white);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -21,30 +21,30 @@
 }
 
 .grid-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
 .grid-card h3 {
-  font-size: 16px;
-  font-family: "Inter-Bold", Helvetica;
-  margin-bottom: 4px;
-  color: #1e40af;
+  font-size: var(--font-size-md);
+  font-family: var(--font-heading);
+  margin-bottom: var(--spacing-xs);
+  color: var(--blue-primary);
 }
 
 .grid-card p {
-  font-size: 13px;
-  font-family: "Inter-Regular", Helvetica;
-  color: #374151;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-body);
+  color: var(--gray-800);
   line-height: 1.4;
-  margin-top: 4px;
+  margin-top: var(--spacing-xs);
 }
 
 @media (max-width: 480px) {
   .overview-grid {
     flex-direction: column;
-    gap: 16px;
-    padding: 0 16px;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md);
   }
 
   .grid-card {

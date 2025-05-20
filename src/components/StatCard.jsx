@@ -1,6 +1,9 @@
 import React from "react";
-import { getThemeByTitle } from "../utils/themeUtils"; // <-- updated import
+import { getThemeByTitle } from "../utils/themeUtils";
+import { tokens } from "../styles/tokens";
 import "./StatCard.css";
+
+const { colors, typography } = tokens;
 
 const StatCard = ({
   title,
@@ -18,8 +21,8 @@ const StatCard = ({
   const getChangeArrow = (change) => {
     const num = parseFloat(change);
     const isUp = num >= 0;
-    const arrow = isUp ? "Up (▲)" : "Down (▼)";
-    const color = isUp ? "#B36C31" : "#059669"; // optionally import from tokens if consistent
+    const arrow = isUp ? "▲" : "▼";
+    const color = isUp ? colors.orangeAccent : colors.greenMuted;
     return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };
 
@@ -31,30 +34,32 @@ const StatCard = ({
       </div>
 
       <div className="stat-block">
-  <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
-  <div className="stat-detail">
-    <div className="stat-label" style={{ color: statColor, textAlign: "left" }}>
-      of Visits
-    </div>
-    <div className="stat-trend-row">
-      {getChangeArrow(visitChange)}
-      {visitChange} · <span className="stat-date">{visitDate}</span>
-    </div>
-  </div>
-</div>
-
+        <div className="stat-percent" style={{ color: statColor }}>{visitPercent}</div>
+        <div className="stat-detail">
+          <div className="stat-label" style={{ color: statColor }}>of Visits</div>
+          <div className="stat-trend-row">
+          {visitChange !== null && (
+  <>
+    {getChangeArrow(visitChange)}
+    {Math.abs(visitChange)}% · <span className="stat-date">{visitDate}</span>
+  </>
+)}  </div>
+        </div>
+      </div>
 
       <hr className="stat-divider" />
 
       <div className="stat-block">
         <div className="stat-percent" style={{ color: statColor }}>{admitPercent}</div>
         <div className="stat-detail">
-          <div className="stat-label" style={{ color: statColor }}>
-            of Admissions
-          </div>
+          <div className="stat-label" style={{ color: statColor }}>of Admissions</div>
           <div className="stat-trend-row">
-            {getChangeArrow(admitChange)}
-            {admitChange} · <span className="stat-date">{admitDate}</span>
+          {admitChange !== null && (
+  <>
+    {getChangeArrow(admitChange)}
+    {Math.abs(admitChange)}% · <span className="stat-date">{visitDate}</span>
+  </>
+)}
           </div>
         </div>
       </div>

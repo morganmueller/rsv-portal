@@ -29,7 +29,7 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {} }) => {
   );
 
   spec.data = { values: data };
-  spec.width = containerWidth; // 🔥 force exact pixel width
+  spec.width = containerWidth; 
   spec.autosize = { type: "fit", contains: "padding" };
 
   return (

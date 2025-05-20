@@ -1,8 +1,7 @@
 .chart-container {
-  background-color: #ffffff;
-  border-radius: 12px;
-  /* padding: 32px; */
-  margin-bottom: 48px;
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
   width: 100%;
   max-width: 1120px;
 }
@@ -11,87 +10,73 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .chart-title {
-  font-size: 24px;
+  font-size: 24px; /* Consider tokenizing as --font-size-xl */
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 4px;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xs);
 }
 
 .chart-subtitle {
-  font-size: 16px;
+  font-size: var(--font-size-md);
   font-weight: 400;
-  color: #4b5563;
+  color: var(--gray-700);
 }
 
 .chart-content {
   display: flex;
-  justify-content: flex-start; 
-  padding-left: 0; 
-  gap: 24px;
+  justify-content: flex-start;
+  gap: var(--spacing-lg);
+  padding-left: 0;
 }
-
 
 .chart-sidebar {
-  flex: 0 0 120px; 
+  flex: 0 0 120px;
 }
-
-
-.chart-vega {
-  width: 100%;
-  max-width: 100%;
-  min-width: 300px; 
-  flex: 1; 
-}
-
 
 .chart-body {
   flex: 1;
   min-width: 0;
 }
 
+.chart-vega {
+  width: 100%;
+  max-width: 100%;
+  min-width: 300px;
+  flex: 1;
+}
 
+.chart-fade-wrapper {
+  transition: opacity 0.6s ease;
+}
 
-  
-  .chart-fade-wrapper {
-    transition: opacity 0.6s ease;
-  }
-  
-  .chart-fade-wrapper.fade-in {
-    opacity: 1;
-  }
-  
-  .chart-fade-wrapper.fade-out {
-    opacity: 0;
-  }
-  .chart-body {
-    flex: 1;
-    min-width: 0;
+.chart-fade-wrapper.fade-in {
+  opacity: 1;
+}
+
+.chart-fade-wrapper.fade-out {
+  opacity: 0;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .chart-content {
+    flex-direction: column;
   }
 
-  @media (max-width: 768px) {
-    .chart-content {
-      flex-direction: column;
-    }
-  
-    .chart-sidebar {
-      width: 100%;
-      margin-bottom: 16px;
-    }
-  
-    .chart-title {
-      font-size: 20px;
-    }
-  
-    .chart-subtitle {
-      font-size: 14px;
-    }
+  .chart-sidebar {
+    width: 100%;
+    margin-bottom: var(--spacing-md);
   }
-  
 
-  
- 
-  
+  .chart-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .chart-subtitle {
+    font-size: var(--font-size-sm);
+  }
+}

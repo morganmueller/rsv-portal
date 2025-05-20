@@ -1,13 +1,14 @@
 import React from "react";
+import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 
 const QuickLinks = () => (
   <div className="footer-section links">
     <h3 className="footer-title">Quick Links</h3>
-    <ul className="footer-list">
-      <li className="footer-list-item">Data Dashboard</li>
-      <li className="footer-list-item">Reports</li>
-      <li className="footer-list-item">Resources</li>
-    </ul>
+    <MarkdownRenderer
+      filePath="/content/footer/footer.md"
+      sectionTitle="Quick Links"
+      className="footer-list"
+    />
   </div>
 );
 

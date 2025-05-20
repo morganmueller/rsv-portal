@@ -1,8 +1,8 @@
 .stat-card {
-  background-color: #f9fafb;
-  border-radius: 12px;
-  box-shadow: 3px 5px 5px rgba(0, 0, 0, 0.05);
-  padding: 16px 20px;
+  background-color: var(--gray-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
   flex-direction: column;
   flex: 0 1 300px;
@@ -16,7 +16,7 @@
 .stat-card-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   margin-bottom: 4px;
 }
 
@@ -26,9 +26,9 @@
 }
 
 .stat-card-title {
-  font-size: 18px;
+  font-size: var(--font-size-lg, 18px);
   font-weight: 600;
-  color: #1f2937;
+  color: var(--gray-900);
   flex: 1;
 }
 
@@ -36,8 +36,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-top: 12px;
-  gap: 12px;
+  margin-top: var(--spacing-md);
+  gap: var(--spacing-md);
 }
 
 .stat-percent {
@@ -50,29 +50,28 @@
 .stat-detail {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* was flex-end */
+  align-items: flex-start;
   justify-content: center;
-  text-align: left; /* was right */
+  text-align: left;
   flex: 1;
 }
 
 .stat-divider {
   border: none;
-  border-top: 2px solid #9ca3af; /* Thicker and darker */
+  border-top: 2px solid var(--gray-600);
   margin: 12px 0 4px;
 }
 
-
 .stat-label {
   font-size: 16px;
-  color: #4b5563;
+  color: var(--gray-700);
   line-height: 1.2;
   font-weight: 700;
 }
 
 .stat-trend {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--gray-600);
   margin-top: 2px;
   display: flex;
   align-items: center;
@@ -83,7 +82,7 @@
 .stat-trend-row {
   font-weight: 700;
   font-size: 14px;
-  color: #4e535c;
+  color: var(--gray-700);
   margin-top: 2px;
   display: flex;
   align-items: center;
@@ -92,17 +91,15 @@
 }
 
 .stat-trend-row .stat-date {
-  color: #3a3d41;
+  color: var(--gray-800);
   font-size: 14px;
 }
 
 .stat-date {
   font-size: 14px;
-  color: #4f5154;
+  color: var(--gray-700);
   margin-top: 2px;
 }
-
-
 
 @media (max-width: 768px) {
   .stat-card {

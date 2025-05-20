@@ -3,6 +3,7 @@ import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
 const { covid, flu, rsv } = tokens.colorScales;
 
+
 /**
  * Infer appropriate time format for x-axis labels based on temporal resolution.
  */
@@ -55,7 +56,23 @@ const LineChart = ({
       ? data.filter((d) => d.virus === virus)
       : data;
 
-  const axisFormat = getXAxisFormat(filteredData, xField);
+      console.log("FILTERED DATA", filteredData);
+
+  // ✅ Parse date field to real Date objects
+  const parsedData = filteredData.map((d) => ({
+    ...d,
+    [xField]: new Date(d[xField])
+  }));
+
+  // 🔍 👇 DEBUG AGE GROUPS / SUBMETRICS
+const groupCounts = {};
+parsedData.forEach(d => {
+  const g = d.submetric;
+  groupCounts[g] = (groupCounts[g] || 0) + 1;
+});
+console.log("AGE GROUPS IN CHART DATA:", groupCounts);
+
+  const axisFormat = getXAxisFormat(parsedData, xField);
 
   const specTemplate = {
     width: "container",
@@ -77,7 +94,7 @@ const LineChart = ({
         labelColor: colors.gray600,
         titleColor: colors.gray700,
         symbolSize: 100,
-        symbolStrokeWidth: 2,
+        symbolStrokeWidth: 5,
       },
       view: {
         stroke: "transparent",
@@ -146,7 +163,7 @@ const LineChart = ({
               }
             : { value: selectedColor },
           tooltip: tooltipFields?.map((field) => {
-            const sample = filteredData[0]?.[field];
+            const sample = parsedData[0]?.[field];
             const type =
               field === xField
                 ? "temporal"
@@ -163,7 +180,7 @@ const LineChart = ({
   return (
     <div style={{ width: "100%" }}>
       <VegaLiteWrapper
-        data={filteredData}
+        data={parsedData}
         specTemplate={specTemplate}
         dynamicFields={{ xField, yField, colorField }}
       />

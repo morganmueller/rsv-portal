@@ -26,7 +26,7 @@ const ContentContainer = ({
   subtitleVariables = {},
   children,
   className = "",
-  background = "white", // ✅ default to white
+  background = "white", 
   animateOnScroll = true,
   infoIcon = false,
   downloadIcon = false,

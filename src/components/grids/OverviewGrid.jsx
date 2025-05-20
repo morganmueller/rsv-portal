@@ -1,41 +1,27 @@
 import React from "react";
+import overviewGridItems from "./OverviewGrid.config";
+import { getText } from "../../utils/contentUtils"; // your i18n lookup helper
 import "./OverviewGrid.css";
 
-const OverviewGrid = () => {
-  const cards = [
-    {
-      title: "ED Visits & Admissions",
-      description: "Explore emergency department trends across boroughs.",
-      link: "/data-explorer/emergency-dept", // internal route
-    },
-    {
-      title: "Explore our Github Repository",
-      description: "Visit our Github repo to get code, file an issue, or download data",
-      link: "https://github.com/nychealth/respiratory-data-portal", // external link
-    },
-    {
-      title: "COVID-19 Wastewater Surveillance",
-      description: "View NYC COVID-19 wastewater surveillance through the New York State dashboard",
-      link: "/about#prevention", // anchor or route
-    },
-  ];
-
-  return (
-    <section className="overview-grid">
-      {cards.map((card, i) => (
+const OverviewGrid = () => (
+  <section className="overview-grid">
+    {overviewGridItems.map(({ labelKey, descriptionKey, link }, i) => {
+      const isExternal = link.startsWith("http");
+      return (
         <a
           key={i}
           className="grid-card"
-          href={card.link}
-          target={card.link.startsWith("http") ? "_blank" : "_self"}
-          rel="noopener noreferrer"
+          href={link}
+          target={isExternal ? "_blank" : "_self"}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          aria-label={getText(labelKey)}
         >
-          <h3>{card.title}</h3>
-          <p>{card.description}</p>
+          <h3>{getText(labelKey)}</h3>
+          <p>{getText(descriptionKey)}</p>
         </a>
-      ))}
-    </section>
-  );
-};
+      );
+    })}
+  </section>
+);
 
 export default OverviewGrid;

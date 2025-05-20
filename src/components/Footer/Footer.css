@@ -1,8 +1,8 @@
 .footer {
-  background-color: #1f2937;
-  padding: 32px 80px;
-  color: #9ca3af;
-  font-family: "Inter", sans-serif;
+  background-color: var(--gray-900);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  color: var(--gray-400);
+  font-family: var(--font-body);
 }
 
 .footer-content {
@@ -14,27 +14,27 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 .footer-section {
   flex: 1 1 200px;
   min-width: 200px;
-  margin-right: 20px;
+  margin-right: var(--spacing-lg);
 }
 
 .footer-title {
-  color: #ffffff;
-  font-size: 18px;
+  color: var(--white);
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
 }
 
 .footer-text,
 .footer-list-item {
-  font-size: 16px;
-  color: #9ca3af;
+  font-size: var(--font-size-md);
+  color: var(--gray-400);
   line-height: 1.5;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .footer-contact-text {
-  margin-right: 8px;
+  margin-right: var(--spacing-sm);
 }
 
 .footer-icon {
@@ -57,43 +57,43 @@
 .subscribe-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
 }
 
 .subscribe-input {
   flex: 1;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
   border: none;
-  font-size: 16px;
+  font-size: var(--font-size-md);
   min-width: 200px;
 }
 
 .subscribe-button {
-  padding: 8px 16px;
-  background-color: #2563eb;
-  color: #fff;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--blue-secondary);
+  color: var(--white);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 16px;
+  font-size: var(--font-size-md);
 }
 
 .footer-bottom {
-  border-top: 1px solid #374151;
-  padding-top: 12px;
+  border-top: 1px solid var(--gray-800);
+  padding-top: var(--spacing-md);
   text-align: center;
 }
 
 .footer-copy {
-  font-size: 16px;
-  color: #9ca3af;
+  font-size: var(--font-size-md);
+  color: var(--gray-400);
 }
 
 @media (max-width: 768px) {
   .footer {
-    padding: 32px 24px;
+    padding: var(--spacing-xl) var(--spacing-lg);
   }
 
   .footer-top {
