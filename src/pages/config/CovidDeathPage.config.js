@@ -2,6 +2,8 @@ const covidDeathPageConfig = {
     id: "covidDeathPage",
     titleKey: "CovidDeathPage.mainTitle",
     subtitleKey: "CovidDeathPage.mainSubtitle",
+    dataPath: "/data/covidDeathData.csv",
+
     controls: {
       virusToggle: false, // Only virus toggle shown (no viewToggle)
     },
@@ -16,7 +18,7 @@ const covidDeathPageConfig = {
     },
     sections: [
       {
-        id: "case-reports-season",
+        id: "covid-deaths-season",
         title: "CovidDeathPage.charts.seasonalComparison.title",
         subtitle: "CovidDeathPage.charts.seasonalComparison.subtitle",
         infoIcon: true,
@@ -28,16 +30,23 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "seasonalCovidDeaths",
+            metricName: "{virus} deaths",
+            submetric: "Total", // explicitly set for non-grouped
+            xField: "date",
+            yField: "value",
+            colorField: null,
+            tooltipFields: ["date", "value"],
+            defaultDisplay: "Number", 
+  
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
-        id: "case-reports-test-type",
+        id: "covid-deaths-age-group",
         title: "CovidDeathPage.charts.deathsByAge.title",
         // subtitle: "Cases for {virus} are {trend} this week than last week.",
         infoIcon: true,
@@ -48,16 +57,23 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "covidDeathsByAge",
+            metricName: "{virus} deaths by age group",
+            groupField: "submetric", // explicitly set for non-grouped
+            xField: "date",
+            yField: "value",
+            colorField: null,
+            tooltipFields: ["date", "value"],
+            defaultDisplay: "Number", 
+  
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
-        id: "case-reports-age",
+        id: "covid-deaths-borough",
         title: "CovidDeathPage.charts.deathsByBorough.title",
         // subtitle: "Cases for {virus} are {trend} this week than last week.",
         infoIcon: true,
@@ -68,16 +84,23 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "covidDeathsByGeo",
+            metricName: "{virus} deaths by borough",
+            groupField: "submetric", // explicitly set for non-grouped
+            xField: "date",
+            yField: "value",
+            colorField: null,
+            tooltipFields: ["date", "value"],
+            defaultDisplay: "Number", 
+  
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
-        id: "case-reports-borough",
+        id: "covid-deahths-re",
         title: "CovidDeathPage.charts.deathsByRE.title",
         // subtitle: "Cases for {virus} are {trend} this week than last week.",
         infoIcon: true,
@@ -88,27 +111,22 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "covidDeathsByRE",
+            metricName: "{virus} deaths by race and ethnicity",
+            groupField: "submetric", // explicitly set for non-grouped
+            xField: "date",
+            yField: "value",
+            colorField: null,
+            tooltipFields: ["date", "value"],
+            defaultDisplay: "Number", 
+  
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       }
     ],
-    data: {
-      seasonalEDData: [
-        { week: "1", season: "2021-22", visits: 3400 },
-        { week: "1", season: "2022-23", visits: 4000 },
-        { week: "1", season: "2023-24", visits: 4200 },
-        { week: "1", season: "2024-25", visits: 4600 },
-        { week: "2", season: "2021-22", visits: 3900 },
-        { week: "2", season: "2022-23", visits: 4400 },
-        { week: "2", season: "2023-24", visits: 4700 },
-        { week: "2", season: "2024-25", visits: 5100 },
-      ],
-    },
   };
   
   export default covidDeathPageConfig;

@@ -2,9 +2,12 @@ const caseDataPageConfig = {
     id: "caseDataPage",
     titleKey: "caseDataPage.mainTitle",
     subtitleKey: "caseDataPage.mainSubtitle",
+    dataPath:  "/data/caseData.csv",
+
     controls: {
       virusToggle: true, // Only virus toggle shown (no viewToggle)
     },
+
     summary: {
       title: "Page Overview",
       markdownPath: "/content/sections/caseDataSectionText.md",
@@ -28,17 +31,26 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md"
         },
         chart: {
-          type: "edSeasonalComparisonChart",
-          props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
-        },
+        type: "lineChart",
+        props: {
+          dataSourceKey: "seasonalCaseTrends",
+          metricName: "{virus} cases",
+          submetric: "Total", // explicitly set for non-grouped
+          xField: "date",
+          yField: "value",
+          colorField: null,
+          tooltipFields: ["date", "value"],
+          defaultDisplay: "Number", 
+
+        }
+        }
       },
+    
+      
       {
         id: "case-reports-test-type",
         title: "caseDataPage.charts.reportsByTestType.title",
+        showIfVirus: "COVID-19", 
         // subtitle: "Cases for {virus} are {trend} this week than last week.",
         infoIcon: true,
         downloadIcon: true,
@@ -48,14 +60,50 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "casesByType",
+            metricName: "{virus} cases by test type",
+            groupField: "submetric",
+            xField: "date",
+            yField: "value",
+            colorField: "submetric",
+            tooltipFields: ["date", "submetric", "value"],
+            defaultDisplay: "Number", 
+
+          }
         },
       },
+
+      {
+        id: "case-reports-season",
+        title: "caseDataPage.charts.reportsBySubtype.title",
+        subtitle: "caseDataPage.charts.reportsBySubtype.subtitle",
+        showIfVirus: "Influenza", 
+        infoIcon: true,
+        downloadIcon: true,
+        trendEnabled: true, 
+        animateOnScroll: true,
+        modal: {
+          title: "{virus} Laboratory Reports by Season",
+          markdownPath: "/content/modals/cases-explainer.md"
+        },
+        chart: {
+        type: "lineChart",
+        props: {
+          dataSourceKey: "casesBySubType",
+          metricName: "{virus} cases by sub type",
+          groupField: "submetric",
+          xField: "date",
+          yField: "value",
+          colorField: null,
+          tooltipFields: ["date", "value"],
+          defaultDisplay: "Number", 
+
+        }
+        }
+      },
+
       {
         id: "case-reports-age",
         title: "caseDataPage.charts.reportsByAge.title",
@@ -68,12 +116,18 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "casesByAge",
+            metricName: "{virus} cases by age group",
+            groupField: "submetric",
+            xField: "date",
+            yField: "value",
+            colorField: "submetric",
+            tooltipFields: ["date", "submetric", "value"],
+            defaultDisplay: "Number", 
+
+          }
         },
       },
       {
@@ -88,17 +142,25 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "casesByBorough",
+            metricName: "{virus} cases by borough",
+            groupField: "submetric",
+            xField: "date",
+            yField: "value",
+            colorField: "submetric",
+            tooltipFields: ["date", "submetric", "value"],
+            defaultDisplay: "Number", 
+
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
         id: "case-reports-re",
         title: "caseDataPage.charts.reportsByRE.title",
+        showIfVirus: "COVID-19", 
         // subtitle: "Cases for {virus} are {trend} this week than last week.",
         infoIcon: true,
         downloadIcon: true,
@@ -108,27 +170,22 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
-          type: "edSeasonalComparisonChart",
+          type: "lineChart",
           props: {
-            dataSourceKey: "seasonalEDData",
-            virus: "{virus}",
-          },
-          footer: "Source: NYC Health Department Syndromic Surveillance",
+            dataSourceKey: "casesByRE",
+            metricName: "{virus} cases by race and ethnicity",
+            groupField: "submetric",
+            xField: "date",
+            yField: "value",
+            colorField: "submetric",
+            tooltipFields: ["date", "submetric", "value"],
+            defaultDisplay: "Number", // 👈 Add this
+
+          }
+          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
     ],
-    data: {
-      seasonalEDData: [
-        { week: "1", season: "2021-22", visits: 3400 },
-        { week: "1", season: "2022-23", visits: 4000 },
-        { week: "1", season: "2023-24", visits: 4200 },
-        { week: "1", season: "2024-25", visits: 4600 },
-        { week: "2", season: "2021-22", visits: 3900 },
-        { week: "2", season: "2022-23", visits: 4400 },
-        { week: "2", season: "2023-24", visits: 4700 },
-        { week: "2", season: "2024-25", visits: 5100 },
-      ],
-    },
   };
   
   export default caseDataPageConfig;

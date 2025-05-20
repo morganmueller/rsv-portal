@@ -1,4 +1,27 @@
-{
+ {
+   "nav": {
+    "overview": "Overview",
+    "explorer": "Data Explorer",
+    "info": "More Info",
+    "externalTool": "Health Tool"
+  },
+
+  "overviewBottomNav": {
+    "emergencyDept": {
+      "title": "ED Visits & Admissions",
+      "description": "Explore emergency department trends across boroughs."
+    },
+    "github": {
+      "title": "Explore our Github Repository",
+      "description": "Visit our Github repo to get code, file an issue, or download data"
+    },
+    "wastewater": {
+      "title": "COVID-19 Wastewater Surveillance",
+      "description": "View NYC COVID-19 wastewater surveillance through the New York State dashboard"
+    }
+  },  
+
+
     "overview": {
       "title": "Acute Respiratory Infections Overview",
       "subtitle": "Explore Acute Respiratory Virus data in NYC",
@@ -16,6 +39,10 @@
         "covid": { "title": "COVID-19" },
         "flu": { "title": "Influenza" },
         "rsv": { "title": "RSV" }
+      },
+      "summaryBox": {
+        "title": "Emergency Department Trends",
+        "description": "This summary highlights recent patterns in ED visits and admissions related to respiratory viruses across NYC. Use the toggles and filters above to explore further."
       }
     },
     "emergencyDeptPage": {
@@ -59,19 +86,24 @@
         },
         "reportsByTestType": {
           "title": "{virus} Laboratory-Reported Cases by Test Type",
-          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+          "subtitle": ""
+        },
+        "reportsBySubtype": {
+          "title": "{virus} Laboratory-Reported Cases by SubType",
+          "subtitle": ""
+
         },
         "reportsByAge": {
           "title": "{virus} Laboratory-Reported Cases by Age Group",
-          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+          "subtitle": ""
         },
         "reportsByBorough": {
           "title": "{virus} Laboratory-Reported Cases by Borough",
-          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+          "subtitle": ""
         },
         "reportsByRE": {
-          "title": "{virus} COVID-19 Laboratory-Reported Cases by Race and Ethnicity",
-          "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
+          "title": "{virus} Laboratory-Reported Cases by Race and Ethnicity",
+          "subtitle": ""
         }
         
 
@@ -132,6 +164,7 @@
           "rsvProvider": { "title": "RSV" }
         }
       }
+      
     
     
 }

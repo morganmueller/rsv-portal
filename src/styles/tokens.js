@@ -25,7 +25,10 @@ const colors = {
   orangePrimary: "#FF6600",
   orangeAccent: "#B36C31",
   orangeMuted: "#FF6C0B",
-
+  redPrimary: "#B91C1C",
+  redAccent: "#DC2626",
+  redMuted: "#F87171",
+  
   // Semantic backgrounds
   bgLightBlue: "#EFF6FF",
   bgLightGreen: "#ECFDF5",

@@ -1,0 +1,77 @@
+:root {
+    --white: #FFFFFF;
+    --black: #000000;
+  
+    /* Grays */
+    --gray-100: #F9FAFB;
+    --gray-200: #F3F4F6;
+    --gray-300: #E5E7EB;
+    --gray-400: #D1D5DB;
+    --gray-500: #9CA3AF;
+    --gray-600: #6B7280;
+    --gray-700: #4B5563;
+    --gray-800: #374151;
+    --gray-900: #1F2937;
+    --gray-transparent: rgba(0, 0, 0, 0);
+  
+    /* Colors */
+    --blue-primary: #1E40AF;
+    --blue-secondary: #2563EB;
+    --blue-accent: #0075FF;
+  
+    --purple-primary: #5B21B6;
+    --purple-accent: #7C3AED;
+  
+    --green-primary: #065F46;
+    --green-accent: #139D72;
+    --green-muted: #059669;
+  
+    --orange-primary: #FF6600;
+    --orange-accent: #B36C31;
+    --orange-muted: #FF6C0B;
+
+    --red-primary: #B91C1C;
+    --red-accent: #DC2626;
+    --red-muted: #F87171;
+  
+    /* Backgrounds */
+    --bg-light-blue: #EFF6FF;
+    --bg-light-green: #ECFDF5;
+    --bg-light-orange: #F4C4A5;
+    --bg-light-purple: #F5F3FF;
+    --bg-muted-pink: #F4C4A5;
+    --bg-muted-purple: #F5F3FF;
+    --bg-muted-gray: #ADAEBC;
+  
+    /* Typography */
+    --font-body: 'Inter', sans-serif;
+    --font-heading: 'Inter', sans-serif;
+  
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 32px;
+
+  
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 80px;
+    --spacing-3xl: 64px;
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+  
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+
+    --line-height-lg: 1.5;
+
+  }
+  

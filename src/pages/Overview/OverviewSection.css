@@ -1,76 +1,76 @@
 .overview-section {
-  margin-top: 24px;
+  margin-top: var(--spacing-lg);
   width: 100%;
-  background-color: #ffffff;
-  overflow-x: hidden; /* ⬅️ Prevent child overflow */
+  background-color: var(--white);
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
 .overview-container {
   width: 100%;
   max-width: 100%;
-  padding: 2rem;
+  padding: var(--spacing-xl);
   box-sizing: border-box;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
 }
 
 .overview-container * {
   box-sizing: border-box;
   max-width: 100%;
-  overflow-wrap: anywhere; /* ⬅️ Handles long strings/URLs */
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 
 .overview-title {
-  font-size: 32px;
-  font-family: "Inter-Bold", Helvetica, sans-serif;
-  color: #1f2937;
-  margin-bottom: 24px;
+  font-size: var(--font-size-xl, 32px);
+  font-family: var(--font-heading);
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xl);
   width: 100%;
 }
 
 .overview-columns {
   display: flex;
   flex-wrap: wrap;
-  gap: 64px;
-  margin-top: 24px;
+  gap: var(--spacing-3xl, 64px);
+  margin-top: var(--spacing-lg);
   width: 100%;
 }
 
 .overview-column {
-  flex: 1 1 300px; /* ⬅️ Allows columns to shrink responsively */
-  min-width: 0;   /* ⬅️ Prevents overflow when inside a flex row */
+  flex: 1 1 300px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: var(--spacing-lg);
 }
 
 .overview-column h2 {
-  font-size: 20px;
-  font-family: "Inter-Bold", Helvetica, sans-serif;
-  color: #1f2937;
+  font-size: var(--font-size-lg, 20px);
+  font-family: var(--font-heading);
+  color: var(--gray-900);
   text-align: left;
 }
 
 .overview-column p {
-  font-family: "Inter-Regular", Helvetica, sans-serif;
-  color: #4b5563;
-  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--gray-700);
+  font-size: var(--font-size-md, 16px);
   line-height: 24px;
   text-align: left;
 }
 
 @media (max-width: 768px) {
   .overview-container {
-    padding: 1rem;
+    padding: var(--spacing-md);
   }
 
   .overview-columns {
     flex-direction: column;
-    gap: 32px;
+    gap: var(--spacing-xl);
   }
 }

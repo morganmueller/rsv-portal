@@ -1,14 +1,13 @@
 import React from "react";
-import { PageStateProvider } from "../../components/hooks/usePageState";
-import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage"; 
+import { PageStateProvider} from "../../components/hooks/usePageState";
+import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage";
 import caseDataPageConfig from "../../pages/config/CaseDataPage.config";
 
-const CaseDataPage = () => {
-  return (
-    <PageStateProvider initialData={caseDataPageConfig.data}>
-      <ConfigDrivenPage config={caseDataPageConfig} />
-    </PageStateProvider>
-  );
-};
+
+const CaseDataPage = () => (
+  <PageStateProvider>
+    <ConfigDrivenPage config={caseDataPageConfig} />
+  </PageStateProvider>
+);
 
 export default CaseDataPage;

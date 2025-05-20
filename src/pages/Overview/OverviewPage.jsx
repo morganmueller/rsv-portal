@@ -6,7 +6,7 @@ import "./OverviewPageLayout.css";
 
 const OverviewPage = () => {
   return (
-    <PageStateProvider initialData={overviewConfig.data.ariMonthly} enableVirusToggle={false}>
+    <PageStateProvider enableVirusToggle={false}>
       <ConfigDrivenPage config={overviewConfig} />
     </PageStateProvider>
   );

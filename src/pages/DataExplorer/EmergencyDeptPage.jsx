@@ -1,14 +1,12 @@
 import React from "react";
-import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage"; 
-import edPageConfig from "../../pages/config/EmergencyDeptPage.config";
+import ConfigDrivenPage from "../../components/layout/ConfigDrivenPage";
 import { PageStateProvider } from "../../components/hooks/usePageState";
+import edPageConfig from "../../pages/config/EmergencyDeptPage.config";
 
-const EmergencyDeptPage = () => {
-  return (
-    <PageStateProvider initialData={edPageConfig.data}>
-      <ConfigDrivenPage config={edPageConfig} /> 
-    </PageStateProvider>
-  );
-};
+const EmergencyDeptPage = () => (
+  <PageStateProvider>
+    <ConfigDrivenPage config={edPageConfig} />
+  </PageStateProvider>
+);
 
 export default EmergencyDeptPage;

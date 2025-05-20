@@ -1,29 +1,29 @@
 .explorer-section {
-  background-color: #ffffff;
+  background-color: var(--white);
   width: 100%;
-  padding: 48px 0;
+  padding: var(--spacing-xl) 0;
 }
 
 .explorer-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 var(--spacing-2xl);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .explorer-title {
-  font-size: 36px;
-  font-family: "Inter-Bold", Helvetica, sans-serif;
-  color: #1f2937;
-  margin-bottom: 16px;
+  font-size: var(--font-size-xl, 36px);
+  font-family: var(--font-heading);
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-md);
 }
 
 .explorer-description {
-  font-size: 20px;
-  font-family: "Inter-Regular", Helvetica, sans-serif;
-  color: #4b5563;
-  margin-bottom: 48px;
+  font-size: var(--font-size-lg, 20px);
+  font-family: var(--font-body);
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-xl);
   max-width: 800px;
 }
