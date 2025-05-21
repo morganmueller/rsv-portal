@@ -24,6 +24,24 @@
   display: inline-block;
   filter: brightness(0) saturate(100%) invert(16%) sepia(64%) saturate(603%) hue-rotate(181deg) brightness(92%) contrast(95%);
 }
+/* === Icon inside toggle knob === */
+.slider .icon {
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  height: 18px;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  pointer-events: none;
+  transition: transform 0.3s;
+}
+
+.switch input:checked + .slider .icon {
+  transform: translateX(22px);
+}
 
 /* === Hamburger Button === */
 
@@ -65,8 +83,7 @@
   width: 100%;
 }
 
-.language-select,
-.theme-toggle {
+.language-select {
   width: 100%;
 }
 
@@ -92,20 +109,66 @@
   line-height: 1.2;
 }
 
-.theme-toggle {
-  font-size: 14px;
-  padding: 6px 10px;
-  border: 1px solid transparent;
-  background-color: transparent;
-  color: #4b5563;
-  font-family: "Inter", sans-serif;
-  border-radius: 6px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+/* === Slide Toggle Styles === */
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.theme-toggle:hover {
-  background-color: #f3f4f6;
-  color: #1e40af;
+.theme-label {
+  font-size: 12px;
+  color: #b0b1b1;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: rgb(192, 199, 201);
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+
+
+.switch input:checked + .slider {
+  background-color: #1e40af;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(22px);
+  background-color: rgb(48, 46, 46);
+
 }
 
 /* === Utility Classes === */
@@ -124,8 +187,8 @@
   .top-bar {
     background: var(--blue-primary);
     border: none;
-
   }
+
   .top-bar-container {
     flex-direction: column;
     align-items: flex-start;
@@ -135,13 +198,10 @@
     display: flex;
   }
 
+  .hamburger-line {
+    background-color: #ffffff;
+  }
 
-.hamburger-line {
-  width: 100%;
-  height: 2px;
-  background-color: #ffffff;
-  border-radius: 2px;
-}
   .desktop-only {
     display: none !important;
   }
@@ -152,36 +212,40 @@
   }
 
   .language-select,
-  .theme-toggle {
+  .theme-toggle-wrapper {
     width: 100%;
   }
 
   .top-bar-logo-image {
     filter: brightness(0) invert(1); /* turns blue logo white on dark */
   }
+
   .top-bar,
-.language-select,
-.theme-toggle,
-.top-bar-nav,
-.top-bar-nav-item,
-.top-bar-nav-item select,
-.top-bar-nav-item button {
-  color: #f9fafb !important; /* Light text */
-}
+  .language-select,
+  .top-bar-nav,
+  .top-bar-nav-item,
+  .top-bar-nav-item select,
+  .top-bar-nav-item button,
+  .theme-label {
+    color: #f9fafb !important; /* Light text */
+  }
 
-/* Update theme toggle hover for dark bg */
-.theme-toggle:hover {
-  background-color: #374151; /* muted blue-gray */
-  color: #ffffff;
-}
+  .language-select {
+    background-color: #1e40af;
+    border-color: #3b82f6;
+  }
 
-/* Optional: override select background too */
-.language-select {
-  background-color: #1e40af;
-  border-color: #3b82f6;
-}
+  .slider {
+    background-color: #64748b;
+  }
 
+  .switch input:checked + .slider {
+    background-color: #ffffff;
+  }
 
+  .switch input:checked + .slider::before {
+    background-color: #1e40af;
+  }
 }
 
 @media (min-width: 769px) {

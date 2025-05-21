@@ -19,7 +19,6 @@ const TopBar = () => {
   return (
     <div className="top-bar">
       <div className="top-bar-container">
-        {/* Visible on desktop */}
         <a href="https://www.nyc.gov/" target="_blank" rel="noopener noreferrer">
           <img
             src="https://a816-dohbesp.nyc.gov/IndicatorPublic/images/nyc-bubble-logo.svg"
@@ -27,7 +26,6 @@ const TopBar = () => {
             className="top-bar-logo-image desktop-only"
           />
         </a>
-
 
         <button
           className="hamburger"
@@ -40,7 +38,6 @@ const TopBar = () => {
         </button>
 
         <div className={`top-bar-nav ${menuOpen ? "open" : ""}`}>
-          {/* Logo for mobile dropdown */}
           <a href="https://www.nyc.gov/" target="_blank" rel="noopener noreferrer">
             <img
               src="https://a816-dohbesp.nyc.gov/IndicatorPublic/images/nyc-bubble-logo.svg"
@@ -48,8 +45,6 @@ const TopBar = () => {
               className="top-bar-logo-image mobile-only"
             />
           </a>
-
-
 
           <div className="top-bar-nav-item">
             <label htmlFor="language-select-mobile" className="visually-hidden">Language</label>
@@ -65,14 +60,23 @@ const TopBar = () => {
             </select>
           </div>
 
-          <div className="top-bar-nav-item">
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {theme === "light" ? "Dark Mode" : "Light Mode"}
-            </button>
+          <div className="top-bar-nav-item theme-toggle-wrapper">
+            <span className="theme-label">{theme === "dark" ? "Dark" : "Light"} Mode</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={theme === "dark"}
+                onChange={toggleTheme}
+              />
+              <span className="slider">
+              <span className="icon">{theme === "dark" ? "🌙" : "☀️"}</span>
+
+              </span>
+
+            </label>
           </div>
         </div>
 
-        {/* Desktop extras only */}
         <div className="top-bar-extras desktop-only">
           <label htmlFor="language-select" className="visually-hidden">Language</label>
           <select
@@ -86,9 +90,19 @@ const TopBar = () => {
             <option value="zh">中文</option>
           </select>
 
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {theme === "light" ? "Dark Mode" : "Light Mode"}
-          </button>
+          <div className="theme-toggle-wrapper">
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={theme === "dark"}
+                onChange={toggleTheme}
+              />
+              <span className="slider">
+              <span className="icon">{theme === "dark" ? "🌙" : "☀️"}</span>
+
+              </span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
