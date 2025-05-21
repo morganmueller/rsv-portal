@@ -45,7 +45,8 @@
         "description": "This summary highlights recent patterns in ED visits and admissions related to respiratory viruses across NYC. Use the toggles and filters above to explore further."
       }
     },
-    "emergencyDeptPage": {
+  
+  "emergencyDeptPage": {
       "mainTitle": "Emergency Department Visits & Admissions",
       "mainSubtitle": "Trends and characteristics of Emergency Department use for COVID-19, influenza, and RSV",
    
@@ -59,11 +60,11 @@
           "subtitle": "{view} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "{virus} Emergency Department Visits by Age Group",
+          "title": "{virus} Emergency Department {view} by Age Group",
           "subtitle": "{view} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByGeo": {
-          "title": "{virus} Emergency Department Visits by Borough",
+          "title": "{virus} Emergency Department {view} by Borough",
           "subtitle": "{view} for the week of {date} have {trend} since the previous week"
         }
 
