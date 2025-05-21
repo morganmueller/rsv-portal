@@ -10,6 +10,7 @@ const overviewConfig = {
     virusToggle: false,
   },
   showTopControls: false,
+  showPillToggle: false, 
 
   sections: [
    {

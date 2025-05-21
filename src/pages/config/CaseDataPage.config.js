@@ -1,3 +1,4 @@
+
 const caseDataPageConfig = {
     id: "caseDataPage",
     titleKey: "caseDataPage.mainTitle",
@@ -5,7 +6,8 @@ const caseDataPageConfig = {
     dataPath:  "/data/caseData.csv",
 
     controls: {
-      virusToggle: true, // Only virus toggle shown (no viewToggle)
+      virusToggle: true, 
+      viewToggle: false,
     },
 
     summary: {
@@ -60,23 +62,29 @@ const caseDataPageConfig = {
           markdownPath: "/content/modals/cases-explainer.md",
         },
         chart: {
-          type: "lineChart",
+          type: "yearComparisonChart",
           props: {
             dataSourceKey: "casesByType",
             metricName: "{virus} cases by test type",
             groupField: "submetric",
-            xField: "date",
+            field: "isoWeek",
             yField: "value",
             colorField: "submetric",
             tooltipFields: ["date", "submetric", "value"],
             defaultDisplay: "Number", 
+            legendTitle: "Test Type",
+            showRollingAvg: true,
+            customColorScale: {
+              domain: ["Confirmed", "Probable"],
+              range: ["#9CA3AF", "#4F32B3"],
+            },
 
           }
         },
       },
 
       {
-        id: "case-reports-season",
+        id: "case-reports-subtype",
         title: "caseDataPage.charts.reportsBySubtype.title",
         subtitle: "caseDataPage.charts.reportsBySubtype.subtitle",
         showIfVirus: "Influenza", 
@@ -85,21 +93,26 @@ const caseDataPageConfig = {
         trendEnabled: true, 
         animateOnScroll: true,
         modal: {
-          title: "{virus} Laboratory Reports by Season",
+          title: "{virus} Laboratory Reports by Subtype",
           markdownPath: "/content/modals/cases-explainer.md"
         },
         chart: {
-        type: "lineChart",
+        type: "yearComparisonChart",
         props: {
           dataSourceKey: "casesBySubType",
           metricName: "{virus} cases by sub type",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          colorField: null,
+          colorField: "submetric",
           tooltipFields: ["date", "value"],
           defaultDisplay: "Number", 
-
+          legendTitle: "Subtype",
+          showRollingAvg: false, 
+          customColorScale: {
+            domain: ["Flu A not subtyped", "Flu A H1", "Flu A H3", "Flu B" ],
+            range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
+          },
         }
         }
       },

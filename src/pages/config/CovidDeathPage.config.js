@@ -5,7 +5,8 @@ const covidDeathPageConfig = {
     dataPath: "/data/covidDeathData.csv",
 
     controls: {
-      virusToggle: false, // Only virus toggle shown (no viewToggle)
+      virusToggle: false, 
+      viewToggle: false,
     },
     summary: {
       title: "Covid Death Page Overview",
