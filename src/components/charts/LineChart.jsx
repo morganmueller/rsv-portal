@@ -3,13 +3,10 @@ import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
 const { covid, flu, rsv } = tokens.colorScales;
 
+const { colors, typography, spacing } = tokens;
 
-/**
- * Infer appropriate time format for x-axis labels based on temporal resolution.
- */
 const getXAxisFormat = (data, xField) => {
   if (!data || data.length < 2) return "%b %d";
-
   const first = new Date(data[0][xField]);
   const second = new Date(data[1][xField]);
   const delta = Math.abs(second - first);
@@ -32,9 +29,8 @@ const LineChart = ({
   tooltipFields,
   virus,
   color,
+  metricName = "Category", // 👈 used for legend title
 }) => {
-  const { colors, typography, spacing } = tokens;
-
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
@@ -56,21 +52,10 @@ const LineChart = ({
       ? data.filter((d) => d.virus === virus)
       : data;
 
-      console.log("FILTERED DATA", filteredData);
-
-  // ✅ Parse date field to real Date objects
   const parsedData = filteredData.map((d) => ({
     ...d,
-    [xField]: new Date(d[xField])
+    [xField]: new Date(d[xField]),
   }));
-
-  // 🔍 👇 DEBUG AGE GROUPS / SUBMETRICS
-const groupCounts = {};
-parsedData.forEach(d => {
-  const g = d.submetric;
-  groupCounts[g] = (groupCounts[g] || 0) + 1;
-});
-console.log("AGE GROUPS IN CHART DATA:", groupCounts);
 
   const axisFormat = getXAxisFormat(parsedData, xField);
 
@@ -85,8 +70,9 @@ console.log("AGE GROUPS IN CHART DATA:", groupCounts);
         labelColor: colors.gray700,
         titleColor: colors.gray800,
         grid: false,
-        domainColor: colors.gray300,
-        tickColor: colors.gray300,
+        ticks: false,
+        tickColor: "transparent",
+        domain: false,
       },
       legend: {
         labelFont: typography.body,
@@ -95,6 +81,8 @@ console.log("AGE GROUPS IN CHART DATA:", groupCounts);
         titleColor: colors.gray700,
         symbolSize: 100,
         symbolStrokeWidth: 5,
+        orient: "bottom", // 👈 legend moved to bottom
+        title: metricName,
       },
       view: {
         stroke: "transparent",
@@ -102,12 +90,12 @@ console.log("AGE GROUPS IN CHART DATA:", groupCounts);
     },
     layer: [
       ...(colorField
-        ? [] // no area layer for multiseries
+        ? []
         : [
             {
               mark: {
                 type: "area",
-                interpolate: "monotone",
+                interpolate: "linear",
                 opacity: 0.15,
                 color: selectedColor,
               },
@@ -134,7 +122,7 @@ console.log("AGE GROUPS IN CHART DATA:", groupCounts);
         mark: {
           type: "line",
           point: true,
-          interpolate: "monotone",
+          interpolate: "linear",
           strokeWidth: 3,
         },
         encoding: {

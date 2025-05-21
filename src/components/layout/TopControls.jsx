@@ -13,7 +13,10 @@ const TopControls = ({ controls = {} }) => {
 {virusToggle && (
   <div className="data-filter-group">
     <span className="data-filter-label">Virus</span>
-    <VirusFilterGroup onChange={setActiveVirus} />
+    <VirusFilterGroup
+       activeVirus={activeVirus}  
+      onChange={setActiveVirus}
+/>
   </div>
 )}
 

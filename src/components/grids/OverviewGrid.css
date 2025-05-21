@@ -50,5 +50,42 @@
   .grid-card {
     width: 100%;
     max-width: none;
+    padding: var(--spacing-sm); /* Reduced padding */
+  }
+
+  .grid-card h3 {
+    font-size: 16px; /* Slightly smaller title */
+    margin-bottom: var(--spacing-xs); /* Less spacing below title */
+  }
+
+  .grid-card p {
+    font-size: 14px; /* Slightly smaller description text */
+    line-height: 1.4;
+    margin-top: var(--spacing-xs); /* Less spacing above paragraph */
+  }
+}
+@media (max-width: 480px) {
+  .overview-grid {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .grid-card {
+    width: 100%;
+    max-height: 120px;
+    max-width: none;
+    padding: var(--spacing-sm); /* smaller padding on mobile */
+  }
+
+  .grid-card h3 {
+    font-size: var(--font-size-md); /* 16px */
+    margin-bottom: var(--spacing-xs); /* 4px */
+  }
+
+  .grid-card p {
+    font-size: var(--font-size-sm); /* 14px */
+    line-height: 1.4;
+    margin-top: var(--spacing-xs); /* 4px */
   }
 }

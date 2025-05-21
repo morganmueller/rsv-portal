@@ -1,24 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import VirusFilterButton from "./VirusFilterButton";
 import covidIcon from "../../../public/assets/covid-vector.svg";
 import fluIcon from "../../../public/assets/flu-vector.svg";
 import rsvIcon from "../../../public/assets/rsv-vector.svg";
 import "./VirusFilterButton.css";
 
-const virusOptions = [
+export const virusOptions = [
   { label: "COVID-19", icon: covidIcon },
   { label: "Influenza", icon: fluIcon },
   { label: "RSV", icon: rsvIcon }
 ];
 
-const VirusFilterGroup = ({ onChange }) => {
-  const [activeVirus, setActiveVirus] = useState("COVID-19");
-
-  const handleClick = (label) => {
-    setActiveVirus(label);
-    if (onChange) onChange(label);
-  };
-
+const VirusFilterGroup = ({ activeVirus, onChange }) => {
   return (
     <div style={{ display: "flex", gap: "12px" }}>
       {virusOptions.map(({ label, icon }) => (
@@ -27,11 +21,16 @@ const VirusFilterGroup = ({ onChange }) => {
           label={label}
           icon={icon}
           active={activeVirus === label}
-          onClick={() => handleClick(label)}
+          onClick={() => onChange(label)}
         />
       ))}
     </div>
   );
+};
+
+VirusFilterGroup.propTypes = {
+  activeVirus: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default VirusFilterGroup;

@@ -188,7 +188,7 @@ html, body, #root {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .header-section {
     padding: 16px 0;
   }
@@ -227,4 +227,12 @@ html, body, #root {
     padding: 8px 12px;
     height: auto;
   }
+
+  .data-dropdown-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+  }
+  
 }

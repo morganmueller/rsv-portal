@@ -11,6 +11,9 @@ body {
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .content-header {
@@ -60,6 +63,9 @@ body {
   margin-left: 12px;
 }
 
+
+
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -75,10 +81,7 @@ body {
   animation: fadeUp 0.6s ease forwards;
 }
 
-.content-container.fade-out {
-  opacity: 0;
-  transform: translateY(16px);
-}
+
 
 .trend-text {
   font-weight: 600;
@@ -153,4 +156,10 @@ body {
   background-color: transparent;
   border-radius: 0px;
   box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .download-icon {
+    display: none !important;
+  }
 }

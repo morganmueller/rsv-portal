@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./InfoCard.css"; // New or shared with StatCard
+import "./InfoCard.css"; 
 
 const InfoCard = ({ title, icon, description, link }) => {
   const content = (

@@ -8,7 +8,7 @@
 
   "overviewBottomNav": {
     "emergencyDept": {
-      "title": "ED Visits & Admissions",
+      "title": "Emergency Department Visits & Admissions",
       "description": "Explore emergency department trends across boroughs."
     },
     "github": {

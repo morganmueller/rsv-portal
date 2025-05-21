@@ -7,22 +7,26 @@ import { interpolate } from "./interpolate";
  */
 export const getMetricData = memoize(function (
   data,
-  { metric, submetric, display = "Percent" }
+  { metric, submetric, display } // ← remove default here
 ) {
+  const normalizedDisplay = typeof display === "string" ? display.trim().toLowerCase() : null;
+
   const filtered = data.filter((d) => {
+    const rowDisplay = typeof d.display === "string" ? d.display.trim().toLowerCase() : "unknown";
     const match =
       d.metric === metric &&
       (submetric === undefined || d.submetric?.trim() === submetric) &&
-      d.display === display;
+      (normalizedDisplay === null || rowDisplay === normalizedDisplay);
 
     if (!match && d.metric === metric) {
-      console.log("⛔️ Rejected row:", d)
+      console.log("⛔️ Rejected row:", d);
     }
 
     return match;
   });
 
-  console.log(`✅ getMetricData('${metric}', submetric: '${submetric}') matched ${filtered.length} rows`);
+  console.log(`✅ getMetricData('${metric}', submetric: '${submetric}', display: '${display}') matched ${filtered.length} rows`);
+
   const uniqueSubmetrics = [...new Set(data.map(d => d.metric === metric ? d.submetric : null).filter(Boolean))];
   console.log("🔎 Available submetrics for", metric, ":", uniqueSubmetrics);
 
@@ -32,6 +36,8 @@ export const getMetricData = memoize(function (
     ...(submetric === undefined && d.submetric ? { submetric: d.submetric } : {}),
   }));
 }, { length: 2 });
+
+
 
 
 /**
@@ -97,7 +103,9 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     const baseMetric = props.baseMetric;
     const submetric = props.submetric;
     const groupField = props.groupField;
-    const display = props.display || props.defaultDisplay || variables.display || "Percent";
+    const display = props.hasOwnProperty("display") ? props.display : 
+    props.hasOwnProperty("defaultDisplay") ? props.defaultDisplay :
+    variables.display ?? undefined;
 
     // ✅ NEW: support multiple metrics even without chart.type
     if (Array.isArray(props.metrics)) {

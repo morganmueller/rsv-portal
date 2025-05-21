@@ -23,7 +23,7 @@ export const PageStateProvider = ({ children, initialData = [], enableVirusToggl
 
   return (
     <PageStateContext.Provider
-      value={{ activeVirus, setActiveVirus, view, setView, handleDownload }}
+      value={{ activeVirus, setActiveVirus, view, setView, handleDownload, setVirus: setActiveVirus, }}
     >
       {children}
     </PageStateContext.Provider>

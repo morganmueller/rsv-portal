@@ -41,16 +41,26 @@ const ContentContainer = ({
 
   useEffect(() => {
     if (!animateOnScroll) return;
-
+  
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.2 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true); // Set true once, never go back to false
+          observer.disconnect(); // Stop observing once visible
+        }
+      },
+      {
+        threshold: 0.5, // Only trigger if 50% of element is visible
+        rootMargin: "0px 0px -10% 0px", // Adds a viewport buffer
+      }
     );
-
+  
     const node = ref.current;
     if (node) observer.observe(node);
-    return () => node && observer.unobserve(node);
+  
+    return () => observer.disconnect();
   }, [animateOnScroll]);
+  
 
   const renderedSubtitle =
     typeof subtitle === "string"
@@ -61,8 +71,9 @@ const ContentContainer = ({
     <div
       ref={ref}
       className={`content-container background-${background} ${className} ${
-        animateOnScroll ? (isVisible ? "fade-in" : "fade-out") : ""
+        animateOnScroll && isVisible ? "fade-in" : ""
       }`}
+      
     >
       {(title || subtitle) && (
         <div className="content-header">
