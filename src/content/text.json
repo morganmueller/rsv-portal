@@ -31,7 +31,7 @@
       "charts": {
         "monthlyARIChart": {
           "title": "Acute Respiratory Infection Overview",
-          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         }
       },
       "statCards": {
@@ -56,16 +56,16 @@
       },
       "charts": {
         "seasonalEdVisits": {
-          "title": "{virus} Emergency Department {view}",
-          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+          "title": "{virus} Emergency Department {viewLabel}",
+          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "{virus} Emergency Department {view} by Age Group",
-          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+          "title": "{virus} Emergency Department {viewLabel} by Age Group",
+          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByGeo": {
-          "title": "{virus} Emergency Department {view} by Borough",
-          "subtitle": "{view} for the week of {date} have {trend} since the previous week"
+          "title": "{virus} Emergency Department {viewLabel} by Borough",
+          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         }
 
       }

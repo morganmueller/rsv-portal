@@ -216,6 +216,7 @@ const ConfigDrivenPage = ({ config }) => {
                 : "not available",
               trendDirection: trendObj?.direction,
               arrow: trendInfo?.arrow,
+              viewLabel: viewDisplayLabels[view],
               directionText: trendInfo?.directionText,
               trendColor: trendInfo?.trendColor,
             };
