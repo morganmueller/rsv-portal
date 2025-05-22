@@ -43,7 +43,7 @@ const TrendSummaryContainer = ({
     <div
       ref={ref}
       className={`trend-summary-container ${
-        animateOnScroll ? (isVisible ? "fade-in" : "fade-out") : ""
+        animateOnScroll && isVisible ? "fade-in" : ""
       }`}
     >
       {date && (

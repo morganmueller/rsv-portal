@@ -17,6 +17,7 @@ const overviewConfig = {
   id: "stat-cards",
   renderAs: "custom",
   component: "StatGrid",
+  
   background: "white",
   dataSourceKey: "statCardData",
   chart: {
