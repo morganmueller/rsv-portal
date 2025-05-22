@@ -1,7 +1,7 @@
 .overview-section {
   margin-top: var(--spacing-lg);
   width: 100%;
-  background-color: var(--white);
+  background-color: var(--overview-bg, var(--white));
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -9,7 +9,7 @@
 .overview-container {
   width: 100%;
   max-width: 100%;
-  padding: var(--spacing-xl);
+  padding: var(--overview-padding, var(--spacing-xl));
   box-sizing: border-box;
   overflow-x: hidden;
   display: flex;
@@ -25,9 +25,9 @@
 }
 
 .overview-title {
-  font-size: var(--font-size-xl, 32px);
-  font-family: var(--font-heading);
-  color: var(--gray-900);
+  font-size: var(--overview-title-size, var(--font-size-xl));
+  font-family: var(--overview-title-font, var(--font-heading));
+  color: var(--overview-title-color, var(--gray-900));
   margin-bottom: var(--spacing-xl);
   width: 100%;
 }
@@ -35,7 +35,7 @@
 .overview-columns {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-3xl, 64px);
+  gap: var(--overview-column-gap, var(--spacing-3xl));
   margin-top: var(--spacing-lg);
   width: 100%;
 }
@@ -50,16 +50,16 @@
 }
 
 .overview-column h2 {
-  font-size: var(--font-size-lg, 20px);
+  font-size: var(--font-size-lg);
   font-family: var(--font-heading);
-  color: var(--gray-900);
+  color: var(--overview-column-title-color, var(--gray-900));
   text-align: left;
 }
 
 .overview-column p {
   font-family: var(--font-body);
-  color: var(--gray-700);
-  font-size: var(--font-size-md, 16px);
+  color: var(--overview-text-color, var(--gray-700));
+  font-size: var(--font-size-md);
   line-height: 24px;
   text-align: left;
 }

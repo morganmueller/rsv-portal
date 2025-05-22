@@ -14,8 +14,10 @@ const SectionWithChart = ({
   chartTitle,
   chart,
   footer,
-  children, 
+  children,
   animateOnScroll,
+  previewData = [],
+  columnLabels = {},
 
 }) => {
   return (
@@ -28,7 +30,9 @@ const SectionWithChart = ({
       modalTitle={modalTitle}
       modalContent={modalContent}
       onDownloadClick={onDownloadClick}
-      animateOnScroll={animateOnScroll} 
+      animateOnScroll={animateOnScroll}
+      previewData={previewData}
+      columnLabels={columnLabels}
 
     >
       {children ?? (

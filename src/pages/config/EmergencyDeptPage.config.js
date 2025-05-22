@@ -16,7 +16,7 @@ const edPageConfig = {
     title: "Page Overview",
     lastUpdated: "05/01/2025",
     showTrendArrow: true,
-    showSecondayTitle: false,
+    showSecondaryTitle: false,
   },
 
   sections: [
@@ -40,7 +40,11 @@ const edPageConfig = {
           xField: "date",
           yField: "value",
           colorField: null,
-          tooltipFields: ["date", "value"]
+          tooltipFields: ["date", "value"],
+          columnLabels: {
+            date: "Week",
+            value: "Number of {view}",
+          }
         }
       }
     },
@@ -65,7 +69,12 @@ const edPageConfig = {
           xField: "date",
           yField: "value",
           colorField: "submetric",
-          tooltipFields: ["date", "submetric", "value"]
+          tooltipFields: ["date", "submetric", "value"],
+          columnLabels: {
+            date: "Week",
+            value: "Number of {view}",
+            submetric: "Age Group"
+          }
         }
       }
     },
@@ -90,8 +99,12 @@ const edPageConfig = {
           xField: "date",
           yField: "value",
           colorField: "submetric",
-          tooltipFields: ["date", "submetric", "value"]
-          // 🚫 no submetric — we want to include all boroughs
+          tooltipFields: ["date", "submetric", "value"],
+          columnLabels: {
+            date: "Week",
+            value: "Number of {view}",
+            submetric: "Borough" 
+          }
         }
       }
     }

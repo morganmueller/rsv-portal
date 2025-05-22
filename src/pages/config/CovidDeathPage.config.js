@@ -41,6 +41,10 @@ const covidDeathPageConfig = {
             colorField: null,
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
+            columnLabels: {
+              date: "Week",
+              value: "Number of Deaths",
+            }
   
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",
@@ -68,6 +72,11 @@ const covidDeathPageConfig = {
             colorField: null,
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
+            columnLabels: {
+              date: "Week",
+              value: "Number of Deaths",
+              submtric: "Age Group"
+            }
   
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",
@@ -95,7 +104,11 @@ const covidDeathPageConfig = {
             colorField: null,
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
-  
+            columnLabels: {
+              date: "Week",
+              value: "Number of Deaths",
+              submtric: "Borough"
+            }
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
@@ -122,7 +135,11 @@ const covidDeathPageConfig = {
             colorField: null,
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
-  
+            columnLabels: {
+              date: "Week",
+              value: "Number of Deaths",
+              submtric: "Race & Ethnicity"
+            }
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",
         },

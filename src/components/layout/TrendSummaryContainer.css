@@ -1,7 +1,7 @@
 .trend-summary-container {
-  background-color: var(--white);
+  background-color: var(--trend-summary-bg, var(--white));
   width: 85%;
-  padding: var(--spacing-md) var(--spacing-2xl);
+  padding: var(--trend-summary-padding, var(--spacing-md)) var(--spacing-2xl);
   margin: 0 auto var(--spacing-xl) auto;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -13,34 +13,35 @@
 }
 
 .trend-title {
-  font-size: var(--font-size-lg, 20px);
-  font-family: var(--font-heading);
-  color: var(--gray-900);
+  font-size: var(--trend-title-size, var(--font-size-lg));
+  font-family: var(--trend-title-font, var(--font-heading));
+  color: var(--trend-title-color, var(--gray-900));
   margin-bottom: var(--spacing-xs);
 }
 
 .trend-date {
-  font-size: var(--font-size-md, 16px);
+  font-size: var(--trend-date-size, var(--font-size-md));
   font-family: var(--font-body);
-  color: var(--gray-700);
+  color: var(--trend-date-color, var(--gray-700));
   margin: 0;
 }
 
 .trend-status {
   display: flex;
   align-items: center;
-  font-size: var(--font-size-md, 16px);
+  font-size: var(--trend-status-size, var(--font-size-md));
   font-family: var(--font-body);
-  color: var(--gray-800);
+  color: var(--trend-status-color, var(--gray-800));
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
 }
 
 .trend-arrow {
-  font-size: 18px;
+  font-size: var(--trend-arrow-size, 18px);
   font-weight: bold;
 }
 
+/* === Animation === */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -63,6 +64,7 @@
   transform: translateY(16px);
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
   .trend-summary-container {
     width: 100%;

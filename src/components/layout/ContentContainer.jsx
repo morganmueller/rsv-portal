@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
+import DownloadPreviewTable from "../tables/DownloadPreviewTable";
 import { getText } from "../../utils/contentUtils";
 import "./ContentContainer.css";
 
@@ -33,6 +34,9 @@ const ContentContainer = ({
   modalTitle = "More Info",
   modalContent = null,
   onDownloadClick = null,
+  previewData = [],
+  columnLabels = {},
+
 }) => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -41,26 +45,25 @@ const ContentContainer = ({
 
   useEffect(() => {
     if (!animateOnScroll) return;
-  
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true); // Set true once, never go back to false
-          observer.disconnect(); // Stop observing once visible
+          setIsVisible(true);
+          observer.disconnect();
         }
       },
       {
-        threshold: 0.5, // Only trigger if 50% of element is visible
-        rootMargin: "0px 0px -10% 0px", // Adds a viewport buffer
+        threshold: 0.5,
+        rootMargin: "0px 0px -10% 0px",
       }
     );
-  
+
     const node = ref.current;
     if (node) observer.observe(node);
-  
+
     return () => observer.disconnect();
   }, [animateOnScroll]);
-  
 
   const renderedSubtitle =
     typeof subtitle === "string"
@@ -73,19 +76,18 @@ const ContentContainer = ({
       className={`content-container background-${background} ${className} ${
         animateOnScroll && isVisible ? "fade-in" : ""
       }`}
-      
     >
       {(title || subtitle) && (
         <div className="content-header">
           <div className="content-title-row">
             {typeof title === "string" ? (
-            <h3
-              className="content-title"
-              dangerouslySetInnerHTML={{ __html: title }}
-            />
-          ) : (
-            <h3 className="content-title">{title}</h3>
-          )}
+              <h3
+                className="content-title"
+                dangerouslySetInnerHTML={{ __html: title }}
+              />
+            ) : (
+              <h3 className="content-title">{title}</h3>
+            )}
             <div className="content-title-icons">
               {infoIcon && (
                 <img
@@ -136,6 +138,9 @@ const ContentContainer = ({
           content={
             <>
               <p>Would you like to download a CSV of this chart’s data?</p>
+              {Array.isArray(previewData) && previewData.length > 0 && (
+               <DownloadPreviewTable data={previewData} columnLabels={columnLabels} maxRows={100} />
+              )}
               <button
                 className="toggle-button active"
                 onClick={() => {
@@ -167,6 +172,7 @@ ContentContainer.propTypes = {
   modalTitle: PropTypes.string,
   modalContent: PropTypes.node,
   onDownloadClick: PropTypes.func,
+  previewData: PropTypes.array,
 };
 
 export default ContentContainer;

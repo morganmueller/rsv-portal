@@ -28,7 +28,8 @@ const overviewConfig = {
         "RSV visits", "RSV admits"
       ],
       submetric: "Overall",
-      display: "Percent"
+      display: "Percent",
+
     }
   }
 }
@@ -56,7 +57,11 @@ const overviewConfig = {
           yField: "value",
           tooltipFields: ["date", "value"],
           defaultDisplay: "Percent", 
-          color: "orangePrimary"
+          color: "orangePrimary",
+          columnLabels: {
+            date: "Week",
+            value: "Number of {view}",
+          }
 
 
         },

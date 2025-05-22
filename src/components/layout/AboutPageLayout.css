@@ -1,62 +1,62 @@
 .about-page {
-  padding: 2rem;
-  font-family: "Inter", sans-serif;
+  padding: var(--about-padding, var(--spacing-2xl));
+  font-family: var(--font-body);
 }
 
 .intro-section {
   max-width: 800px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto var(--about-section-gap, var(--spacing-3xl)) auto;
   text-align: left;
 }
 
 .intro-section h2 {
-  font-size: 1.5rem;
-  margin-top: 2rem;
+  font-size: var(--about-title-size, var(--font-size-xl));
+  margin-top: var(--spacing-2xl);
   text-align: left;
 }
 
 .card-section {
-  margin-bottom: 3rem;
+  margin-bottom: var(--about-section-gap, var(--spacing-3xl));
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center section header */
+  align-items: center;
 }
 
 .card-section h2 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--about-subtitle-size, var(--font-size-lg));
   text-align: left;
   width: 100%;
   max-width: 800px;
-  padding-left: 1rem;
+  padding-left: var(--spacing-lg);
   box-sizing: border-box;
 }
 
 .card-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center; /* Center the cards */
+  gap: var(--spacing-xl);
+  justify-content: center;
 }
 
 .info-card {
   flex: 1 1 250px;
-  background-color: #f9fafb;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--info-card-bg, var(--gray-100));
+  padding: var(--info-card-padding, var(--spacing-xl));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   box-sizing: border-box;
 }
 
 .markdown-paragraph-section {
-  margin: 2rem auto;
-  padding: 1rem 0;
+  margin: var(--spacing-2xl) auto;
+  padding: var(--spacing-lg) 0;
   max-width: 800px;
 }
 
 .markdown-paragraph-section h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: var(--about-subtitle-size, var(--font-size-lg));
+  margin-bottom: var(--spacing-lg);
   font-weight: 600;
   text-align: left;
 }
@@ -64,13 +64,13 @@
 /* ✅ Responsive tweaks */
 @media (max-width: 768px) {
   .about-page {
-    padding: 1rem;
+    padding: var(--spacing-lg);
   }
 
   .intro-section h2,
   .card-section h2,
   .markdown-paragraph-section h2 {
-    font-size: 1.125rem;
+    font-size: var(--font-size-md);
   }
 
   .card-grid {
@@ -80,12 +80,12 @@
 
   .info-card {
     width: 100%;
-    padding: 1rem;
+    padding: var(--spacing-lg);
   }
 
   .intro-section,
   .markdown-paragraph-section {
-    margin-bottom: 2rem;
-    padding: 0 1rem;
+    margin-bottom: var(--spacing-xl);
+    padding: 0 var(--spacing-lg);
   }
 }

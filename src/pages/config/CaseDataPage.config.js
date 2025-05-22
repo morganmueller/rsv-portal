@@ -43,7 +43,10 @@ const caseDataPageConfig = {
           colorField: null,
           tooltipFields: ["date", "value"],
           defaultDisplay: "Number", 
-
+          columnLabels: {
+            date: "Week",
+            value: "Number of Cases",
+          }
         }
         }
       },
@@ -78,7 +81,11 @@ const caseDataPageConfig = {
               domain: ["Confirmed", "Probable"],
               range: ["#9CA3AF", "#4F32B3"],
             },
-
+            columnLabels: {
+              date: "Week",
+              value: "Number of Cases",
+              submtric: "Test Type",
+            }
           }
         },
       },
@@ -113,6 +120,11 @@ const caseDataPageConfig = {
             domain: ["Flu A not subtyped", "Flu A H1", "Flu A H3", "Flu B" ],
             range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
           },
+          columnLabels: {
+            date: "Week",
+            value: "Number of Cases",
+            submtric: "Subtype"
+          }
         }
         }
       },
@@ -139,6 +151,11 @@ const caseDataPageConfig = {
             colorField: "submetric",
             tooltipFields: ["date", "submetric", "value"],
             defaultDisplay: "Number", 
+            columnLabels: {
+              date: "Week",
+              value: "Number of Cases",
+              submtric: "Age Group"
+            }
 
           }
         },
@@ -164,7 +181,12 @@ const caseDataPageConfig = {
             yField: "value",
             colorField: "submetric",
             tooltipFields: ["date", "submetric", "value"],
-            defaultDisplay: "Number", 
+            defaultDisplay: "Number",
+            columnLabels: {
+              date: "Week",
+              value: "Number of Cases",
+              submtric: "Borough"
+            } 
 
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",
@@ -192,7 +214,12 @@ const caseDataPageConfig = {
             yField: "value",
             colorField: "submetric",
             tooltipFields: ["date", "submetric", "value"],
-            defaultDisplay: "Number", // 👈 Add this
+            defaultDisplay: "Number", 
+            columnLabels: {
+              date: "Week",
+              value: "Number of Cases",
+              submtric: "Race & Ethnicity"
+            }
 
           }
           // footer: "Source: NYC Health Department Syndromic Surveillance",

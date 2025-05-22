@@ -8,7 +8,7 @@ import SectionWithChart from "./SectionWithChart";
 import ChartContainer from "./ChartContainer";
 import ContentContainer from "./ContentContainer";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
-import MarkdownCardSection from "../cards/MarkdownCardSection";
+import { downloadCSV } from "../../utils/downloadUtils";
 import FloatingTogglePill from "../controls/FloatingTogglePill";
 import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
@@ -249,7 +249,8 @@ const ConfigDrivenPage = ({ config }) => {
                 subtitleVariables={fullVars}
                 infoIcon={section.infoIcon}
                 downloadIcon={section.downloadIcon}
-                onDownloadClick={handleDownload}
+                onDownloadClick={() => downloadCSV(filteredData, `${section.id}.csv`)}
+                columnLabels={interpolatedProps.columnLabels}
                 modalTitle={resolveText(section.modal?.title, fullVars)}
                 modalContent={
                   section.modal?.markdownPath && (
@@ -262,6 +263,8 @@ const ConfigDrivenPage = ({ config }) => {
                   )
                 }
                 animateOnScroll={section.animateOnScroll !== false}
+                previewData={filteredData}
+
               >
                 <ChartContainer
                   title={resolveText(section.title, fullVars)}

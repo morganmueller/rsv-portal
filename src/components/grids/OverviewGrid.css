@@ -4,12 +4,13 @@
   justify-content: center;
   align-items: stretch;
   gap: var(--spacing-lg);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .grid-card {
-  flex: 1 1 280px;
+  flex: 0 0 30%;
   max-width: 360px;
+  min-width: 280px;
   background-color: var(--white);
   padding: var(--spacing-md);
   border-radius: var(--radius-lg);
@@ -40,35 +41,13 @@
   margin-top: var(--spacing-xs);
 }
 
-@media (max-width: 480px) {
-  .overview-grid {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding: 0 var(--spacing-md);
-  }
-
-  .grid-card {
-    width: 100%;
-    max-width: none;
-    padding: var(--spacing-sm); /* Reduced padding */
-  }
-
-  .grid-card h3 {
-    font-size: 16px; /* Slightly smaller title */
-    margin-bottom: var(--spacing-xs); /* Less spacing below title */
-  }
-
-  .grid-card p {
-    font-size: 14px; /* Slightly smaller description text */
-    line-height: 1.4;
-    margin-top: var(--spacing-xs); /* Less spacing above paragraph */
-  }
-}
-@media (max-width: 480px) {
+@media (max-width: 780px) {
   .overview-grid {
     flex-direction: column;
     gap: var(--spacing-sm);
     padding: 0 var(--spacing-sm);
+    flex-wrap: nowrap;
+
   }
 
   .grid-card {

@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(31, 41, 55, 0.6); /* keep as-is for dark overlay */
+  background: rgba(31, 41, 55, 0.6); /* keep this hard-coded for visual clarity */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,7 +12,7 @@
 }
 
 .info-modal {
-  background-color: var(--white);
+  background-color: var(--modal-bg, var(--white)); /* allows override with --modal-bg if defined */
   border-radius: var(--radius-lg);
   max-width: 480px;
   width: 50%;
@@ -25,7 +25,7 @@
 
 @keyframes scaleIn {
   from {
-    transform: scale(0.9); 
+    transform: scale(0.9);
     opacity: 0;
   }
   to {
@@ -41,30 +41,31 @@
   background: transparent;
   border: none;
   font-size: 24px;
-  color: var(--gray-600);
+  color: var(--modal-close, var(--gray-600));
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .info-modal-close:hover {
-  color: var(--gray-900);
+  color: var(--modal-close-hover, var(--gray-900));
 }
 
 .info-modal-title {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--modal-title-color, var(--gray-900));
   margin-bottom: var(--spacing-md);
 }
 
 .info-modal-content {
   font-size: 15px;
-  color: var(--gray-800);
-  line-height: 1.5;
+  color: var(--modal-text, var(--gray-800));
+  line-height: var(--line-height-lg);
   max-height: 60vh;
   overflow-y: auto;
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
   .info-modal {
     width: 90%;

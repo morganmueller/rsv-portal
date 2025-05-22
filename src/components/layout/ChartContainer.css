@@ -1,5 +1,5 @@
 .chart-container {
-  background-color: var(--white);
+  background-color: var(--chart-bg, var(--white));
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-xl);
   width: 100%;
@@ -14,16 +14,16 @@
 }
 
 .chart-title {
-  font-size: 24px; /* Consider tokenizing as --font-size-xl */
+  font-size: var(--chart-title-size, 24px);
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--chart-title-color, var(--gray-900));
   margin-bottom: var(--spacing-xs);
 }
 
 .chart-subtitle {
-  font-size: var(--font-size-md);
+  font-size: var(--chart-subtitle-size, var(--font-size-md));
   font-weight: 400;
-  color: var(--gray-700);
+  color: var(--chart-subtitle-color, var(--gray-700));
 }
 
 .chart-content {
@@ -61,7 +61,7 @@
   opacity: 0;
 }
 
-/* Responsive layout */
+/* === Responsive === */
 @media (max-width: 768px) {
   .chart-content {
     flex-direction: column;

@@ -1,5 +1,6 @@
+/* === GLOBAL BASE === */
+
 :root {
-  /* Typography defaults (if not already in tokens.css) */
   --font-sans: "Inter", sans-serif;
   --font-bold: "Inter-Bold", sans-serif;
 }
@@ -14,9 +15,8 @@ html, body, #root {
 /* === HEADER SECTION === */
 
 .header-section {
-  /* width: 100%; */
   padding: var(--spacing-lg) var(--spacing-sm);
-  background: linear-gradient(90deg, var(--blue-primary), var(--blue-secondary));
+  background: var(--header-bg);
   background-size: 200% 200%;
   animation: gradientShift 6s ease infinite;
 }
@@ -59,7 +59,7 @@ html, body, #root {
 }
 
 .header-title {
-  color: var(--white);
+  color: var(--header-title-color);
   font-family: var(--font-bold);
   font-size: 32px;
   font-weight: 700;
@@ -68,7 +68,7 @@ html, body, #root {
 }
 
 .header-subtitle {
-  color: var(--white);
+  color: var(--header-subtitle-color);
   font-family: var(--font-sans);
   font-size: 18px;
   font-weight: 400;
@@ -84,10 +84,11 @@ html, body, #root {
 }
 
 /* === BUTTONS === */
+
 .outline-button {
-  border: 2px solid var(--white);
+  border: 2px solid var(--header-button-border);
   background: transparent;
-  color: var(--white);
+  color: var(--header-button-text);
   border-radius: var(--radius-lg);
   height: 52px;
   padding: 0 var(--spacing-lg);
@@ -101,12 +102,13 @@ html, body, #root {
 }
 
 .outline-button.active {
-  background: var(--white);
-  color: var(--blue-primary);
+  background: var(--header-button-active-bg);
+  color: var(--header-button-active-text);
   border: none;
 }
 
 /* === DROPDOWN === */
+
 .data-dropdown-wrapper {
   margin-top: var(--spacing-xs);
   width: 250px;
@@ -116,7 +118,7 @@ html, body, #root {
 .data-topic-select {
   padding: 10px 36px 10px 14px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--gray-300);
+  border: 1px solid var(--gray-300); /* optionally add --dropdown-border */
   font-size: 15px;
   font-family: var(--font-sans);
   background-color: var(--white);
@@ -129,6 +131,8 @@ html, body, #root {
   cursor: pointer;
   min-width: 280px;
   white-space: nowrap;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
 }
 
 .data-topic-select:hover {
@@ -140,6 +144,13 @@ html, body, #root {
   outline: none;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
+
+.data-topic-select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+
 
 .dropdown-link {
   font-size: 14px;
@@ -234,5 +245,4 @@ html, body, #root {
     display: flex;
     justify-content: center;
   }
-  
 }

@@ -1,5 +1,5 @@
 .stat-card {
-  background-color: var(--gray-100);
+  background-color: var(--card-bg, var(--gray-100));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-md) var(--spacing-lg);
@@ -26,9 +26,9 @@
 }
 
 .stat-card-title {
-  font-size: var(--font-size-lg, 18px);
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--card-title-color, var(--gray-900));
   flex: 1;
 }
 
@@ -58,20 +58,20 @@
 
 .stat-divider {
   border: none;
-  border-top: 2px solid var(--gray-600);
+  border-top: 2px solid var(--card-divider, var(--gray-600));
   margin: 12px 0 4px;
 }
 
 .stat-label {
   font-size: 16px;
-  color: var(--gray-700);
+  color: var(--card-label-color, var(--gray-700));
   line-height: 1.2;
   font-weight: 700;
 }
 
 .stat-trend {
   font-size: 13px;
-  color: var(--gray-600);
+  color: var(--card-trend-color, var(--gray-600));
   margin-top: 2px;
   display: flex;
   align-items: center;
@@ -82,7 +82,7 @@
 .stat-trend-row {
   font-weight: 700;
   font-size: 14px;
-  color: var(--gray-700);
+  color: var(--card-trend-color, var(--gray-700));
   margin-top: 2px;
   display: flex;
   align-items: center;
@@ -91,16 +91,17 @@
 }
 
 .stat-trend-row .stat-date {
-  color: var(--gray-800);
+  color: var(--card-date-color, var(--gray-800));
   font-size: 14px;
 }
 
 .stat-date {
   font-size: 14px;
-  color: var(--gray-700);
+  color: var(--card-date-color, var(--gray-700));
   margin-top: 2px;
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
   .stat-card {
     max-width: 100%;
