@@ -288,7 +288,7 @@ const ConfigDrivenPage = ({ config }) => {
       {config.showPillToggle !== false && showPill && (
         <FloatingTogglePill
           activeVirus={activeVirus}
-          view={view}
+          viewLabel={viewDisplayLabels[view]} // "Visits" or "Admissions"
           onVirusChange={setVirus}
           onViewChange={setView}
           controls={controls}
