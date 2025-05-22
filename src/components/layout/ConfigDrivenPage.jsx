@@ -73,22 +73,37 @@ const ConfigDrivenPage = ({ config }) => {
   const [showPill, setShowPill] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowPill(!entry.isIntersecting);
-      },
-      { threshold: 0.05 } // more sensitive to any scroll
-    );
+    const checkAndObserve = () => {
+      const el = summaryRef.current;
+      console.log("📌 summaryRef.current:", el);
   
-    const el = summaryRef.current;
-    if (el) {
+      if (!el) {
+        // Retry after a tick if not yet mounted
+        requestAnimationFrame(checkAndObserve);
+        return;
+      }
+  
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          console.log("👀 Intersection entry:", entry);
+          setShowPill(!entry.isIntersecting);
+        },
+        { threshold: 0.05 }
+      );
+  
       observer.observe(el);
-    }
   
-    return () => {
-      if (el) observer.unobserve(el);
+      return () => observer.disconnect();
     };
-  }, [summaryRef.current]); // run again if the ref updates
+  
+    const cleanup = checkAndObserve();
+  
+    return typeof cleanup === "function" ? cleanup : undefined;
+  }, []);
+  
+  
+  
+  
   
 
   useEffect(() => {
@@ -126,20 +141,20 @@ const ConfigDrivenPage = ({ config }) => {
           config.showTopControls === false ? null : <TopControls controls={controls} />
         }
       >
-        {summary?.markdownPath && (
-          <div ref={summaryRef}>
-            <TrendSummaryContainer
-              sectionTitle={resolveText(summary.titleKey || summary.title)}
-              date={summary.lastUpdated}
-              markdownPath={summary.markdownPath}
-              showTitle
-              animateOnScroll={summary.animateOnScroll !== false}
-              virus={activeVirus}
-              view={view}
-              {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
-            />
-          </div>
-        )}
+          {summary?.markdownPath && (
+      <TrendSummaryContainer
+        ref={summaryRef} // ✅ attaches directly to the inner DOM element
+        sectionTitle={resolveText(summary.titleKey || summary.title)}
+        date={summary.lastUpdated}
+        markdownPath={summary.markdownPath}
+        showTitle
+        animateOnScroll={summary.animateOnScroll !== false}
+        virus={activeVirus}
+        view={view}
+        {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
+      />
+    )}
+
 
         {hydratedSections
           .filter((section) => {
@@ -287,8 +302,9 @@ const ConfigDrivenPage = ({ config }) => {
 
       {config.showPillToggle !== false && showPill && (
         <FloatingTogglePill
+          className={showPill ? "visible" : ""} 
           activeVirus={activeVirus}
-          viewLabel={viewDisplayLabels[view]} // "Visits" or "Admissions"
+          viewLabel={viewDisplayLabels[view]} 
           onVirusChange={setVirus}
           onViewChange={setView}
           controls={controls}

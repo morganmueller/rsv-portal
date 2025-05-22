@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, forwardRef } from "react";
 import PropTypes from "prop-types";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 import { getTrendInfo } from "../../utils/getTrendInfo";
 import "./TrendSummaryContainer.css";
 
-const TrendSummaryContainer = ({
+const TrendSummaryContainer = forwardRef(({
   sectionTitle,
   date,
   trendDirection,
@@ -15,22 +15,27 @@ const TrendSummaryContainer = ({
   metricLabel,
   virus = "COVID-19",
   view = "visits",
-}) => {
-  const ref = useRef(null);
+}, ref) => {
+  const localRef = useRef(null);
+  const resolvedRef = ref ?? localRef;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (!animateOnScroll) return;
-
+    const node = resolvedRef.current;
+    if (!animateOnScroll || !node) return;
+  
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.2 }
     );
-
-    const node = ref.current;
-    if (node) observer.observe(node);
-    return () => node && observer.unobserve(node);
+  
+    observer.observe(node);
+  
+    return () => {
+      if (node) observer.unobserve(node);
+    };
   }, [animateOnScroll]);
+  
 
   const resolvedMetricLabel = metricLabel || view;
   const trend = getTrendInfo({
@@ -41,10 +46,8 @@ const TrendSummaryContainer = ({
 
   return (
     <div
-      ref={ref}
-      className={`trend-summary-container ${
-        animateOnScroll && isVisible ? "fade-in" : ""
-      }`}
+      ref={resolvedRef}
+      className={`trend-summary-container ${animateOnScroll && isVisible ? "fade-in" : ""}`}
     >
       {date && (
         <p className="trend-date">
@@ -76,7 +79,9 @@ const TrendSummaryContainer = ({
       {children && <div className="trend-body">{children}</div>}
     </div>
   );
-};
+});
+
+TrendSummaryContainer.displayName = "TrendSummaryContainer";
 
 TrendSummaryContainer.propTypes = {
   sectionTitle: PropTypes.string,

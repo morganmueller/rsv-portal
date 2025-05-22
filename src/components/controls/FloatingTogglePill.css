@@ -1,16 +1,26 @@
 .floating-pill {
-    position: fixed;
-    top: 100px;
-    right: var(--spacing-lg);
-    z-index: 999;
-  }
+  position: fixed;
+  top: 100px;
+  right: var(--spacing-lg);
+  z-index: 999;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
+
+.floating-pill.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
   
-  @media (max-width: 640px) {
-    .floating-pill {
-      left: var(--spacing-md);
-      right: auto;
-    }
+@media (max-width: 640px) {
+  .floating-pill {
+    left: var(--spacing-md);
+    right: auto;
   }
+}
   
   .pill-button {
     background-color: var(--bg-light-blue);

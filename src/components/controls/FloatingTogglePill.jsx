@@ -12,7 +12,9 @@ const FloatingTogglePill = ({
   viewLabel,
   onVirusChange,
   onViewChange,
-  controls = {}
+  controls = {},
+  className = ""
+
 }) => {
   const [open, setOpen] = useState(false);
   const { virusToggle = true, viewToggle = true } = controls;
@@ -21,7 +23,7 @@ const FloatingTogglePill = ({
   if (!virusToggle && !viewToggle) return null;
 
   return (
-    <div className="floating-pill">
+  <div className={`floating-pill ${className || ""}`}>
       <button className="pill-button" onClick={() => setOpen(!open)}>
         <>
           {activeIcon && (
@@ -75,6 +77,7 @@ FloatingTogglePill.propTypes = {
   activeVirus: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   viewLabel: PropTypes.string.isRequired,
+  className: PropTypes.string,
   onVirusChange: PropTypes.func.isRequired,
   onViewChange: PropTypes.func.isRequired,
   controls: PropTypes.shape({
