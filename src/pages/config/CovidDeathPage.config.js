@@ -34,6 +34,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "seasonalCovidDeaths",
+            seasonal: true,
             metricName: "{virus} deaths",
             submetric: "Total", // explicitly set for non-grouped
             xField: "date",
@@ -65,6 +66,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByAge",
+            seasonal: null,
             metricName: "{virus} deaths by age group",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
@@ -97,6 +99,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByGeo",
+            seasonal: null,
             metricName: "{virus} deaths by borough",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
@@ -128,6 +131,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByRE",
+            seasonal: null,
             metricName: "{virus} deaths by race and ethnicity",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",

@@ -56,15 +56,15 @@
       },
       "charts": {
         "seasonalEdVisits": {
-          "title": "{virus} Emergency Department {viewLabel}",
+          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>",
           "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "{virus} Emergency Department {viewLabel} by Age Group",
+          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>, by Age Group",
           "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByGeo": {
-          "title": "{virus} Emergency Department {viewLabel} by Borough",
+          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>, by Borough",
           "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         }
 

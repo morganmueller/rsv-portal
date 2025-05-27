@@ -30,7 +30,10 @@ const LineChart = ({
   virus,
   color,
   metricName = "Category", // 👈 used for legend title
+  isPercent,
+  seasonal
 }) => {
+
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
@@ -59,6 +62,28 @@ const LineChart = ({
 
   const axisFormat = getXAxisFormat(parsedData, xField);
 
+  // check seasonal prop
+const xEncoding = seasonal ? {
+      field: "dayOfSeason",
+      type: "quantitative",
+      axis: {
+        title: null,
+        values: [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335],
+        labelExpr: "['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][indexof([1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335], datum.value)]"
+          },
+      scale: {domain: [1, 365]}
+    } : {
+      field: xField,
+      type: "temporal",
+      axis: {
+        title: null,
+        format: axisFormat,
+        tickCount: 6
+      },
+      scale: { padding: 10 }
+    };
+
+
   const specTemplate = {
     width: "container",
     autosize: { type: "fit", contains: "padding" },
@@ -69,10 +94,21 @@ const LineChart = ({
         titleFont: typography.heading,
         labelColor: colors.gray700,
         titleColor: colors.gray800,
-        grid: false,
-        ticks: false,
-        tickColor: "transparent",
+        labelFontSize: 12
+      },
+      axisX: {
+        ticks: true,
+        domain: true,
+        domainColor: "lightgray",
+        grid: false
+      },
+      axisY: {
         domain: false,
+        ticks: false,
+        tickCount: 3,
+        orient: "left",
+        zindex: 0,
+        gridDash: [2]
       },
       legend: {
         labelFont: typography.body,
@@ -83,13 +119,27 @@ const LineChart = ({
         symbolStrokeWidth: 5,
         orient: "bottom", // 👈 legend moved to bottom
         title: metricName,
+        labelFontSize: 16
       },
       view: {
         stroke: "transparent",
       },
     },
+    transform: [
+      { calculate: "year(datum.date)", as: "year" },
+      { calculate: "month(datum.date)", as: "month" },
+      { calculate: "dayofyear(datum.date)", as: "day" },
+      {
+        calculate: "month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1",
+        as: "startYear"
+      },
+      {
+        calculate: "(datetime(year(datum.date), month(datum.date), date(datum.date)) - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1)) / (1000 * 60 * 60 * 24) + 1",
+        as: "dayOfSeason"
+      }
+    ],
     layer: [
-      ...(colorField
+      ...(colorField || seasonal
         ? []
         : [
             {
@@ -100,20 +150,14 @@ const LineChart = ({
                 color: selectedColor,
               },
               encoding: {
-                x: {
-                  field: "{xField}",
-                  type: "temporal",
-                  axis: {
-                    title: null,
-                    format: axisFormat,
-                    tickCount: 6,
-                  },
-                  scale: { padding: 10 },
-                },
+                x: xEncoding,
                 y: {
                   field: "{yField}",
                   type: "quantitative",
-                  axis: { title: null, tickCount: 4 },
+                  axis: { 
+                    title: null, 
+                    tickCount: 4
+                  },
                 },
               },
             },
@@ -126,20 +170,15 @@ const LineChart = ({
           strokeWidth: 3,
         },
         encoding: {
-          x: {
-            field: "{xField}",
-            type: "temporal",
-            axis: {
-              title: null,
-              format: axisFormat,
-              tickCount: 6,
-            },
-            scale: { padding: 10 },
-          },
+          x: xEncoding,
           y: {
             field: "{yField}",
             type: "quantitative",
-            axis: { title: null, tickCount: 4 },
+            axis: { 
+              title: null, 
+              tickCount: 4,
+              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {})
+            },
           },
           color: colorField
             ? {
@@ -148,6 +187,7 @@ const LineChart = ({
                 scale: {
                   range: virusColorRangeMap[virus] || undefined,
                 },
+                sort: ["0-4","5-17","18-64","65+"]
               }
             : { value: selectedColor },
           tooltip: tooltipFields?.map((field) => {

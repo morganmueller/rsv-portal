@@ -34,7 +34,9 @@ const edPageConfig = {
       chart: {
         type: "lineChart",
         props: {
+          isPercent: true,
           dataSourceKey: "seasonalEDTrends",
+          seasonal: null,
           metricName: "{virus} {view}",
           submetric: "Overall", // ✅ explicitly set for non-grouped
           xField: "date",
@@ -63,7 +65,9 @@ const edPageConfig = {
       chart: {
         type: "lineChart",
         props: {
+          isPercent: true,
           dataSourceKey: "edByAge",
+          seasonal: null,
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
           xField: "date",
@@ -93,7 +97,9 @@ const edPageConfig = {
       chart: {
         type: "lineChart",
         props: {
+          isPercent: true,
           dataSourceKey: "edByGeo",
+          seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",
           xField: "date",

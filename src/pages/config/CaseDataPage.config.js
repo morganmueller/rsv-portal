@@ -36,11 +36,12 @@ const caseDataPageConfig = {
         type: "lineChart",
         props: {
           dataSourceKey: "seasonalCaseTrends",
+          seasonal: true,
           metricName: "{virus} cases",
           submetric: "Total", // explicitly set for non-grouped
-          xField: "date",
+          xField: "dayOfSeason",
           yField: "value",
-          colorField: null,
+          colorField: "startYear",
           tooltipFields: ["date", "value"],
           defaultDisplay: "Number", 
           columnLabels: {
@@ -76,10 +77,10 @@ const caseDataPageConfig = {
             tooltipFields: ["date", "submetric", "value"],
             defaultDisplay: "Number", 
             legendTitle: "Test Type",
-            showRollingAvg: true,
+            showRollingAvg: false,
             customColorScale: {
               domain: ["Confirmed", "Probable"],
-              range: ["#9CA3AF", "#4F32B3"],
+              range: ["#4F32B3", "#9CA3AF"],
             },
             columnLabels: {
               date: "Week",
@@ -144,6 +145,7 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByAge",
+            seasonal: null,
             metricName: "{virus} cases by age group",
             groupField: "submetric",
             xField: "date",
@@ -175,6 +177,7 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByBorough",
+            seasonal: null,
             metricName: "{virus} cases by borough",
             groupField: "submetric",
             xField: "date",
@@ -208,6 +211,7 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByRE",
+            seasonal: null,
             metricName: "{virus} cases by race and ethnicity",
             groupField: "submetric",
             xField: "date",

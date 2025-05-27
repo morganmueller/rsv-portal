@@ -12,7 +12,7 @@ const TopControls = ({ controls = {} }) => {
     <>
 {virusToggle && (
   <div className="data-filter-group">
-    <span className="data-filter-label">Virus</span>
+    <span className="data-filter-label sr-only">Virus</span>
     <VirusFilterGroup
        activeVirus={activeVirus}  
       onChange={setActiveVirus}
@@ -22,7 +22,7 @@ const TopControls = ({ controls = {} }) => {
 
 {viewToggle && (
   <div className="data-filter-group right-aligned">
-    <span className="data-filter-label">Choose Between</span>
+    <span className="data-filter-label sr-only">Choose Between</span>
     <ViewToggleGroup activeView={view} onChange={setView} />
   </div>
 )}

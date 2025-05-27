@@ -53,6 +53,7 @@ const overviewConfig = {
         props: {
           dataSourceKey: "seasonalARI",
           metricName: "ARI {view}",
+          seasonal: null,
           submetric: "Overall", // explicitly set for non-grouped
           xField: "date",
           yField: "value",

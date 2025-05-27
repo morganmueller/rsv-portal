@@ -13,7 +13,7 @@ const overviewGridItems = [
     {
       labelKey: "overviewBottomNav.wastewater.title",
       descriptionKey: "overviewBottomNav.wastewater.description",
-      link: "/about#prevention",
+      link: "https://coronavirus.health.ny.gov/covid-19-wastewater-surveillance",
     },
   ];
   

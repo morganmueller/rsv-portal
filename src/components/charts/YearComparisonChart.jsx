@@ -84,6 +84,10 @@ const YearComparisonChart = ({
           legend: { title: legendTitle },
           ...(customColorScale ? { scale: customColorScale } : {}),
         },
+        order: {
+          field: "stackOrder",
+          type: "ordinal"
+      },
       }),
       tooltip: [
         { field: "date", type: "temporal", format: "%d %b %Y" },
@@ -165,6 +169,12 @@ const YearComparisonChart = ({
         continuousBandSize: 10,
       },
     },
+    transform: [
+        {
+          calculate: "datum.submetric === 'Flu B' ? 0 : datum.submetric === 'Confirmed' ? 0 : datum.submetric === 'Flu A H3' ? 1 : datum.submetric === 'Probable' ? 1 : datum.submetric === 'Flu A H1' ? 2 : datum.submetric === 'Flu A not subtyped' ? 3 : 4",
+          as: "stackOrder"
+        }
+      ],
     layer: showRollingAvg
       ? [baseBarLayer, rollingAvgLayer]
       : [baseBarLayer],
