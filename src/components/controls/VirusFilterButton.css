@@ -36,14 +36,15 @@
 
 @media (max-width: 640px) {
   .filter-button {
-    font: var(--font-size-xs);
+    font-size: var(--font-size-xs);
     flex-direction: row; 
     justify-content: flex-start;
     align-items: center;
     width: 100%; 
-    padding: 10px 12px;
-    gap: 8px;
+    padding: 10px 6px;
+    gap: 0px;
     text-align: left;
+    white-space: nowrap;
   }
 
   .filter-icon {
