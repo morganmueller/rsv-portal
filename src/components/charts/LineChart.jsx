@@ -1,10 +1,10 @@
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
-import ChartFooter from "./ChartFooter"; // Adjust path if needed
+import ChartFooter from "./ChartFooter";
 
 const { covid, flu, rsv } = tokens.colorScales;
-const { colors, typography, spacing } = tokens;
+const { colors, typography } = tokens;
 
 const getXAxisFormat = (data, xField) => {
   if (!data || data.length < 2) return "%b %d";
@@ -33,8 +33,8 @@ const LineChart = ({
   metricName = "Category",
   isPercent,
   seasonal,
-  dataSource = "NYC Health Department Syndromic Surveillance", 
-  footnote
+  dataSource = "NYC Health Department Syndromic Surveillance",
+  footnote,
 }) => {
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
@@ -57,36 +57,45 @@ const LineChart = ({
       ? data.filter((d) => d.virus === virus)
       : data;
 
-  const parsedData = filteredData.map((d) => ({
-    ...d,
-    [xField]: new Date(d[xField]),
-  }));
+  const axisFormat = getXAxisFormat(filteredData, xField);
 
-  const axisFormat = getXAxisFormat(parsedData, xField);
+  const xEncoding = seasonal
+    ? {
+        field: "dayOfSeason",
+        type: "quantitative",
+        axis: {
+          title: null,
+          values: [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335],
+          labelExpr:
+            "['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][indexof([1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335], datum.value)]",
+        },
+        scale: { domain: [1, 365] },
+      }
+    : {
+        field: xField,
+        type: "temporal",
+        axis: {
+          title: null,
+          format: axisFormat,
+          tickCount: 6,
+        },
+        scale: { padding: 10 },
+      };
 
-  const maxDate = parsedData.length > 0
-    ? new Date(Math.max(...parsedData.map(d => d[xField])))
-    : null;
-
-  const xEncoding = seasonal ? {
-    field: "dayOfSeason",
-    type: "quantitative",
-    axis: {
-      title: null,
-      values: [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335],
-      labelExpr: "['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][indexof([1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335], datum.value)]"
-    },
-    scale: { domain: [1, 365] }
-  } : {
-    field: xField,
-    type: "temporal",
-    axis: {
-      title: null,
-      format: axisFormat,
-      tickCount: 6
-    },
-    scale: { padding: 10 }
-  };
+  const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map(
+    (field) => {
+      const sample = filteredData.find((d) => d[field] != null)?.[field];
+      return {
+        field,
+        type:
+          field === xField
+            ? "temporal"
+            : typeof sample === "number"
+            ? "quantitative"
+            : "nominal",
+      };
+    }
+  );
 
   const specTemplate = {
     width: "container",
@@ -98,13 +107,13 @@ const LineChart = ({
         titleFont: typography.heading,
         labelColor: colors.gray700,
         titleColor: colors.gray800,
-        labelFontSize: 12
+        labelFontSize: 12,
       },
       axisX: {
         ticks: true,
         domain: true,
         domainColor: "lightgray",
-        grid: false
+        grid: false,
       },
       axisY: {
         domain: false,
@@ -112,7 +121,7 @@ const LineChart = ({
         tickCount: 3,
         orient: "left",
         zindex: 0,
-        gridDash: [2]
+        gridDash: [2],
       },
       legend: {
         labelFont: typography.body,
@@ -123,7 +132,7 @@ const LineChart = ({
         symbolStrokeWidth: 5,
         orient: "bottom",
         title: metricName,
-        labelFontSize: 16
+        labelFontSize: 16,
       },
       view: {
         stroke: "transparent",
@@ -135,42 +144,37 @@ const LineChart = ({
       { calculate: "dayofyear(datum.date)", as: "day" },
       {
         calculate: "month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1",
-        as: "startYear"
+        as: "startYear",
       },
       {
-        calculate: "(datetime(year(datum.date), month(datum.date), date(datum.date)) - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1)) / (1000 * 60 * 60 * 24) + 1",
-        as: "dayOfSeason"
-      }
+        calculate:
+          "(datetime(year(datum.date), month(datum.date), date(datum.date)) - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1)) / (1000 * 60 * 60 * 24) + 1",
+        as: "dayOfSeason",
+      },
     ],
     layer: [
       ...(colorField || seasonal
         ? []
-        : [{
-            mark: {
-              type: "area",
-              interpolate: "linear",
-              opacity: 0.15,
-              color: selectedColor,
-            },
-            encoding: {
-              x: xEncoding,
-              y: {
-                field: "{yField}",
-                type: "quantitative",
-                axis: {
-                  title: null,
-                  tickCount: 4
-                },
+        : [
+            {
+              mark: {
+                type: "area",
+                interpolate: "linear",
+                opacity: 0.15,
+                color: selectedColor,
+              },
+              encoding: {
+                x: xEncoding,
+                y: { field: "{yField}", type: "quantitative" },
               },
             },
-          }]
-      ),
+          ]),
       {
         mark: {
           type: "line",
-          point: true,
           interpolate: "linear",
           strokeWidth: 3,
+          point: { filled: true, size: 40 },
         },
         encoding: {
           x: xEncoding,
@@ -180,29 +184,30 @@ const LineChart = ({
             axis: {
               title: null,
               tickCount: 4,
-              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {})
+              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {}),
             },
           },
           color: colorField
             ? {
-              field: "{colorField}",
-              type: "nominal",
-              scale: {
-                range: virusColorRangeMap[virus] || undefined,
-              },
-              sort: ["0-4", "5-17", "18-64", "65+"]
-            }
+                field: "{colorField}",
+                type: "nominal",
+                scale: { range: virusColorRangeMap[virus] || undefined },
+                sort: ["0-4", "5-17", "18-64", "65+"],
+              }
             : { value: selectedColor },
-          tooltip: tooltipFields?.map((field) => {
-            const sample = parsedData[0]?.[field];
-            const type =
-              field === xField
-                ? "temporal"
-                : typeof sample === "number"
-                  ? "quantitative"
-                  : "nominal";
-            return { field, type };
-          }),
+          tooltip: sharedTooltip,
+        },
+      },
+      {
+        mark: {
+          type: "point",
+          opacity: 0,
+          size: 100,
+        },
+        encoding: {
+          x: xEncoding,
+          y: { field: "{yField}", type: "quantitative" },
+          tooltip: sharedTooltip,
         },
       },
     ],
@@ -211,19 +216,16 @@ const LineChart = ({
   return (
     <div style={{ width: "100%" }}>
       <VegaLiteWrapper
-        data={parsedData}
+        data={filteredData}
         specTemplate={specTemplate}
         dynamicFields={{ xField, yField, colorField }}
       />
       <ChartFooter
         dataSource={dataSource}
         latestDate={
-          parsedData?.length > 0
-            ? Math.max(...parsedData.map((d) => d[xField]))
-            : null
+          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d[xField]))) : null
         }
         footnote={footnote}
-
       />
     </div>
   );

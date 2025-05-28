@@ -111,7 +111,7 @@ const caseDataPageConfig = {
         type: "yearComparisonChart",
         props: {
           dataSourceKey: "casesBySubType",
-          dataSource: "NYC Health Department N", 
+          dataSource: "NYC Health Department", 
 
           metricName: "{virus} cases by sub type",
           groupField: "submetric",

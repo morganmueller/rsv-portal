@@ -289,6 +289,15 @@ const ConfigDrivenPage = ({ config }) => {
               view,
               colorMap: tokens.colorScales?.[activeVirus],
             };
+            
+            if (
+              section.chart?.type?.toLowerCase().includes("line") &&
+              !resolvedProps.xField
+            ) {
+              resolvedProps.xField = "date"; 
+            }
+            
+            
 
             return (
               <SectionWithChart

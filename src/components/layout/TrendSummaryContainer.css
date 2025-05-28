@@ -52,6 +52,7 @@
 }
 
 .trend-subtitle-select {
+  width: auto;
   font-weight: 600;
   font-size: var(--trend-status-size, var(--font-size-md));
   font-family: var(--font-body);
