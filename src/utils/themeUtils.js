@@ -20,12 +20,12 @@ const themeMap = {
     icon: "/assets/rsv-vector.svg",
   },
   "ARI": {
-    color: colors.orangePrimary,
+    color: colors.orangeText,
     background: colors.bgLightOrange,
     icon: "/assets/ari-vector.svg",
   },
   "Acute Respiratory Infections": {
-    color: colors.orangePrimary,
+    color: colors.orangeText,
     background: colors.bgLightOrange,
     icon: "/assets/ari-vector.svg",
   },
