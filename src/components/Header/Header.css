@@ -297,8 +297,8 @@ html, body, #root {
 
   .data-topic-select {
     height: 36px;
-    font-size: var(--font-size-sm);
-    padding: 4px 20px 4px 10px;
+    font-size: var(--font-size-xs);
+    padding: 4px 36px 4px 10px;
     width: 100%;
     max-width: 280px;
   }

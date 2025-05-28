@@ -96,7 +96,7 @@
 @media (max-width: 640px) {
   .floating-pill {
     position: fixed;
-    bottom: 0;
+    bottom: 10px;
     top: auto;
     left: 0;
     right: 0;
@@ -114,12 +114,13 @@
   }
 
   .pill-button {
-    width: 100%;
+    width: 65%;
     max-width: 100%;
     border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-700);
     font-size: var(--font-size-sm);
-    background: var(--blue-primary);
-    color: var(--white);
+    background-color: var(--bg-light-blue);
+    color: var(--gray-800);
     display: flex;
     align-items: center;
     justify-content: center;
