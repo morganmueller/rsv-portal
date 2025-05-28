@@ -7,6 +7,10 @@
 }
 
 
+.toggle-button:focus {
+  outline: none;
+  box-shadow: none;
+}
 
   
   .toggle-button {
@@ -32,6 +36,7 @@
   .toggle-button.active {
     background-color: #2563eb;
     color: #ffffff;
+    border: none;
   }
   
   

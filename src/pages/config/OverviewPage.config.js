@@ -52,6 +52,7 @@ const overviewConfig = {
         type: "lineChart",
         props: {
           dataSourceKey: "seasonalARI",
+          dataSource: "NYC Health Department", 
           metricName: "ARI {view}",
           seasonal: null,
           submetric: "Overall", // explicitly set for non-grouped

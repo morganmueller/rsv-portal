@@ -5,8 +5,6 @@ import "./Header.css";
 const Dropdown = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Extract current topic from pathname
   const currentTopic = location.pathname.split("/")[2] || "emergency-dept";
 
   const handleChange = (e) => {
@@ -17,15 +15,27 @@ const Dropdown = () => {
   };
 
   return (
-    <select
-      className="data-topic-select"
-      onChange={handleChange}
-      value={currentTopic}
-    >
-      <option value="emergency-dept">Emergency Department Visits and Admissions</option>
-      <option value="cases">Lab-Reported Cases</option>
-      <option value="deaths">COVID-19 Deaths</option>
-    </select>
+    <div className="dropdown-block">
+      <label htmlFor="data-topic-select" className="dropdown-label">
+        Explore different topics:
+      </label>
+      <select
+        id="data-topic-select"
+        className="data-topic-select nav-pill"
+        onChange={handleChange}
+        value={currentTopic}
+        aria-label="Select a data topic"
+        aria-describedby="dropdown-hint"
+        role="combobox"
+      >
+        <option value="emergency-dept">Emergency Department Visits and Admissions</option>
+        <option value="cases">Lab-Reported Cases</option>
+        <option value="deaths">COVID-19 Deaths</option>
+      </select>
+      <span id="dropdown-hint" className="dropdown-hint">
+        ⓘ Page will update automatically
+      </span>
+    </div>
   );
 };
 

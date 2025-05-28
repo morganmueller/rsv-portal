@@ -1,8 +1,9 @@
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
-const { covid, flu, rsv } = tokens.colorScales;
+import ChartFooter from "./ChartFooter"; // Adjust path if needed
 
+const { covid, flu, rsv } = tokens.colorScales;
 const { colors, typography, spacing } = tokens;
 
 const getXAxisFormat = (data, xField) => {
@@ -29,11 +30,12 @@ const LineChart = ({
   tooltipFields,
   virus,
   color,
-  metricName = "Category", // 👈 used for legend title
+  metricName = "Category",
   isPercent,
-  seasonal
+  seasonal,
+  dataSource = "NYC Health Department Syndromic Surveillance", 
+  footnote
 }) => {
-
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
@@ -62,27 +64,29 @@ const LineChart = ({
 
   const axisFormat = getXAxisFormat(parsedData, xField);
 
-  // check seasonal prop
-const xEncoding = seasonal ? {
-      field: "dayOfSeason",
-      type: "quantitative",
-      axis: {
-        title: null,
-        values: [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335],
-        labelExpr: "['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][indexof([1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335], datum.value)]"
-          },
-      scale: {domain: [1, 365]}
-    } : {
-      field: xField,
-      type: "temporal",
-      axis: {
-        title: null,
-        format: axisFormat,
-        tickCount: 6
-      },
-      scale: { padding: 10 }
-    };
+  const maxDate = parsedData.length > 0
+    ? new Date(Math.max(...parsedData.map(d => d[xField])))
+    : null;
 
+  const xEncoding = seasonal ? {
+    field: "dayOfSeason",
+    type: "quantitative",
+    axis: {
+      title: null,
+      values: [1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335],
+      labelExpr: "['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][indexof([1, 32, 62, 93, 124, 152, 183, 213, 244, 274, 305, 335], datum.value)]"
+    },
+    scale: { domain: [1, 365] }
+  } : {
+    field: xField,
+    type: "temporal",
+    axis: {
+      title: null,
+      format: axisFormat,
+      tickCount: 6
+    },
+    scale: { padding: 10 }
+  };
 
   const specTemplate = {
     width: "container",
@@ -117,7 +121,7 @@ const xEncoding = seasonal ? {
         titleColor: colors.gray700,
         symbolSize: 100,
         symbolStrokeWidth: 5,
-        orient: "bottom", // 👈 legend moved to bottom
+        orient: "bottom",
         title: metricName,
         labelFontSize: 16
       },
@@ -141,27 +145,26 @@ const xEncoding = seasonal ? {
     layer: [
       ...(colorField || seasonal
         ? []
-        : [
-            {
-              mark: {
-                type: "area",
-                interpolate: "linear",
-                opacity: 0.15,
-                color: selectedColor,
-              },
-              encoding: {
-                x: xEncoding,
-                y: {
-                  field: "{yField}",
-                  type: "quantitative",
-                  axis: { 
-                    title: null, 
-                    tickCount: 4
-                  },
+        : [{
+            mark: {
+              type: "area",
+              interpolate: "linear",
+              opacity: 0.15,
+              color: selectedColor,
+            },
+            encoding: {
+              x: xEncoding,
+              y: {
+                field: "{yField}",
+                type: "quantitative",
+                axis: {
+                  title: null,
+                  tickCount: 4
                 },
               },
             },
-          ]),
+          }]
+      ),
       {
         mark: {
           type: "line",
@@ -174,21 +177,21 @@ const xEncoding = seasonal ? {
           y: {
             field: "{yField}",
             type: "quantitative",
-            axis: { 
-              title: null, 
+            axis: {
+              title: null,
               tickCount: 4,
               ...(isPercent ? { labelExpr: "datum.value + '%'" } : {})
             },
           },
           color: colorField
             ? {
-                field: "{colorField}",
-                type: "nominal",
-                scale: {
-                  range: virusColorRangeMap[virus] || undefined,
-                },
-                sort: ["0-4","5-17","18-64","65+"]
-              }
+              field: "{colorField}",
+              type: "nominal",
+              scale: {
+                range: virusColorRangeMap[virus] || undefined,
+              },
+              sort: ["0-4", "5-17", "18-64", "65+"]
+            }
             : { value: selectedColor },
           tooltip: tooltipFields?.map((field) => {
             const sample = parsedData[0]?.[field];
@@ -196,8 +199,8 @@ const xEncoding = seasonal ? {
               field === xField
                 ? "temporal"
                 : typeof sample === "number"
-                ? "quantitative"
-                : "nominal";
+                  ? "quantitative"
+                  : "nominal";
             return { field, type };
           }),
         },
@@ -212,15 +215,16 @@ const xEncoding = seasonal ? {
         specTemplate={specTemplate}
         dynamicFields={{ xField, yField, colorField }}
       />
-      <div
-        style={{
-          fontSize: typography.fontSizeBase,
-          color: colors.gray500,
-          marginTop: spacing.sm,
-        }}
-      >
-        Source: NYC Health Department Syndromic Surveillance
-      </div>
+      <ChartFooter
+        dataSource={dataSource}
+        latestDate={
+          parsedData?.length > 0
+            ? Math.max(...parsedData.map((d) => d[xField]))
+            : null
+        }
+        footnote={footnote}
+
+      />
     </div>
   );
 };

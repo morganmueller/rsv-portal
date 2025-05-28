@@ -14,6 +14,7 @@ import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
+
 import {
   getTrendFromTimeSeries,
   generateTrendSubtitle,
@@ -22,10 +23,12 @@ import {
   getTrendInfo,
 } from "../../utils/trendUtils";
 import { loadConfigWithData } from "../../utils/loadConfigWithData";
-
+import { getGroupOptions } from "../../utils/getGroupOptions";
 import StatGrid from "../grids/StatGrid";
 import OverviewGrid from "../grids/OverviewGrid";
 import ToggleControls from "../controls/ToggleControls";
+import GroupDropdown from "../controls/GroupDropdown";
+import TrendSubtitle from "../controls/TrendSubtitle";
 
 const customComponents = {
   StatGrid,
@@ -36,6 +39,18 @@ const viewDisplayLabels = {
   visits: "Visits",
   admits: "Admissions",
 };
+
+const groupDisplayNames = {
+  Bronx: "the Bronx",
+  "0-4": "Ages 0–4",
+  "5-17": "Ages 5–17",
+  "18-64": "Ages 18–64",
+  "65+": "Ages 65+",
+  "All Ages": "all Age Groups",
+  "All Boroughs": "All Boroughs",
+};
+
+
 
 const resolveText = (input, variables = {}) => {
   const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
@@ -68,6 +83,11 @@ const ConfigDrivenPage = ({ config }) => {
 
   const [hydratedConfig, setHydratedConfig] = useState(null);
   const [markdownContent, setMarkdownContent] = useState("");
+  const [groupSelections, setGroupSelections] = useState({});
+
+  const updateGroup = (key, val) => {
+    setGroupSelections((prev) => ({ ...prev, [key]: val }));
+  };
 
   const summaryRef = useRef(null);
   const [showPill, setShowPill] = useState(false);
@@ -75,46 +95,28 @@ const ConfigDrivenPage = ({ config }) => {
   useEffect(() => {
     const checkAndObserve = () => {
       const el = summaryRef.current;
-      console.log("📌 summaryRef.current:", el);
-  
       if (!el) {
-        // Retry after a tick if not yet mounted
         requestAnimationFrame(checkAndObserve);
         return;
       }
-  
       const observer = new IntersectionObserver(
-        ([entry]) => {
-          console.log("👀 Intersection entry:", entry);
-          setShowPill(!entry.isIntersecting);
-        },
+        ([entry]) => setShowPill(!entry.isIntersecting),
         { threshold: 0.05 }
       );
-  
       observer.observe(el);
-  
       return () => observer.disconnect();
     };
-  
     const cleanup = checkAndObserve();
-  
     return typeof cleanup === "function" ? cleanup : undefined;
   }, []);
-  
-  
-  
-  
-  
 
   useEffect(() => {
     if (config.data) {
       setHydratedConfig(config);
       return;
     }
-
     const selectedVirus = activeVirus || config.defaultVirus || "COVID-19";
     const selectedView = view || config.defaultView || "visits";
-
     loadConfigWithData(config, { virus: selectedVirus, view: selectedView })
       .then(setHydratedConfig)
       .catch(console.error);
@@ -138,23 +140,31 @@ const ConfigDrivenPage = ({ config }) => {
         title={resolveText(titleKey)}
         subtitle={resolveText(subtitleKey)}
         topControls={
-          config.showTopControls === false ? null : <TopControls controls={controls} />
+          config.showTopControls === false ? null : (
+            <TopControls
+              controls={controls}
+              activeVirus={activeVirus}
+              onVirusChange={setVirus}
+              view={view}
+              onViewChange={setView}
+            />
+          )
         }
+        
       >
-          {summary?.markdownPath && (
-      <TrendSummaryContainer
-        ref={summaryRef} // ✅ attaches directly to the inner DOM element
-        sectionTitle={resolveText(summary.titleKey || summary.title)}
-        date={summary.lastUpdated}
-        markdownPath={summary.markdownPath}
-        showTitle
-        animateOnScroll={summary.animateOnScroll !== false}
-        virus={activeVirus}
-        view={view}
-        {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
-      />
-    )}
-
+        {summary?.markdownPath && (
+          <TrendSummaryContainer
+            ref={summaryRef}
+            sectionTitle={resolveText(summary.titleKey || summary.title)}
+            date={summary.lastUpdated}
+            markdownPath={summary.markdownPath}
+            showTitle
+            animateOnScroll={summary.animateOnScroll !== false}
+            virus={activeVirus}
+            view={view}
+            {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
+          />
+        )}
 
         {hydratedSections
           .filter((section) => {
@@ -166,23 +176,19 @@ const ConfigDrivenPage = ({ config }) => {
           })
           .map((section, idx) => {
             const key = section.id || idx;
-
             const textVars = {
               virus: activeVirus,
               view,
               displayView: `<span class="bg-highlight">${viewDisplayLabels[view]}</span>`,
             };
-
             const interpolatedProps = interpolateObject(section.chart?.props || {}, textVars);
             const dataSourceKey =
               section.dataSourceKey ||
               interpolatedProps.dataSourceKey ||
               section.chart?.props?.dataSourceKey ||
               null;
-
             const filteredData =
               dataSourceKey && data[dataSourceKey] ? data[dataSourceKey] : [];
-
             if (section.renderAs === "overview" || section.renderAs === "hidden") return null;
 
             if (section.renderAs === "custom") {
@@ -203,32 +209,51 @@ const ConfigDrivenPage = ({ config }) => {
               );
             }
 
+            const groupField = section.chart?.props?.groupField;
+            const groupLabel = section.chart?.props?.groupLabel || "All Groups";
+            const groupOptions = getGroupOptions(filteredData, groupField, groupLabel);
+            const activeGroup = groupSelections[key] ?? groupOptions[0] ?? null;
+            
+            
+            const normalizedGroup = (activeGroup || "").trim();
+            const normalizedLabel = (groupLabel || "").trim();
+            const groupDisplay = groupDisplayNames[normalizedGroup] || normalizedGroup;
+
+            const groupFilteredData =
+              !activeGroup || activeGroup === groupLabel
+                ? filteredData
+                : filteredData.filter((d) => d[groupField] === activeGroup);
+
             const trendKey = section.chart?.props?.yField || view;
             const trendObj = section.trendEnabled
-              ? getTrendFromTimeSeries(filteredData, trendKey)
+              ? getTrendFromTimeSeries(groupFilteredData, trendKey)
               : null;
-
             const trendInfo = getTrendInfo({
               trendDirection: trendObj?.direction,
               metricLabel: viewDisplayLabels[view],
               virus: activeVirus,
             });
-
             const trendClass =
               trendObj?.direction === "up"
                 ? "trend-up"
                 : trendObj?.direction === "down"
                 ? "trend-down"
                 : "trend-neutral";
-
-            const latestWeek = filteredData.at?.(-1)?.week || filteredData.at?.(-1)?.date;
-
+            const latestWeek = groupFilteredData.at?.(-1)?.week || groupFilteredData.at?.(-1)?.date;
+            const groupLabelText =
+            normalizedGroup && normalizedGroup !== normalizedLabel
+              ? `in ${groupDisplay}`
+              : `across ${normalizedLabel.toLowerCase()}`;
+            
             const fullVars = {
               ...textVars,
               date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
               trend: trendObj
                 ? `<span class="${trendClass}">${trendObj.label} ${trendObj.value}%</span>`
                 : "not available",
+                group: groupLabelText, 
+
+                         
               trendDirection: trendObj?.direction,
               arrow: trendInfo?.arrow,
               viewLabel: viewDisplayLabels[view],
@@ -236,21 +261,30 @@ const ConfigDrivenPage = ({ config }) => {
               trendColor: trendInfo?.trendColor,
             };
 
-            const rawSubtitle = section.subtitle
-              ? resolveText(section.subtitle, fullVars)
-              : generateTrendSubtitle({ view, trendObj, latestWeek });
+            const rawSubtitleTemplate = resolveText(section.subtitle); // resolves i18n key to "{group}..." string
 
-            const computedSubtitle = capitalizeFirstHtml(rawSubtitle);
+
+            const computedSubtitle = (
+              <TrendSubtitle
+              template={rawSubtitleTemplate}
+              variables={fullVars}
+                groupProps={{
+                  options: groupOptions,
+                  active: activeGroup,
+                  onChange: (val) => updateGroup(key, val),
+                }}
+              />
+            );
+            
 
             const ChartComponent = chartRegistry[section.chart?.type];
             if (!ChartComponent) {
               console.warn(`Chart type '${section.chart?.type}' not found`);
               return null;
             }
-
             const resolvedProps = {
               ...interpolatedProps,
-              data: filteredData,
+              data: groupFilteredData,
               virus: activeVirus,
               view,
               colorMap: tokens.colorScales?.[activeVirus],
@@ -264,7 +298,7 @@ const ConfigDrivenPage = ({ config }) => {
                 subtitleVariables={fullVars}
                 infoIcon={section.infoIcon}
                 downloadIcon={section.downloadIcon}
-                onDownloadClick={() => downloadCSV(filteredData, `${section.id}.csv`)}
+                onDownloadClick={() => downloadCSV(groupFilteredData, `${section.id}.csv`)}
                 columnLabels={interpolatedProps.columnLabels}
                 modalTitle={resolveText(section.modal?.title, fullVars)}
                 modalContent={
@@ -278,23 +312,24 @@ const ConfigDrivenPage = ({ config }) => {
                   )
                 }
                 animateOnScroll={section.animateOnScroll !== false}
-                previewData={filteredData}
-
+                previewData={groupFilteredData}
               >
-                <ChartContainer
-                  title={resolveText(section.title, fullVars)}
-                  chart={<ChartComponent {...resolvedProps} />}
-                  sidebar={
-                    section.showSidebarToggle ? (
-                      <ToggleControls
-                        data={filteredData}
-                        view={view}
-                        onToggle={setView}
-                      />
-                    ) : null
-                  }
-                  footer={section.chart.footer}
-                />
+<ChartContainer
+  title={resolveText(section.title, fullVars)}
+  chart={<ChartComponent {...resolvedProps} />}
+  {...(section.showSidebarToggle
+    ? {
+        sidebar: (
+          <ToggleControls
+            data={filteredData}
+            view={view}
+            onToggle={setView}
+          />
+        ),
+      }
+    : {})}
+  footer={section.chart.footer}
+/>
               </SectionWithChart>
             );
           })}
@@ -302,13 +337,14 @@ const ConfigDrivenPage = ({ config }) => {
 
       {config.showPillToggle !== false && showPill && (
         <FloatingTogglePill
-          className={showPill ? "visible" : ""} 
+          className={showPill ? "visible" : ""}
           activeVirus={activeVirus}
-          viewLabel={viewDisplayLabels[view]} 
+          view={view}
+          viewLabel={viewDisplayLabels[view]}
           onVirusChange={setVirus}
           onViewChange={setView}
           controls={controls}
-        />
+        /> 
       )}
     </>
   );

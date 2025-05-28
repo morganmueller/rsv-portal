@@ -109,6 +109,60 @@
   font-weight: 700;
 }
 
+/* === Medium Screens === */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .footer {
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+
+  .footer-content {
+    padding: 0 var(--spacing-xl);
+  }
+
+
+  .footer-grid {
+    flex-direction: column; /* stack vertically */
+    align-items: center;
+  }
+
+  .footer-columns {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    max-width: 100%;
+  }
+
+  .footer-col {
+    flex: 1 1 40%;
+    min-width: 180px;
+    max-width: 240px;
+  }
+
+  .footer-right {
+    align-items: center;
+    margin-top: var(--spacing-lg);
+    max-width: 280px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    max-width: 120px;
+    width: 100%;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer-copy {
+    text-align: center;
+    font-size: var(--font-size-sm);
+  }
+
+  .footer-bottom {
+    padding-top: var(--spacing-sm);
+  }
+}
+
+
 /* === Mobile === */
 @media (max-width: 768px) {
   .footer {
@@ -124,8 +178,8 @@
   .footer-columns {
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-lg);
   }
+  
 
   .footer-col {
     list-style: disc;
@@ -151,11 +205,16 @@
   .footer-right {
     margin-top: var(--spacing-md);
     align-items: center;
+    text-align: center;
+    align-self: center; 
   }
+  
 
   .footer-logo {
     margin: 0 auto var(--spacing-sm) auto;
+    display: block;
   }
+  
 
   .footer-copy,
   .footer-text p,
@@ -173,5 +232,49 @@
 
   .footer-copy {
     margin: 0;
+  }
+}
+
+@media (max-width: 1145px) {
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-columns {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    max-width: 100%;
+  }
+
+  .footer-col {
+    list-style: disc;
+    padding-left: var(--spacing-sm);
+    gap: var(--spacing-xs);
+    align-items: flex-start; 
+    text-align: left;        
+  }
+  
+
+  .footer-right {
+    margin-top: var(--spacing-md);
+    align-items: center;
+    text-align: center;
+    align-self: center; 
+  }
+  
+
+  .footer-logo {
+    margin: 0 auto var(--spacing-sm) auto;
+    display: block;
+  }
+  
+
+  .footer-copy {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
   }
 }

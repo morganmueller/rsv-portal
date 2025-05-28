@@ -36,9 +36,11 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "seasonalEDTrends",
+          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
+          footnote: "*Data includes only hospitals that report syndromic data consistently.*",
           seasonal: null,
           metricName: "{virus} {view}",
-          submetric: "Overall", // ✅ explicitly set for non-grouped
+          submetric: "Overall",
           xField: "date",
           yField: "value",
           colorField: null,
@@ -67,9 +69,12 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "edByAge",
+          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
+          footnote: "*Age groups are based on patient-reported data and may contain missing values.*",
           seasonal: null,
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
+          groupLabel: "All Ages",
           xField: "date",
           yField: "value",
           colorField: "submetric",
@@ -99,9 +104,12 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "edByGeo",
+          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
+          footnote: "*Borough-level data reflects patient residence, not facility location.*",
           seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",
+          groupLabel: "All Boroughs",
           xField: "date",
           yField: "value",
           colorField: "submetric",
@@ -109,7 +117,7 @@ const edPageConfig = {
           columnLabels: {
             date: "Week",
             value: "Number of {view}",
-            submetric: "Borough" 
+            submetric: "Borough"
           }
         }
       }

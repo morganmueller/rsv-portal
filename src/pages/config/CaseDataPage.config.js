@@ -36,6 +36,7 @@ const caseDataPageConfig = {
         type: "lineChart",
         props: {
           dataSourceKey: "seasonalCaseTrends",
+          dataSource: "NYC Health Department", 
           seasonal: true,
           metricName: "{virus} cases",
           submetric: "Total", // explicitly set for non-grouped
@@ -69,8 +70,10 @@ const caseDataPageConfig = {
           type: "yearComparisonChart",
           props: {
             dataSourceKey: "casesByType",
+            dataSource: "NYC Health Department", 
             metricName: "{virus} cases by test type",
             groupField: "submetric",
+            groupLabel: "All Test Types",
             field: "isoWeek",
             yField: "value",
             colorField: "submetric",
@@ -108,8 +111,11 @@ const caseDataPageConfig = {
         type: "yearComparisonChart",
         props: {
           dataSourceKey: "casesBySubType",
+          dataSource: "NYC Health Department N", 
+
           metricName: "{virus} cases by sub type",
           groupField: "submetric",
+          groupLabel: "All Subtypes",
           xField: "date",
           yField: "value",
           colorField: "submetric",
@@ -145,9 +151,11 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByAge",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} cases by age group",
             groupField: "submetric",
+            groupLabel: "All Ages",
             xField: "date",
             yField: "value",
             colorField: "submetric",
@@ -177,9 +185,11 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByBorough",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} cases by borough",
             groupField: "submetric",
+            groupLabel: "All Boroughs",
             xField: "date",
             yField: "value",
             colorField: "submetric",
@@ -211,9 +221,11 @@ const caseDataPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "casesByRE",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} cases by race and ethnicity",
             groupField: "submetric",
+            groupLabel: "All Race and Ethnicities",
             xField: "date",
             yField: "value",
             colorField: "submetric",

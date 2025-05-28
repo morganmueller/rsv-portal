@@ -11,8 +11,16 @@
   box-sizing: border-box;
   position: relative;
   height: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  cursor: default;
+}
+
+/* === Header === */
 .stat-card-header {
   display: flex;
   align-items: center;
@@ -32,6 +40,7 @@
   flex: 1;
 }
 
+/* === Content Block === */
 .stat-block {
   display: flex;
   align-items: flex-start;
@@ -45,6 +54,7 @@
   font-weight: 700;
   line-height: 1.2;
   flex-shrink: 0;
+  color: var(--blue-primary);
 }
 
 .stat-detail {
@@ -54,14 +64,20 @@
   justify-content: center;
   text-align: left;
   flex: 1;
+    word-wrap: break-word;
+    max-width: 100%;
+
+  
 }
 
+/* === Divider === */
 .stat-divider {
   border: none;
   border-top: 2px solid var(--card-divider, var(--gray-600));
   margin: 12px 0 4px;
 }
 
+/* === Labels and Trend === */
 .stat-label {
   font-size: 16px;
   color: var(--card-label-color, var(--gray-700));
@@ -76,7 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  font-style: bold;
+  font-weight: 600;
 }
 
 .stat-trend-row {
@@ -95,6 +111,7 @@
   font-size: 14px;
 }
 
+/* === Date Styling === */
 .stat-date {
   font-size: 14px;
   color: var(--card-date-color, var(--gray-700));

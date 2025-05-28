@@ -34,6 +34,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "seasonalCovidDeaths",
+            dataSource: "NYC Health Department", 
             seasonal: true,
             metricName: "{virus} deaths",
             submetric: "Total", // explicitly set for non-grouped
@@ -66,6 +67,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByAge",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} deaths by age group",
             groupField: "submetric", // explicitly set for non-grouped
@@ -99,6 +101,7 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByGeo",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} deaths by borough",
             groupField: "submetric", // explicitly set for non-grouped
@@ -131,9 +134,10 @@ const covidDeathPageConfig = {
           type: "lineChart",
           props: {
             dataSourceKey: "covidDeathsByRE",
+            dataSource: "NYC Health Department", 
             seasonal: null,
             metricName: "{virus} deaths by race and ethnicity",
-            groupField: "submetric", // explicitly set for non-grouped
+            groupField: "submetric", 
             xField: "date",
             yField: "value",
             colorField: null,
@@ -145,7 +149,6 @@ const covidDeathPageConfig = {
               submtric: "Race & Ethnicity"
             }
           }
-          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       }
     ],

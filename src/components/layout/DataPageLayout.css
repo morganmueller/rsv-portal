@@ -149,12 +149,12 @@
 
   .data-title {
     font-size: 28px;
-    text-align: center;
+    text-align: left;
   }
 
   .data-subtitle {
     font-size: var(--font-size-sm);
-    text-align: center;
+    text-align: left;
   }
 
   .data-container {
