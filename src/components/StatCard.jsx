@@ -31,7 +31,7 @@ const StatCard = ({
   
     const isUp = num > 0;
     const arrow = isUp ? "▲" : "▼";
-    const color = isUp ? colors.orangeAccent : colors.greenMuted;
+    const color = isUp ? colors.redPrimary : colors.greenMuted;
   
     return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };

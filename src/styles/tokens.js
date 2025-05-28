@@ -22,6 +22,7 @@ const colors = {
   greenPrimary: "#065F46",
   greenAccent: "#139D72",
   greenMuted: "#059669",
+  orangeText: "#91401A",
   orangePrimary: "#FF6600",
   orangeAccent: "#B36C31",
   orangeMuted: "#FF6C0B",

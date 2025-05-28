@@ -1,0 +1,12 @@
+.sparkline {
+    overflow: visible;
+  }
+  
+  .sparkline-path {
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .sparkline-dot {
+    transition: r 0.2s ease-in-out, fill 0.3s ease-in-out;
+  }
+  

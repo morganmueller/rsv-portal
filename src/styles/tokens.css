@@ -42,6 +42,7 @@
   --green-accent: #139D72;
   --green-muted: #059669;
 
+  --orange-text: #91401A;
   --orange-primary: #FF6600;
   --orange-accent: #B36C31;
   --orange-muted: #FF6C0B;
@@ -121,8 +122,8 @@
     --card-title-color: var(--gray-900);
     --card-divider: var(--gray-600);
     --card-label-color: var(--gray-700);
-    --card-trend-color: var(--gray-600);
-    --card-date-color: var(--gray-700);
+    --card-trend-color: var(--gray-800);
+    --card-date-color: var(--gray-600);
 
     --overview-bg: var(--white);
     --overview-title-color: var(--gray-900);
