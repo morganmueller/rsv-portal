@@ -33,20 +33,24 @@
   vertical-align: middle;
 }
 
-/* Mobile layout: icon above label */
+
 @media (max-width: 640px) {
   .filter-button {
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row; 
+    justify-content: flex-start;
     align-items: center;
-    gap: 4px;
-    padding: 8px 10px;
+    width: 100%; 
+    padding: 10px 12px;
+    gap: 8px;
+    text-align: center;
   }
 
   .filter-icon {
-    display: block;
-    margin: 0 auto;
     width: 16px;
     height: 16px;
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
   }
 }
+
