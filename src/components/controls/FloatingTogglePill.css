@@ -114,8 +114,8 @@
   }
 
   .pill-button {
-    width: 65%;
-    max-width: 100%;
+    width: auto;
+    max-width: 90%;
     border-radius: var(--radius-lg);
     border: 1px solid var(--gray-700);
     font-size: var(--font-size-sm);
