@@ -1,3 +1,5 @@
+/* === Floating Pill Styles === */
+
 .floating-pill {
   position: fixed;
   top: 100px;
@@ -14,74 +16,152 @@
   transform: translateY(0);
   pointer-events: auto;
 }
-  
+
+.floating-pill.open .pill-button .arrow {
+  transform: rotate(180deg);
+}
+
+.pill-button {
+  background-color: var(--bg-light-blue);
+  color: var(--gray-800);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 999px;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.pill-button .arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 10px;
+}
+
+.pill-dropdown {
+  margin-top: var(--spacing-sm);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.pill-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pill-section label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gray-700);
+  font-family: var(--font-body);
+  margin-bottom: 4px;
+}
+
+.pill-section button {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-body);
+  color: var(--gray-900);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pill-section button:hover {
+  background-color: var(--gray-200);
+  color: var(--blue-primary);
+}
+
+.pill-dropdown > .pill-section:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .floating-pill {
-    left: var(--spacing-md);
-    right: auto;
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    width: 75%;
+    margin: 0 auto;
+    padding: var(--spacing-sm);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background: transparent;
+    z-index: 9999;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
-}
-  
+
   .pill-button {
-    background-color: var(--bg-light-blue);
-    color: var(--gray-800);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: 999px;
-    border: none;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pill-dropdown {
-    margin-top: var(--spacing-sm);
-    background: var(--white);
+    width: 100%;
+    max-width: 100%;
     border-radius: var(--radius-lg);
-    padding: var(--spacing-md);
-    box-shadow: var(--shadow-md);
-    width: 200px;
+    font-size: var(--font-size-sm);
+    background: var(--blue-primary);
+    color: var(--white);
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-  
-  .pill-section {
-    display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: var(--spacing-xs);
   }
-  
-  .pill-section label {
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--gray-700);
-    font-family: var(--font-body);
-    margin-bottom: 4px;
+
+  .pill-button .arrow {
+    transform: rotate(180deg);
   }
-  
-  .pill-section button {
-    display: block;
+
+  .floating-pill.open .pill-button .arrow {
+    transform: rotate(0deg);
+  }
+
+  .pill-dropdown {
+    position: absolute;
+    bottom: 60px;
     width: 100%;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: var(--gray-100);
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    font-family: var(--font-body);
-    color: var(--gray-900);
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    max-width: 100%;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-md);
+    z-index: 10000;
+    animation: slideUp 0.3s ease;
   }
-  
-  .pill-section button:hover {
-    background-color: var(--gray-200);
-    color: var(--blue-primary);
+
+  .filter-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: var(--spacing-md); 
+
   }
-  
-  /* Remove margin after last .pill-section */
-  .pill-dropdown > .pill-section:last-child {
-    margin-bottom: 0;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  
+}

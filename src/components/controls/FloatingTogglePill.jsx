@@ -23,8 +23,8 @@ const FloatingTogglePill = ({
   if (!virusToggle && !viewToggle) return null;
 
   return (
-  <div className={`floating-pill ${className || ""}`}>
-      <button className="pill-button" onClick={() => setOpen(!open)}>
+<div className={`floating-pill ${className} ${open ? "open" : ""}`}>
+<button className={`pill-button ${open ? "open" : ""}`} onClick={() => setOpen(!open)}>
         <>
           {activeIcon && (
             <img
@@ -36,7 +36,7 @@ const FloatingTogglePill = ({
           )}
           {activeVirus}
           {viewToggle && ` | ${viewLabel}`}
-          <span style={{ fontSize: "10px", marginLeft: "6px" }}>▼</span>
+          <span className="arrow">▼</span>
         </>
       </button>
 

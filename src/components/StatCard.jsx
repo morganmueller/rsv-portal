@@ -20,11 +20,22 @@ const StatCard = ({
 
   const getChangeArrow = (change) => {
     const num = parseFloat(change);
-    const isUp = num >= 0;
+    if (isNaN(num)) return null;
+  
+    const epsilon = 0.001; // tolerance for what counts as no change
+    const isNoChange = Math.abs(num) < epsilon;
+  
+    if (isNoChange) {
+      return <span style={{ color: colors.gray600, marginRight: 4 }}>→</span>;
+    }
+  
+    const isUp = num > 0;
     const arrow = isUp ? "▲" : "▼";
     const color = isUp ? colors.orangeAccent : colors.greenMuted;
+  
     return <span style={{ color, marginRight: 4 }}>{arrow}</span>;
   };
+  
 
   return (
     <div className="stat-card" style={{ backgroundColor: cardBackground }}>
