@@ -240,6 +240,20 @@ html, body, #root {
 }
 
 @media (max-width: 768px) {
+
+  .header-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .header-content {
+    padding-left: 0;
+    text-align: center;
+    align-items: center;
+  }
+  
   .header-section {
     padding: var(--spacing-lg) 0;
   }
