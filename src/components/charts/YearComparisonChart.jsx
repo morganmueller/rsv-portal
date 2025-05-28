@@ -1,7 +1,6 @@
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
-import ChartFooter from "./ChartFooter"; 
 
 const { colors, typography, spacing } = tokens;
 
@@ -24,8 +23,6 @@ const YearComparisonChart = ({
   legendTitle = "Category",
   showRollingAvg = false,
   customColorScale,
-  dataSource = "NYC Health Department Syndromic Surveillance",
-  footnote
 }) => {
   const normalizedDisplay =
     typeof display === "string" ? display.trim().toLowerCase() : null;
@@ -57,10 +54,6 @@ const YearComparisonChart = ({
     return isMatch && isDisplayMatch;
   });
 
-  const maxDate = filtered.length > 0
-    ? new Date(Math.max(...filtered.map(d => d.date)))
-    : null;
-
   const baseBarLayer = {
     mark: {
       type: "bar",
@@ -73,7 +66,7 @@ const YearComparisonChart = ({
         type: "ordinal",
         axis: {
           title: null,
-          labelExpr: "timeFormat(toDate(datum.value), '%d %b %Y')",
+          labelExpr: "timeFormat(toDate(datum.value), '%m/%d/%y')",
           labelAngle: -45,
         },
         scale: { padding: 0 },
@@ -94,11 +87,13 @@ const YearComparisonChart = ({
         order: {
           field: "stackOrder",
           type: "ordinal"
-        },
+      },
       }),
       tooltip: [
         { field: "date", type: "temporal", format: "%d %b %Y" },
-        ...(colorField ? [{ field: colorField, type: "nominal" }] : []),
+        ...(colorField
+          ? [{ field: colorField, type: "nominal" }]
+          : []),
         { field: yField, type: "quantitative" },
       ],
     },
@@ -175,11 +170,11 @@ const YearComparisonChart = ({
       },
     },
     transform: [
-      {
-        calculate: "datum.submetric === 'Flu B' ? 0 : datum.submetric === 'Confirmed' ? 0 : datum.submetric === 'Flu A H3' ? 1 : datum.submetric === 'Probable' ? 1 : datum.submetric === 'Flu A H1' ? 2 : datum.submetric === 'Flu A not subtyped' ? 3 : 4",
-        as: "stackOrder"
-      }
-    ],
+        {
+          calculate: "datum.submetric === 'Flu B' ? 0 : datum.submetric === 'Confirmed' ? 0 : datum.submetric === 'Flu A H3' ? 1 : datum.submetric === 'Probable' ? 1 : datum.submetric === 'Flu A H1' ? 2 : datum.submetric === 'Flu A not subtyped' ? 3 : 4",
+          as: "stackOrder"
+        }
+      ],
     layer: showRollingAvg
       ? [baseBarLayer, rollingAvgLayer]
       : [baseBarLayer],
@@ -188,17 +183,15 @@ const YearComparisonChart = ({
   return (
     <div style={{ width: "100%" }}>
       <VegaLiteWrapper data={filtered} specTemplate={specTemplate} />
-      <ChartFooter
-  dataSource={dataSource}
-  latestDate={
-    filtered?.length > 0
-      ? Math.max(...filtered.map((d) => d[xField]))
-      : null
-  }
-  footnote={footnote}
-
-/>
-
+      <div
+        style={{
+          fontSize: typography.fontSizeBase,
+          color: colors.gray500,
+          marginTop: spacing.sm,
+        }}
+      >
+        Source: NYC Health Department Syndromic Surveillance
+      </div>
     </div>
   );
 };
