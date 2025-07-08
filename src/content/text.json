@@ -1,15 +1,15 @@
  {
    "nav": {
-    "overview": "Overview",
-    "explorer": "Data Explorer",
-    "info": "More Info",
+    "home": "Home",
+    "data": "Data",
+    "info": "Info",
     "externalTool": "Health Tool"
   },
 
   "overviewBottomNav": {
     "emergencyDept": {
-      "title": "Emergency Department Visits & Admissions",
-      "description": "Explore emergency department trends across boroughs."
+      "title": "Emergency Department Visits & Hospitalizations",
+      "description": "Explore emergency department trends across boroughs"
     },
     "github": {
       "title": "Explore our Github Repository",
@@ -23,32 +23,32 @@
 
 
     "overview": {
-      "title": "Acute Respiratory Infections Overview",
-      "subtitle": "Explore Acute Respiratory Virus data in NYC",
+      "title": "Respiratory Illnesses in New York City",
+      "subtitle": "<p>The New York City (NYC) Health Department uses information from a variety of sources to capture a comprehensive picture of respiratory illness activity citywide. This webpage summarizes those trends and highlights three respiratory viruses that are <a href='https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page' target='_blank' rel='noopener noreferrer'>reported</a> to the NYC Health Department and can impact all New Yorkers – <a href='https://www.nyc.gov/site/doh/covid/covid-19-main.page' target='_blank' rel='noopener noreferrer'>COVID-19</a>, <a href='https://www.nyc.gov/site/doh/health/health-topics/flu-seasonal.page' target='_blank' rel='noopener noreferrer'>influenza</a>, and <a href='https://www.nyc.gov/site/doh/health/health-topics/respiratory-syncytial-virus.page' target='_blank' rel='noopener noreferrer'>RSV (respiratory syncytial virus)</a>.</p><p>Updates occur every Thursday with data through the previous Saturday. All data are preliminary and may change as more information is received.</p>",
       "indicators": {
         "title": "Emergency Department Trends"
       },
       "charts": {
         "monthlyARIChart": {
-          "title": "Acute Respiratory Infection Overview",
-          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
+          "title": "Respiratory Illness Overview",
+          "subtitle": "<p>These data show trends of people who received a respiratory illness diagnosis in a NYC emergency department and may not represent everyone with respiratory illness.</p><p>{viewLabel} for the week of {date} have {trend} since the previous week</p>"
         }
       },
       "statCards": {
-        "ari": { "title": "Acute Respiratory Infections" },
+        "ari": { "title": "Overall respiratory illness" },
         "covid": { "title": "COVID-19" },
         "flu": { "title": "Influenza" },
         "rsv": { "title": "RSV" }
       },
       "summaryBox": {
-        "title": "Emergency Department Trends",
-        "description": "This summary highlights recent patterns in ED visits and admissions related to respiratory viruses across NYC. Use the toggles and filters above to explore further."
+        "title": "At a Glance: Emergency Department Visits This Week vs. Last Week",
+        "description": "This summary information highlights recent trends in emergency department visits related to respiratory illnesses in NYC. Emergency department data provide a more immediate way to evaluate changes in care-seeking trends for respiratory illness. The NYC Health Department examines visits to the emergency departments with specified diagnosis codes for respiratory illness. These can include infections like COVID-19, influenza, and respiratory syncytial virus (RSV) as well as general respiratory complaints such as cough or illnesses such as pneumonia."
       }
     },
   
   "emergencyDeptPage": {
-      "mainTitle": "Emergency Department Visits & Admissions",
-      "mainSubtitle": "Trends and characteristics of Emergency Department use for COVID-19, influenza, and RSV",
+      "mainTitle": "Emergency Department Visits & Hospitalizations in NYC",
+      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Influenza and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",
    
 
       "summarySection": {
@@ -56,23 +56,22 @@
       },
       "charts": {
         "seasonalEdVisits": {
-          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>",
-          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week."
+          "title": "<span style='font-weight:bold'>Emergency Department {viewLabel}</span> for <span style='font-weight:bold'>{virus}</span>",
+          "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>, by Age Group",
+          "title": "<span style='font-weight:bold'>Emergency Department {viewLabel}</span> for <span style='font-weight:bold'>{virus}</span>, by Age Group",
           "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week for {group}"
         },
         "percentEdVisitsByGeo": {
-          "title": "Percent of <span style='font-weight:bold'>Emergency Department {viewLabel}</span> that are for <span style='font-weight:bold'>{virus}</span>, by Borough",
+          "title": "<span style='font-weight:bold'>Emergency Department {viewLabel}</span> for <span style='font-weight:bold'>{virus}</span>, by Borough",
           "subtitle": "{viewLabel} for the week of {date} have {trend} since the previous week for {group}"
         }
 
       }
     },
     "caseDataPage": {
-      "mainTitle": "Laboratory-Reported Cases",
-      "mainSubtitle": "Trends and characteristics of COVID-19, influenza, and RSV laboratory reports",
+      "mainTitle": "Laboratory-Reported Cases in NYC",
    
 
       "summarySection": {
@@ -81,37 +80,31 @@
 
       "charts": {
         "seasonalComparison": {
-          "title": "{virus} Laboratory-Reported Cases by Season",
-          "subtitle": "Reports for the week of {date} have {trend} since the previous week"
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Season",
+          "subtitle": "Cases for the week of {date} have {trend} since the previous week"
           
         },
         "reportsByTestType": {
-          "title": "{virus} Laboratory-Reported Cases by Test Type",
-          "subtitle": ""
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Test Type"
         },
         "reportsBySubtype": {
-          "title": "{virus} Laboratory-Reported Cases by SubType",
-          "subtitle": ""
-
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Subtype"
         },
         "reportsByAge": {
-          "title": "{virus} Laboratory-Reported Cases by Age Group",
-          "subtitle": ""
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Age Group"
         },
         "reportsByBorough": {
-          "title": "{virus} Laboratory-Reported Cases by Borough",
-          "subtitle": ""
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Borough"
         },
         "reportsByRE": {
-          "title": "{virus} Laboratory-Reported Cases by Race and Ethnicity",
-          "subtitle": ""
+          "title": "<span style='font-weight:bold'>Laboratory-Reported Cases</span> of <span style='font-weight:bold'>{virus}</span>, by Race and Ethnicity"
         }
         
 
       }
     },
     "CovidDeathPage": {
-      "mainTitle": "COVID-19 Death Surveillance",
+      "mainTitle": "COVID-19 Deaths in NYC",
       "mainSubtitle": "Trends and characteristics of COVID-19 deaths",
    
 
