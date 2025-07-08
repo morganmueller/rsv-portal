@@ -41,8 +41,8 @@ export const getMetricData = memoize(function (
 
 
 /**
- * Pivot data to: [{ date, visits, admits }]
- * Matches metrics like "ARI visits" and "ARI admits"
+ * Pivot data to: [{ date, visits, hospitalizations }]
+ * Matches metrics like "ARI visits" and "ARI hospitalizations"
  */
 export function pivotMetricToViews(
   data,
@@ -67,7 +67,7 @@ export function pivotMetricToViews(
       ? metricWithoutPrefix.replace(` ${viewSuffix}`, "").toLowerCase()
       : metricWithoutPrefix.toLowerCase();
 
-    if (!["visits", "admits"].includes(viewType)) return;
+    if (!["visits", "hospitalizations"].includes(viewType)) return;
 
     const groupValue = groupField ? d[groupField]?.trim() : null;
     const key = groupField ? `${d.date}|${groupValue}` : d.date;

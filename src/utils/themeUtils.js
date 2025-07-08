@@ -24,7 +24,7 @@ const themeMap = {
     background: colors.bgLightOrange,
     icon: "/assets/ari-vector.svg",
   },
-  "Acute Respiratory Infections": {
+  "Overall respiratory illness": {
     color: colors.orangeText,
     background: colors.bgLightOrange,
     icon: "/assets/ari-vector.svg",

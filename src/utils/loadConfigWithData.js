@@ -10,8 +10,8 @@ export async function loadConfigWithData(config, variables = {}) {
   const rawData = await loadCSVData(config.dataPath);
 
   const virusMap = {
-    "COVID-19": "COVID",
-    "Influenza": "Flu",
+    "COVID-19": "COVID-19",
+    "Influenza": "Influenza",
     RSV: "RSV",
     ARI: "ARI",
   };

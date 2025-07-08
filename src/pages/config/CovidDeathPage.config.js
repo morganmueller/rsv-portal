@@ -35,12 +35,14 @@ const covidDeathPageConfig = {
           props: {
             dataSourceKey: "seasonalCovidDeaths",
             dataSource: "NYC Health Department", 
+            title: "{virus} deaths",
             seasonal: true,
             metricName: "{virus} deaths",
             submetric: "Total", // explicitly set for non-grouped
-            xField: "date",
+            xField: "dayOfSeason",
             yField: "value",
-            colorField: null,
+            title: "COVID-19 deaths",
+            colorField: "season",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
             columnLabels: {
@@ -64,16 +66,18 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "lineChart",
+          type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByAge",
             dataSource: "NYC Health Department", 
+            title: "{virus} deaths",
             seasonal: null,
             metricName: "{virus} deaths by age group",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
             yField: "value",
-            colorField: null,
+            title: "COVID-19 deaths",
+            colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
             columnLabels: {
@@ -98,16 +102,18 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "lineChart",
+          type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByGeo",
             dataSource: "NYC Health Department", 
+            title: "{virus} deaths",
             seasonal: null,
             metricName: "{virus} deaths by borough",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
             yField: "value",
-            colorField: null,
+            title: "COVID-19 deaths",
+            colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
             columnLabels: {
@@ -131,16 +137,18 @@ const covidDeathPageConfig = {
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
-          type: "lineChart",
+          type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByRE",
             dataSource: "NYC Health Department", 
+            title: "{virus} deaths",
             seasonal: null,
             metricName: "{virus} deaths by race and ethnicity",
             groupField: "submetric", 
             xField: "date",
             yField: "value",
-            colorField: null,
+            title: "COVID-19 deaths",
+            colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
             columnLabels: {

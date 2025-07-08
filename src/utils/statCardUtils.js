@@ -16,8 +16,8 @@
      const visits = data.filter(
        (d) => d.metric === `${metricBase} visits` && d.submetric === "Overall"
      );
-     const admits = data.filter(
-       (d) => d.metric === `${metricBase} admits` && d.submetric === "Overall"
+     const hospitalizations = data.filter(
+       (d) => d.metric === `${metricBase} hospitalizations` && d.submetric === "Overall"
      );
    
      const getLatestAndChange = (series) => {
@@ -49,7 +49,7 @@
    
      return {
        ...getLatestAndChange(visits),
-       admitData: getLatestAndChange(admits),
+       admitData: getLatestAndChange(hospitalizations),
      };
    }
    

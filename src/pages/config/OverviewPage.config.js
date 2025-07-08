@@ -23,10 +23,10 @@ const overviewConfig = {
   chart: {
     props: {
       metrics: [
-        "ARI visits", "ARI admits",
-        "COVID visits", "COVID admits",
-        "Flu visits", "Flu admits",
-        "RSV visits", "RSV admits"
+        "ARI visits", "ARI hospitalizations",
+        "COVID-19 visits", "COVID-19 hospitalizations",
+        "Influenza visits", "Influenza hospitalizations",
+        "RSV visits", "RSV hospitalizations"
       ],
       submetric: "Overall",
       display: "Percent",
@@ -45,7 +45,7 @@ const overviewConfig = {
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "ARI Visits",
+        title: "Respiratory Illness Overview",
         markdownPath: "/content/modals/metric-explainer.md",
       },
       chart: {

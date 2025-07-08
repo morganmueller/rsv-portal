@@ -25,7 +25,7 @@ export function generateTrendSubtitle({ view, trendObj, latestWeek }) {
 
   const directionText = trendObj.label?.toLowerCase(); // "increased", "decreased", etc.
   const valueText = trendObj.value ? `${trendObj.value}%` : "";
-  const metric = view === "admits" ? "admits" : "visits";
+  const metric = view === "hospitalizations" ? "hospitalizations" : "visits";
 
   return `${capitalize(metric)} for the week of ${formatDate(latestWeek)} have ${directionText} ${valueText} since the previous week.`;
 }

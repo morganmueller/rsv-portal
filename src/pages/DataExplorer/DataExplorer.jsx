@@ -4,8 +4,8 @@ import DataPageLayout from "../../components/layout/DataPageLayout";
 import "./DataExplorer.css";
 
 const topicLabels = {
-  "ed-visits": "Emergency Department Visits & Admissions",
-  "cases": "Case Data & Demographics",
+  "ed-visits": "Emergency Department Visits & Hospitalizations",
+  "cases": "Laboratory-reported Cases",
   "deaths": "COVID-19 Deaths",
 };
 

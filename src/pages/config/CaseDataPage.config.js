@@ -2,7 +2,6 @@
 const caseDataPageConfig = {
   id: "caseDataPage",
   titleKey: "caseDataPage.mainTitle",
-  subtitleKey: "caseDataPage.mainSubtitle",
   dataPath:  "/data/caseData.csv",
 
   controls: {
@@ -14,7 +13,7 @@ const caseDataPageConfig = {
     title: "Page Overview",
     markdownPath: "/content/sections/caseDataSectionText.md",
     lastUpdated: "05/01/2025",
-    showTrendArrow: true,
+    showTrendArrow: false,
     showSecondayTitle: false,
 
     metricLabel: "cases", // Used when no viewToggle
@@ -29,7 +28,7 @@ const caseDataPageConfig = {
       trendEnabled: true, 
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Season",
+        title: "Laboratory-Reported Cases by Season",
         markdownPath: "/content/modals/cases-explainer.md"
       },
       chart: {
@@ -37,11 +36,12 @@ const caseDataPageConfig = {
       props: {
         dataSourceKey: "seasonalCaseTrends",
         seasonal: true,
+        title: "{virus} Laboratory-Reported Cases by Season",
         metricName: "{virus} cases",
         submetric: "Total", // explicitly set for non-grouped
         xField: "dayOfSeason",
         yField: "value",
-        colorField: "startYear",
+        colorField: "season",
         tooltipFields: ["date", "value"],
         defaultDisplay: "Number", 
         columnLabels: {
@@ -62,7 +62,7 @@ const caseDataPageConfig = {
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Test Type",
+        title: "Laboratory-Reported Cases by Test Type",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
@@ -70,6 +70,7 @@ const caseDataPageConfig = {
         props: {
           dataSourceKey: "casesByType",
           metricName: "{virus} cases by test type",
+          title: "{virus} Laboratory-Reported Cases by Test Type",
           groupField: "submetric",
           field: "isoWeek",
           yField: "value",
@@ -94,21 +95,21 @@ const caseDataPageConfig = {
     {
       id: "case-reports-subtype",
       title: "caseDataPage.charts.reportsBySubtype.title",
-      subtitle: "caseDataPage.charts.reportsBySubtype.subtitle",
       showIfVirus: "Influenza", 
       infoIcon: true,
       downloadIcon: true,
       trendEnabled: true, 
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Subtype",
+        title: "Laboratory-Reported Cases by Subtype",
         markdownPath: "/content/modals/cases-explainer.md"
       },
       chart: {
       type: "yearComparisonChart",
       props: {
         dataSourceKey: "casesBySubType",
-        metricName: "{virus} cases by sub type",
+        title: "{virus} Laboratory-Reported Cases by Subtype",
+        metricName: "{virus} cases by subtype",
         groupField: "submetric",
         xField: "date",
         yField: "value",
@@ -118,7 +119,7 @@ const caseDataPageConfig = {
         legendTitle: "Subtype",
         showRollingAvg: false, 
         customColorScale: {
-          domain: ["Flu A not subtyped", "Flu A H1", "Flu A H3", "Flu B" ],
+          domain: ["Influenza A not subtyped", "Influenza A H1", "Influenza A H3", "Influenza B" ],
           range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
         },
         columnLabels: {
@@ -138,11 +139,11 @@ const caseDataPageConfig = {
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Age Group",
+        title: "Laboratory-Reported Cases by Age Group",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
-        type: "smallMultipleBarChart",
+        type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByAge",
           seasonal: null,
@@ -150,6 +151,7 @@ const caseDataPageConfig = {
           groupField: "submetric",
           xField: "date",
           yField: "value",
+          title: "{virus} Laboratory-Reported Cases by Age Group",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 
@@ -171,11 +173,11 @@ const caseDataPageConfig = {
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Borough",
+        title: "Laboratory-Reported Cases by Borough",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
-        type: "smallMultipleBarChart",
+        type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByBorough",
           seasonal: null,
@@ -183,6 +185,7 @@ const caseDataPageConfig = {
           groupField: "submetric",
           xField: "date",
           yField: "value",
+          title: "{virus} Laboratory-Reported Cases by Borough",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number",
@@ -205,11 +208,11 @@ const caseDataPageConfig = {
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "{virus} Laboratory Reports by Race and Ethnicity",
+        title: "Laboratory-Reported Cases by Race and Ethnicity",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
-        type: "lineChart",
+        type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByRE",
           seasonal: null,
@@ -217,6 +220,7 @@ const caseDataPageConfig = {
           groupField: "submetric",
           xField: "date",
           yField: "value",
+          title: "{virus} Laboratory-Reported Cases by Race and Ethnicity",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 

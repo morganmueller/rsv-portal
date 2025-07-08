@@ -19,16 +19,16 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<OverviewPage />} />
-          <Route path="/data-explorer" element={<Navigate to="/data-explorer/emergency-dept" replace />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/data" element={<Navigate to="/data/emergency-dept" replace />} />
+          <Route path="/info" element={<AboutPage />} />
 
           {/* Route override for emergency dept */}
-          <Route path="/data-explorer/emergency-dept" element={<EmergencyDeptPage />} />
+          <Route path="/data/emergency-dept" element={<EmergencyDeptPage />} />
 
           {/* Default fallback for other topics */}
-          <Route path="/data-explorer/:topic" element={<DataExplorer />} />
-          <Route path="/data-explorer/cases" element={<CaseDataPage />} />
-          <Route path="/data-explorer/deaths" element={<CovidDeathPage />} />
+          <Route path="/data/:topic" element={<DataExplorer />} />
+          <Route path="/data/cases" element={<CaseDataPage />} />
+          <Route path="/data/deaths" element={<CovidDeathPage />} />
 
         </Routes>
       </main>

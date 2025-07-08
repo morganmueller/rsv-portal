@@ -77,12 +77,11 @@ const colorScales = {
   ]
 };
 
-
 export const tokens = {
   colors,
   spacing,
   typography,
   radii,
   shadows,
-  colorScales
+  colorScales,
 };

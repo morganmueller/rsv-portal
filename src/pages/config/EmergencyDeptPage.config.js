@@ -15,7 +15,7 @@ const edPageConfig = {
     markdownPath: "/content/sections/edSectionText.md",
     title: "Page Overview",
     lastUpdated: "05/01/2025",
-    showTrendArrow: true,
+    showTrendArrow: false,
     showSecondaryTitle: false,
   },
 
@@ -28,7 +28,7 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "{virus} Seasonal ED {view}",
+        title: "Emergency Department {viewLabel}",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -39,6 +39,7 @@ const edPageConfig = {
           dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
           footnote: "*Data includes only hospitals that report syndromic data consistently.*",
           seasonal: null,
+          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis",
           metricName: "{virus} {view}",
           submetric: "Overall",
           xField: "date",
@@ -61,7 +62,7 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "{virus} ED {view} by Age Group",
+        title: "Emergency Department {viewLabel}",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -72,6 +73,7 @@ const edPageConfig = {
           dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
           footnote: "*Age groups are based on patient-reported data and may contain missing values.*",
           seasonal: null,
+          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis, by Age Group",
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
           groupLabel: "All Ages",
@@ -96,7 +98,7 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "{virus} ED {view} by Borough",
+        title: "Emergency Department {viewLabel}",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -106,6 +108,7 @@ const edPageConfig = {
           dataSourceKey: "edByGeo",
           dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
           footnote: "*Borough-level data reflects patient residence, not facility location.*",
+          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis, by Borough",
           seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",
