@@ -3,12 +3,13 @@
 .floating-pill {
   position: fixed;
   top: 100px;
-  right: var(--spacing-lg);
+  left: var(--spacing-lg);
   z-index: 999;
   transition: opacity 0.3s ease, transform 0.3s ease;
   opacity: 0;
   transform: translateY(-12px);
   pointer-events: none;
+  width: auto;
 }
 
 .floating-pill.visible {

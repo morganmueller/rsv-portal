@@ -29,6 +29,7 @@ import OverviewGrid from "../grids/OverviewGrid";
 import ToggleControls from "../controls/ToggleControls";
 import GroupDropdown from "../controls/GroupDropdown";
 import TrendSubtitle from "../controls/TrendSubtitle";
+import "./ConfigDrivenPage.css";
 
 const customComponents = {
   StatGrid,
@@ -37,8 +38,14 @@ const customComponents = {
 
 const viewDisplayLabels = {
   visits: "Visits",
-  admits: "Admissions",
+  hospitalizations: "Hospitalizations",
 };
+
+const viewDisplayLabelsPreposition = {
+  visits: "to",
+  hospitalizations: "from"
+};
+
 
 const groupDisplayNames = {
   Bronx: "the Bronx",
@@ -131,7 +138,7 @@ const ConfigDrivenPage = ({ config }) => {
     }
   }, [summary?.markdownPath]);
 
-  if (!hydratedConfig) return <div>Loading...</div>;
+  if (!hydratedConfig) return <div className="loading"></div>;
   const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
 
   return (
@@ -180,6 +187,8 @@ const ConfigDrivenPage = ({ config }) => {
               virus: activeVirus,
               view,
               displayView: `<span class="bg-highlight">${viewDisplayLabels[view]}</span>`,
+              viewLabelPreposition: viewDisplayLabelsPreposition[view],
+              viewLabel: viewDisplayLabels[view]
             };
             const interpolatedProps = interpolateObject(section.chart?.props || {}, textVars);
             const dataSourceKey =
@@ -257,6 +266,7 @@ const ConfigDrivenPage = ({ config }) => {
               trendDirection: trendObj?.direction,
               arrow: trendInfo?.arrow,
               viewLabel: viewDisplayLabels[view],
+              viewLabelPreposition: viewDisplayLabelsPreposition[view],
               directionText: trendInfo?.directionText,
               trendColor: trendInfo?.trendColor,
             };

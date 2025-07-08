@@ -1,11 +1,11 @@
 import React from "react";
 import { getThemeByTitle } from "../utils/themeUtils";
 import { tokens } from "../styles/tokens";
-import "./StatCard.css";
+import "./StatCardBottom.css";
 
 const { colors, typography } = tokens;
 
-const StatCard = ({
+const StatCardBottom = ({
   title,
   icon,
   visitPercent,
@@ -38,15 +38,15 @@ const StatCard = ({
   
 
   return (
-    <div className="stat-card" style={{ backgroundColor: cardBackground }}>
-      <div className="stat-card-header">
-        {iconSrc && <img className="stat-card-icon" src={iconSrc} alt={`${title} icon`} />}
-        <div className="stat-card-title">{title}</div>
+    <div className="stat-card-bottom" style={{ backgroundColor: cardBackground }}>
+      <div className="stat-card-header-bottom">
+        {iconSrc && <img className="stat-card-icon-bottom" src={iconSrc} alt={`${title} icon`} />}
+        <div className="stat-card-title-bottom">{title}</div>
       </div>
 
-      <div className="stat-block">
-        <div className="stat-detail">
-          <div className="stat-trend-row">
+      <div className="stat-block-bottom">
+        <div className="stat-detail-bottom">
+          <div className="stat-trend-row-bottom">
           {visitChange !== null && (
   <>
     {getChangeArrow(visitChange)}
@@ -60,4 +60,4 @@ const StatCard = ({
   );
 };
 
-export default StatCard;
+export default StatCardBottom;

@@ -7,7 +7,12 @@ const DataPageLayout = ({ title, subtitle, topControls, info, children }) => (
     <div className="data-section-wrapper">
       <div className="data-section-container">
         <h2 className="data-title">{title}</h2>
-        {subtitle && <p className="data-subtitle">{subtitle}</p>}
+        {subtitle && (
+          <div
+            className="data-subtitle"
+            dangerouslySetInnerHTML={{ __html: subtitle }}
+          />
+        )}
 
         {topControls && (
   <div className="data-controls-wrapper">

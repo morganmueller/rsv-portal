@@ -10,10 +10,10 @@ html, body, #root {
 
 .header-section {
   width: 100%;
-  padding: var(--spacing-xl) var(--spacing-sm);
+  padding: var(--spacing-xl) 0;
   background: var(--header-bg);
   background-size: 200% 200%;
-  animation: gradientShift 6s ease infinite;
+  /* animation: gradientShift 6s ease infinite; */
 }
 
 @keyframes gradientShift {
@@ -23,6 +23,10 @@ html, body, #root {
 }
 
 .header-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,8 +37,8 @@ html, body, #root {
 .header-content {
   width: 100%;
   max-width: 700px;
-  padding-left: var(--spacing-lg);
   position: relative;
+  padding-left: var(--spacing-lg);
 }
 
 .header-image-wrapper {
@@ -88,12 +92,15 @@ html, body, #root {
   color: var(--header-button-text);
   border-radius: var(--radius-lg);
   height: 44px;
+  line-height: 1.0;
+  min-width: 160px;
   padding: 0 var(--spacing-lg);
   font-size: var(--font-size-md);
   font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
@@ -102,6 +109,25 @@ html, body, #root {
   background: var(--header-button-active-bg);
   color: var(--header-button-active-text);
   border: none;
+}
+
+/* === Override for white section buttons === */
+.header-buttons-wrapper .outline-button {
+  border-color: var(--blue-primary);
+  color: var(--blue-primary);
+  background: var(--white);
+}
+
+.header-buttons-wrapper .outline-button.active {
+  background: var(--blue-primary);
+  color: var(--white);
+  border: none;
+}
+
+.header-buttons-wrapper .outline-button:hover {
+  background-color: var(--blue-primary);
+  color: var(--white);
+  border: 2px solid var(--blue-primary);
 }
 
 /* === DROPDOWN === */
@@ -143,7 +169,6 @@ html, body, #root {
   background-size: 16px;
 }
 
-
 .data-topic-select:hover {
   border-color: var(--gray-400);
 }
@@ -163,8 +188,6 @@ html, body, #root {
   gap: var(--spacing-xs);
 }
 
-
-
 /* === RESPONSIVE BREAKPOINTS === */
 
 @media (max-width: 1105px) {
@@ -180,7 +203,7 @@ html, body, #root {
   }
 
   .header-content {
-    padding-left: 0;
+    padding-left: var(--spacing-lg);
   }
 
   .header-title,
@@ -215,7 +238,7 @@ html, body, #root {
 @media (max-width: 900px) and (min-width: 769px) {
   .header-buttons {
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--spacing-sm);
   }
 
@@ -230,7 +253,7 @@ html, body, #root {
     max-width: none;
     margin-top: var(--spacing-xs);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .data-topic-select {
@@ -240,20 +263,19 @@ html, body, #root {
 }
 
 @media (max-width: 768px) {
-
   .header-container {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
   }
-  
+
   .header-content {
     padding-left: 0;
     text-align: center;
     align-items: center;
   }
-  
+
   .header-section {
     padding: var(--spacing-lg) 0;
   }
@@ -299,7 +321,6 @@ html, body, #root {
     width: 100%;
     max-width: 280px;
   }
-  
 
   .data-dropdown-wrapper {
     margin: var(--spacing-xs) auto 0 auto;
@@ -307,7 +328,6 @@ html, body, #root {
     justify-content: center;
     width: 100%;
   }
-  
 
   .data-topic-select {
     height: 36px;
@@ -316,6 +336,44 @@ html, body, #root {
     width: 100%;
     max-width: 280px;
   }
-  
 }
 
+.header-buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  gap: var(--spacing-sm);
+}
+
+.left-buttons,
+.right-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1
+}
+
+.left-buttons {
+  justify-content: flex-start;
+  padding-left: var(--spacing-lg);
+}
+
+.right-buttons {
+  justify-content: flex-end;
+}
+.button-with-dropdown {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.inline-dropdown {
+  margin-left: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+}

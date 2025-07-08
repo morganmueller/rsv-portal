@@ -3,7 +3,7 @@ const overviewGridItems = [
     {
       labelKey: "overviewBottomNav.emergencyDept.title",
       descriptionKey: "overviewBottomNav.emergencyDept.description",
-      link: "/data-explorer/emergency-dept",
+      link: "/data/emergency-dept",
     },
     {
       labelKey: "overviewBottomNav.github.title",

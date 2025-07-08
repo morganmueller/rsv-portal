@@ -12,10 +12,10 @@ const ViewToggleGroup = ({ activeView, onChange }) => {
         Visits
       </button>
       <button
-        className={`view-toggle ${activeView === "admits" ? "active" : ""}`}
-        onClick={() => onChange("admits")}
+        className={`view-toggle ${activeView === "hospitalizations" ? "active" : ""}`}
+        onClick={() => onChange("hospitalizations")}
       >
-        Admissions
+        Hospitalizations
       </button>
     </div>
   );

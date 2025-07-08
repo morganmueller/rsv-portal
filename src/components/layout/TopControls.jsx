@@ -15,22 +15,22 @@ const TopControls = ({
   const { virusToggle, viewToggle } = controls;
 
   return (
-    <>
+    <div className="top-controls-wrapper">
       {virusToggle && (
-        <div className="data-filter-group">
+        <div className="virus-filter-group-wrapper">
           <span className="data-filter-label sr-only">Virus</span>
           <VirusFilterGroup activeVirus={activeVirus} onChange={onVirusChange} />
         </div>
       )}
 
       {viewToggle && (
-        <div className="data-filter-group right-aligned">
+        <div className="view-toggle-wrapper">
           <span className="data-filter-label sr-only">Choose Between</span>
           <ViewToggleGroup activeView={view} onChange={onViewChange} />
         </div>
       )}
-    </>
-  );
+    </div>
+);
 };
 
 TopControls.propTypes = {

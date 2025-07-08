@@ -17,8 +17,8 @@ const ExampleChart = ({ data, view }) => {
     return () => clearTimeout(timeout);
   }, [view, activeView]);
 
-  const yField = activeView === "visits" ? "visits" : "admits";
-  const yTitle = activeView === "visits" ? "ARI Visits" : "ARI Admits";
+  const yField = activeView === "visits" ? "visits" : "hospitalizations";
+  const yTitle = activeView === "visits" ? "ARI Visits" : "ARI Hospitalizations";
   const chartColor = activeView === "visits" ? colors.orangePrimary : colors.orangeAccent;
 
   const spec = useMemo(() => ({

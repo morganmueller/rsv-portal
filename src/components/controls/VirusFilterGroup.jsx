@@ -14,7 +14,7 @@ export const virusOptions = [
 
 const VirusFilterGroup = ({ activeVirus, onChange }) => {
   return (
-    <div style={{ display: "flex", gap: "12px" }}>
+    <div className="virus-filter-group">
       {virusOptions.map(({ label, icon }) => (
         <VirusFilterButton
           key={label}

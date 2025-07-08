@@ -19,6 +19,7 @@ const YearComparisonChart = ({
   yField = "value",
   colorField = "submetric",
   metricName,
+  title,
   display,
   legendTitle = "Category",
   showRollingAvg = false,
@@ -63,13 +64,14 @@ const YearComparisonChart = ({
     encoding: {
       x: {
         field: xField,
-        type: "ordinal",
+        type: "temporal",
         axis: {
           title: null,
-          labelExpr: "timeFormat(toDate(datum.value), '%m/%d/%y')",
-          labelAngle: -45,
+          format: "%b %d",
+          tickCount: 12,
+          labelAngle: 0,
         },
-        scale: { padding: 0 },
+        scale: { padding: 20 },
       },
       y: {
         field: yField,
@@ -142,6 +144,16 @@ const YearComparisonChart = ({
   const specTemplate = {
     width: "container",
     autosize: { type: "fit", contains: "padding" },
+    title: {
+      text: title,
+      subtitlePadding: 10,
+      fontWeight: "normal",
+      anchor: "start",
+      fontSize: 14,
+      baseline: "top",
+      dy: -10,
+      subtitleFontSize: 13
+    },
     config: {
       background: colors.white,
       axis: {
@@ -149,9 +161,20 @@ const YearComparisonChart = ({
         titleFont: typography.heading,
         labelColor: colors.gray700,
         titleColor: colors.gray800,
-        grid: false,
-        ticks: false,
+        labelFontSize: 12
+      },
+      axisX: {
+        ticks: true,
+        domain: true,
+        grid: false
+      },
+      axisY: {
         domain: false,
+        ticks: false,
+        tickCount: 3,
+        orient: "left",
+        zindex: 0,
+        gridDash: [2]
       },
       view: { stroke: "transparent" },
       legend: {
@@ -166,7 +189,7 @@ const YearComparisonChart = ({
       bar: {
         binSpacing: 0,
         stroke: null,
-        continuousBandSize: 10,
+        continuousBandSize: 20,
       },
     },
     transform: [

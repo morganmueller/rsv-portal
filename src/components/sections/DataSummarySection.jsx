@@ -15,7 +15,7 @@ const DataSummarySection = ({ virus, view, trendDirection, lastDate, markdownPat
   return (
     <>
       <p style={{ marginBottom: 16, color: "#000000" }}>
-        <strong style={{ color }}>{virus}</strong> {view === "visits" ? "visits" : "admissions"} are trending {trendDirection} since last week ({lastDate}).
+        <strong style={{ color }}>{virus}</strong> {view === "visits" ? "visits" : "hospitalizations"} are trending {trendDirection} since last week ({lastDate}).
       </p>
 
       <MarkdownRenderer
@@ -28,7 +28,7 @@ const DataSummarySection = ({ virus, view, trendDirection, lastDate, markdownPat
 
 DataSummarySection.propTypes = {
   virus: PropTypes.string.isRequired,
-  view: PropTypes.oneOf(["visits", "admits"]).isRequired,
+  view: PropTypes.oneOf(["visits", "hospitalizations"]).isRequired,
   trendDirection: PropTypes.string.isRequired,
   lastDate: PropTypes.string.isRequired,
   markdownPath: PropTypes.string.isRequired,

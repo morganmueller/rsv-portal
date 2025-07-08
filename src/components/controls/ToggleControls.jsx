@@ -16,10 +16,10 @@ const ToggleControls = ({ data, view, onToggle }) => {
         Visits
       </button>
       <button
-        className={`toggle-button ${view === "admits" ? "active" : ""}`}
-        onClick={() => handleToggle("admits")}
+        className={`toggle-button ${view === "hospitalizations" ? "active" : ""}`}
+        onClick={() => handleToggle("hospitalizations")}
       >
-        Admissions
+        Hospitalizations
       </button>
     </div>
   );

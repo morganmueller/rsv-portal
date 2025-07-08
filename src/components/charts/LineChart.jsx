@@ -24,6 +24,7 @@ const getXAxisFormat = (data, xField) => {
 
 const LineChart = ({
   data,
+  title,
   xField,
   yField,
   colorField,
@@ -100,6 +101,16 @@ const LineChart = ({
   const specTemplate = {
     width: "container",
     autosize: { type: "fit", contains: "padding" },
+    title: {
+      text: title,
+      subtitlePadding: 10,
+      fontWeight: "normal",
+      anchor: "start",
+      fontSize: 14,
+      baseline: "top",
+      dy: -10,
+      subtitleFontSize: 13
+    },
     config: {
       background: colors.white,
       axis: {
@@ -151,6 +162,10 @@ const LineChart = ({
           "(datetime(year(datum.date), month(datum.date), date(datum.date)) - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1)) / (1000 * 60 * 60 * 24) + 1",
         as: "dayOfSeason",
       },
+      {
+        calculate: "toString(datum.startYear) + '-' + substring(toString(datum.startYear + 1), 2)",
+        as: "season"
+      }
     ],
     layer: [
       ...(colorField || seasonal

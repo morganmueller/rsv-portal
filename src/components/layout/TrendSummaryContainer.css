@@ -1,7 +1,8 @@
 .trend-summary-container {
   background-color: var(--trend-summary-bg, var(--white));
-  width: 85%;
-  padding: var(--trend-summary-padding, var(--spacing-md)) var(--spacing-2xl);
+  width: 100%;
+  max-width: 1280px;
+  padding: var(--trend-summary-padding, var(--spacing-md)) var(--spacing-lg);
   margin: 0 auto var(--spacing-xl) auto;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);

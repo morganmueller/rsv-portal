@@ -10,13 +10,13 @@ const Dropdown = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     if (value !== currentTopic) {
-      navigate(`/data-explorer/${value}`);
+      navigate(`/data/${value}`);
     }
   };
 
   return (
     <div className="dropdown-block">
-      <label htmlFor="data-topic-select" className="dropdown-label">
+      <label htmlFor="data-topic-select" className="dropdown-label sr-only">
         Explore different topics:
       </label>
       <select
@@ -28,11 +28,11 @@ const Dropdown = () => {
         aria-describedby="dropdown-hint"
         role="combobox"
       >
-        <option value="emergency-dept">Emergency Department Visits and Admissions</option>
+        <option value="emergency-dept">Emergency Department Data</option>
         <option value="cases">Lab-Reported Cases</option>
         <option value="deaths">COVID-19 Deaths</option>
       </select>
-      <span id="dropdown-hint" className="dropdown-hint">
+      <span id="dropdown-hint" className="dropdown-hint sr-only">
         ⓘ Page will update automatically
       </span>
     </div>

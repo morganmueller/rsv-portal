@@ -1,0 +1,128 @@
+.stat-card-bottom {
+    background-color: var(--card-bg, var(--gray-100));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 172px;
+    max-width: 172px;
+    min-width: 172px;
+    box-sizing: border-box;
+    position: relative;
+    height: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .stat-card-bottom:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    cursor: default;
+  }
+  
+  /* === Header === */
+  .stat-card-header-bottom {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: 4px;
+  }
+  
+  .stat-card-icon-bottom {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .stat-card-title-bottom {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--card-title-color, var(--gray-900));
+    flex: 1;
+  }
+  
+  /* === Content Block === */
+  .stat-block-bottom {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-top: var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+  
+  .stat-percent-bottom {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    flex-shrink: 0;
+    color: var(--blue-primary);
+  }
+  
+  .stat-detail-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    flex: 1;
+      word-wrap: break-word;
+      max-width: 100%;
+  
+    
+  }
+  
+  /* === Divider === */
+  .stat-divider-bottom {
+    border: none;
+    border-top: 2px solid var(--card-divider, var(--gray-600));
+    margin: 12px 0 4px;
+  }
+  
+  /* === Labels and Trend === */
+  .stat-label-bottom {
+    font-size: 16px;
+    color: var(--card-label-color, var(--gray-700));
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  
+  .stat-trend-bottom {
+    font-size: 14px;
+    color: var(--card-trend-color, var(--gray-600));
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-weight: 600;
+  }
+  
+  .stat-trend-row-bottom {
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--card-trend-color, var(--gray-900));
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  
+  .stat-trend-row-bottom .stat-date-bottom {
+    color: var(--card-date-color, var(--gray-800));
+    font-size: 14px;
+  }
+  
+  /* === Date Styling === */
+  .stat-date-bottom {
+    font-size: 14px;
+    color: var(--card-date-color, var(--gray-700));
+    margin-top: 2px;
+  }
+  
+  /* === Responsive === */
+  @media (max-width: 768px) {
+    .stat-card-bottom {
+      max-width: 100%;
+      flex: 1 1 100%;
+    }
+  }
+  

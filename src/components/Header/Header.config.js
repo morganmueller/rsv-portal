@@ -1,19 +1,19 @@
 // config/headerConfig.js
 const headerButtons = [
     {
-      id: "overview",
-      labelKey: "nav.overview",
+      id: "home",
+      labelKey: "nav.home",
       path: "/",
     },
     {
-      id: "explorer",
-      labelKey: "nav.explorer",
-      path: "/data-explorer",
+      id: "data",
+      labelKey: "nav.data",
+      path: "/data",
     },
     {
       id: "info",
       labelKey: "nav.info",
-      path: "/about",
+      path: "/info",
     }
   ];
   

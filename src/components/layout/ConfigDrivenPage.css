@@ -1,0 +1,29 @@
+.loading {
+    height: 1920px;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.loading * {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Responsive */
+@media (max-width: 768px) {
+    
+    .loading {
+      padding: var(--spacing-md);
+      max-width: 100%;
+    }
+  }
+  

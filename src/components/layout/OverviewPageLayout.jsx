@@ -21,7 +21,7 @@ const OverviewPageLayout = () => {
 
   const subtitleText = trend ? (
     <>
-      {view === "visits" ? "Visits" : "Admits"} have{" "}
+      {view === "visits" ? "Visits" : "Hospitalizations"} have{" "}
       <span className={`trend-text trend-${trend.direction}`}>
         {trend.label}
         {trend.value ? ` ${trend.value}%` : ""}

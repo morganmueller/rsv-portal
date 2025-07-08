@@ -5,8 +5,8 @@
   padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  flex: 0 1 300px;
-  max-width: 300px;
+  flex: 0 1 528px;
+  max-width: 528px;
   min-width: 260px;
   box-sizing: border-box;
   position: relative;
@@ -96,7 +96,7 @@
 }
 
 .stat-trend-row {
-  font-weight: 700;
+  font-weight: 400;
   font-size: 16px;
   color: var(--card-trend-color, var(--gray-900));
   margin-top: 2px;
@@ -118,7 +118,14 @@
   margin-top: 2px;
 }
 
-/* === Responsive === */
+/* Tablet-specific styles */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .stat-trend-row {
+    margin-top: 7px;
+  }
+}
+
+/* === Mobile-specific-styles === */
 @media (max-width: 768px) {
   .stat-card {
     max-width: 100%;
