@@ -1,68 +1,43 @@
-## {virus} Laboratory Reports by Season
+## Laboratory-Reported Cases by Season
 
-<p>This chart shows the number of <strong>lab-confirmed {virus} cases</strong> reported each week across several seasons.</p>
+<p>Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Influenza and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer. </p>
 
+<p>Data are presented here over a full year, from early September through late August of the following year. </p>
+
+
+## Laboratory-Reported Cases by Test Type
+
+<p>A person is classified as a confirmed COVID-19 case if they test positive with a molecular test.</p> <p>A person is classified as a probable COVID-19 case if they meet any of the following criteria with no positive molecular test on record:</p>
 <ul>
-  <li>Compare the timing and magnitude of seasonal peaks.</li>
-  <li>Data may be affected by changes in testing access and public behavior.</li>
+  <li>Test positive with an antigen test</li>
+  <li>Have symptoms and an exposure to a confirmed COVID-19 case</li>
+  <li>Died and their cause of death is listed as COVID-19 or similar</li>
 </ul>
 
-<blockquote style="background:#fef3c7; border-left:4px solid #f59e0b; padding:0.5em 1em; color:#92400e;">
-  Tip: Use this to contextualize the current season’s trajectory against previous years.
-</blockquote>
+
+## Laboratory-Reported Cases by Subtype
+
+<p>Clinical laboratories that perform influenza testing on NYC residents  may identify influenza type A, influenza type B, or influenza without specifying type A or B.</p> 
 
 
-## {virus} Laboratory Reports by Test Type
+## Laboratory-Reported Cases by Age Group
 
-<p>This chart breaks down <strong>lab reports</strong> by diagnostic test type for {virus}.</p>
+<p>COPY IN PROGRESS</p>
 
+
+## Laboratory-Reported Cases by Borough
+
+<p>COPY IN PROGRESS</p>
+
+
+## Laboratory-Reported Cases by Race and Ethnicity
+
+<p>The NYC Health Department classifies race and ethnicity into the following mutually-exclusive categories: </p>
 <ul>
-  <li><strong>NAAT (PCR):</strong> Considered gold standard with high sensitivity.</li>
-  <li><strong>Antigen:</strong> More accessible but less sensitive.</li>
+  <li>Asian/Pacific-Islander</li>
+  <li>Black/African-American</li>
+  <li>Hispanic/Latino</li>
+  <li>White</li>
 </ul>
 
-<p style="font-size: 0.9em; color: #6b7280;">
-  Shifts in test types can affect trends and interpretation.
-</p>
-
-
-## {virus} Laboratory Reports by Age Group
-
-<p>This chart shows reported {virus} cases categorized by <strong>age group</strong>.</p>
-
-<ul>
-  <li><strong>Children and adolescents</strong> may have seasonal spikes tied to school terms.</li>
-  <li><strong>Older adults</strong> are often at higher risk of severe illness and more likely to get tested.</li>
-</ul>
-
-<blockquote style="background:#f0fdf4; border-left:4px solid #34d399; padding:0.5em 1em; color:#065f46;">
-  These breakdowns help identify the most impacted age groups during a given period.
-</blockquote>
-
-
-## {virus} Laboratory Reports by Borough
-
-<p>This chart displays reported {virus} cases by NYC borough.</p>
-
-<ul>
-  <li>Spatial differences may reflect access to testing, population density, or localized outbreaks.</li>
-  <li><strong>Brooklyn</strong> and <strong>Queens</strong> often have higher overall counts due to population size.</li>
-</ul>
-
-<p style="font-size: 0.9em; color: #6b7280;">
-  Borough-level trends can guide resource allocation and community-specific messaging.
-</p>
-
-
-## {virus} Laboratory Reports by Race and Ethnicity
-
-<p>This chart displays {virus} lab reports stratified by race and ethnicity.</p>
-
-<ul>
-  <li>Highlights disparities in exposure, access to care, and testing availability.</li>
-  <li>Data may have limitations due to reporting completeness.</li>
-</ul>
-
-<blockquote style="background:#fdf2f8; border-left:4px solid #ec4899; padding:0.5em 1em; color:#831843;">
-  Understanding racial and ethnic trends is key to equitable public health strategy.
-</blockquote>
+<p>Information on people identified as other categories, including Native American/Alaska Native or multi-racial, are not provided in files showing race/ethnicity data. The Hispanic/Latino category includes people of any race, and all other categories exclude those who identified as Hispanic/Latino. </p>
