@@ -1,10 +1,11 @@
 const covidDeathPageConfig = {
     id: "covidDeathPage",
-    titleKey: "CovidDeathPage.mainTitle",
-    subtitleKey: "CovidDeathPage.mainSubtitle",
-    dataPath: "/data/covidDeathData.csv",
+    titleKey: "covidDeathPage.mainTitle",
+    subtitleKey: "covidDeathPage.mainSubtitle",
+    dataPath: "/data/deathData.csv",
 
     controls: {
+      dataTypeToggle: true,
       virusToggle: false, 
       viewToggle: false,
     },
@@ -12,7 +13,7 @@ const covidDeathPageConfig = {
       title: "Covid Death Page Overview",
       markdownPath: "/content/sections/covidDeathSectionText.md",
       lastUpdated: "05/01/2025",
-      showTrendArrow: true,
+      showTrendArrow: false,
       showSecondayTitle: false,
 
       metricLabel: "cases", // Used when no viewToggle
@@ -20,22 +21,24 @@ const covidDeathPageConfig = {
     sections: [
       {
         id: "covid-deaths-season",
-        title: "CovidDeathPage.charts.seasonalComparison.title",
-        subtitle: "CovidDeathPage.charts.seasonalComparison.subtitle",
+        dataType: "death",
+
+        title: "covidDeathPage.charts.seasonalComparison.title",
+        subtitle: "covidDeathPage.charts.seasonalComparison.subtitle",
         infoIcon: true,
         downloadIcon: true,
         trendEnabled: true, 
         animateOnScroll: true,
         modal: {
-          title: "COVID-19 Deaths by Season",
+          title: "{virus} Deaths by Season",
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "lineChart",
           props: {
             dataSourceKey: "seasonalCovidDeaths",
-            dataSource: "NYC Health Department", 
-            title: "{virus} deaths",
+            dataSource: null,
+            title: "Counts of {virus} deaths by season",
             seasonal: true,
             metricName: "{virus} deaths",
             submetric: "Total", // explicitly set for non-grouped
@@ -51,62 +54,60 @@ const covidDeathPageConfig = {
             }
   
           }
-          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
         id: "covid-deaths-age-group",
-        title: "CovidDeathPage.charts.deathsByAge.title",
-        // subtitle: "Cases for {virus} are {trend} this week than last week.",
+        dataType: "death",
+        title: "covidDeathPage.charts.deathsByAge.title",
+        subtitle: null,
         infoIcon: true,
         downloadIcon: true,
         animateOnScroll: true,
         modal: {
-          title: "COVID-19 Deaths by Age Group",
+          title: "{virus} Deaths by Age Group",
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByAge",
-            dataSource: "NYC Health Department", 
-            title: "{virus} deaths",
+            dataSource: null,
+            title: "Counts of {virus} deaths by age group",
             seasonal: null,
             metricName: "{virus} deaths by age group",
+            groupedAges: true,
+            monthly: true,
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
             yField: "value",
             title: "COVID-19 deaths",
             colorField: "submetric",
             tooltipFields: ["date", "value"],
-            defaultDisplay: "Number", 
-            columnLabels: {
-              date: "Week",
-              value: "Number of Deaths",
-              submtric: "Age Group"
-            }
+            defaultDisplay: "Number"
   
           }
-          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
         id: "covid-deaths-borough",
-        title: "CovidDeathPage.charts.deathsByBorough.title",
-        // subtitle: "Cases for {virus} are {trend} this week than last week.",
+        dataType: "death",
+
+        title: "covidDeathPage.charts.deathsByBorough.title",
+        subtitle: null,
         infoIcon: true,
         downloadIcon: true,
         animateOnScroll: true,
         modal: {
-          title: "COVID-19 Deaths by Borough",
+          title: "{virus} Deaths by Borough",
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByGeo",
-            dataSource: "NYC Health Department", 
-            title: "{virus} deaths",
+            dataSource: null,
+            title: "Counts of {virus} deaths by borough",
             seasonal: null,
             metricName: "{virus} deaths by borough",
             groupField: "submetric", // explicitly set for non-grouped
@@ -116,32 +117,34 @@ const covidDeathPageConfig = {
             colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
+            monthly: true,
             columnLabels: {
               date: "Week",
               value: "Number of Deaths",
-              submtric: "Borough"
+              submetric: "Borough"
             }
           }
-          // footer: "Source: NYC Health Department Syndromic Surveillance",
         },
       },
       {
         id: "covid-deahths-re",
-        title: "CovidDeathPage.charts.deathsByRE.title",
-        // subtitle: "Cases for {virus} are {trend} this week than last week.",
+        dataType: "death",
+
+        title: "covidDeathPage.charts.deathsByRE.title",
+        subtitle: null,
         infoIcon: true,
         downloadIcon: true,
         animateOnScroll: true,
         modal: {
-          title: "COVID-19 Deaths by Race & Ethnicity",
+          title: "{virus} Deaths by Race & Ethnicity",
           markdownPath: "/content/modals/covid-deaths-explainer.md",
         },
         chart: {
           type: "smallMultipleLineChart",
           props: {
             dataSourceKey: "covidDeathsByRE",
-            dataSource: "NYC Health Department", 
-            title: "{virus} deaths",
+            dataSource: null, 
+            title: "Counts of {virus} deaths by race and ethnicity",
             seasonal: null,
             metricName: "{virus} deaths by race and ethnicity",
             groupField: "submetric", 
@@ -151,10 +154,11 @@ const covidDeathPageConfig = {
             colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
+            monthly: true,
             columnLabels: {
               date: "Week",
               value: "Number of Deaths",
-              submtric: "Race & Ethnicity"
+              submetric: "Race & Ethnicity"
             }
           }
         },

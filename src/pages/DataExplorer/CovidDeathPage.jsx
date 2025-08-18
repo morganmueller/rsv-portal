@@ -5,7 +5,7 @@ import covidDeathPageConfig from "../config/CovidDeathPage.config";
 
 const CovidDeathPage = () => {
   return (
-    <PageStateProvider initialData={covidDeathPageConfig.data}>
+    <PageStateProvider initialData={covidDeathPageConfig.data} enableDataTypeToggle={true}> 
       <ConfigDrivenPage config={covidDeathPageConfig} />
     </PageStateProvider>
   );

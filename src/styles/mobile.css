@@ -1,6 +1,7 @@
 @media (max-width: 768px) {
     /* Layout Containers */
     .stat-card,
+    .stat-card-bottom,
     .stat-info-box,
     .trend-summary-container,
     .content-container,

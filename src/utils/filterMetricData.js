@@ -2,71 +2,99 @@ import memoize from "memoizee";
 import { interpolate } from "./interpolate";
 
 /**
- * Filters the flat long-form data by exact metric name.
- * Returns array: [{ date, value }]
+ * Filters flat long-form data by exact metric, optional submetric, and display.
+ * Returns array: [{ date, value, valueRaw, ... }]
  */
 export const getMetricData = memoize(function (
   data,
-  { metric, submetric, display } // ← remove default here
+  { metric, submetric, display, groupField }
 ) {
-  const normalizedDisplay = typeof display === "string" ? display.trim().toLowerCase() : null;
+  const normalizedDisplay = typeof display === "string"
+    ? display.trim().toLowerCase()
+    : null;
 
   const filtered = data.filter((d) => {
-    const rowDisplay = typeof d.display === "string" ? d.display.trim().toLowerCase() : "unknown";
-    const match =
-      d.metric === metric &&
-      (submetric === undefined || d.submetric?.trim() === submetric) &&
-      (normalizedDisplay === null || rowDisplay === normalizedDisplay);
+    const rowMetric = d.metric;
+    const rowSubmetric = d.submetric?.trim();
+    const rowDisplay = typeof d.display === "string"
+      ? d.display.trim().toLowerCase()
+      : "unknown";
 
-    if (!match && d.metric === metric) {
-      console.log("⛔️ Rejected row:", d);
+    const matchesMetric = rowMetric === metric;
+
+    const matchesSubmetric =
+      groupField ? true :
+      (submetric === undefined &&
+        (!rowSubmetric || rowSubmetric === "Total" || rowSubmetric === "Overall")) ||
+      rowSubmetric === submetric;
+
+    const matchesDisplay =
+      normalizedDisplay === null || rowDisplay === normalizedDisplay;
+
+    const isMatch = matchesMetric && matchesSubmetric && matchesDisplay;
+
+    if (!isMatch && matchesMetric) {
+      console.log("❌ Rejected row:", d);
+    }
+    if (matchesMetric) {
+      console.log("🔬 Submetric:", JSON.stringify(d.submetric));
+      console.log("🔬 Display:", JSON.stringify(d.display));
     }
 
-    return match;
+    return isMatch;
   });
 
-  console.log(`✅ getMetricData('${metric}', submetric: '${submetric}', display: '${display}') matched ${filtered.length} rows`);
+  console.log(
+    `✅ getMetricData('${metric}', submetric: ${submetric ?? "[ALL]"}, display: '${display}') matched ${filtered.length} rows`
+  );
 
-  const uniqueSubmetrics = [...new Set(data.map(d => d.metric === metric ? d.submetric : null).filter(Boolean))];
-  console.log("🔎 Available submetrics for", metric, ":", uniqueSubmetrics);
+  console.log(
+    "🔎 Available submetrics for",
+    metric,
+    ":",
+    [...new Set(data.filter((d) => d.metric === metric).map((d) => d.submetric).filter(Boolean))]
+  );
+
+  console.log(
+    "📋 Available metrics in data:",
+    [...new Set(data.map((d) => d.metric))]
+  );
 
   return filtered.map((d) => ({
-    date: d.date,
+    date: new Date(d.date),
     value: +d.value,
+    valueRaw: d.valueRaw ?? d.value,
+    ...(groupField && d[groupField] ? { [groupField]: d[groupField] } : {}),
     ...(submetric === undefined && d.submetric ? { submetric: d.submetric } : {}),
   }));
 }, { length: 2 });
 
-
-
-
 /**
- * Pivot data to: [{ date, visits, hospitalizations }]
- * Matches metrics like "ARI visits" and "ARI hospitalizations"
+ * Pivots long-form metric data to view-separated wide form.
+ * Returns array: [{ date, visits, hospitalizations }]
  */
 export function pivotMetricToViews(
   data,
   baseMetric,
   groupField = null,
-  viewSuffix = "", // e.g. "by age group"
+  viewSuffix = "",
   display = "Percent"
 ) {
   const grouped = {};
 
   data.forEach((d) => {
+    const { metric, value, display: rowDisplay } = d;
     if (
-      d.display !== display ||
-      !d.metric.startsWith(baseMetric) ||
-      (viewSuffix && !d.metric.endsWith(viewSuffix))
-    ) {
-      return;
-    }
+      rowDisplay !== display ||
+      !metric.startsWith(baseMetric) ||
+      (viewSuffix && !metric.endsWith(viewSuffix))
+    ) return;
 
-    const metricWithoutPrefix = d.metric.replace(`${baseMetric} `, "");
-    const viewType = viewSuffix
-      ? metricWithoutPrefix.replace(` ${viewSuffix}`, "").toLowerCase()
-      : metricWithoutPrefix.toLowerCase();
+    const label = viewSuffix
+      ? metric.replace(`${baseMetric} `, "").replace(` ${viewSuffix}`, "")
+      : metric.replace(`${baseMetric} `, "");
 
+    const viewType = label.toLowerCase();
     if (!["visits", "hospitalizations"].includes(viewType)) return;
 
     const groupValue = groupField ? d[groupField]?.trim() : null;
@@ -79,58 +107,110 @@ export function pivotMetricToViews(
       };
     }
 
-    grouped[key][viewType] = +d.value;
+    grouped[key][viewType] = +value;
   });
 
-  return Object.values(grouped).sort((a, b) => new Date(a.date) - new Date(b.date));
+  return Object.values(grouped).sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 }
 
 /**
- * Hydrates a config object by injecting filtered data into each section.
- * Sections must declare `chart.props.metricName` or `chart.props.baseMetric`
+ * Hydrates config object with filtered data for each section.
  */
-
-
-
 export function hydrateConfigData(config, flatData, variables = {}) {
   const result = { ...config, data: {} };
 
   for (const section of config.sections) {
     const props = section.chart?.props || {};
     const dataKey = section.dataSourceKey || props.dataSourceKey;
-
     const metricName = props.metricName;
     const baseMetric = props.baseMetric;
-    const submetric = props.submetric;
+
+    const submetric =
+      typeof props.submetric === "string" && props.submetric !== "undefined"
+        ? props.submetric
+        : undefined;
+
     const groupField = props.groupField;
-    const display = props.hasOwnProperty("display") ? props.display : 
-    props.hasOwnProperty("defaultDisplay") ? props.defaultDisplay :
-    variables.display ?? undefined;
 
-    // ✅ NEW: support multiple metrics even without chart.type
+    const display = props.display ?? props.defaultDisplay ?? variables.display;
+
+    // 🧪 Case: multiple metrics (for grouped charts/statcards/combined charts)
     if (Array.isArray(props.metrics)) {
-      console.log(`📊 Hydrating ${dataKey} using multiple metrics:`, props.metrics);
-      result.data[dataKey] = props.metrics.reduce((acc, metric) => {
-        acc[metric] = getMetricData(flatData, { metric, submetric, display });
-        return acc;
-      }, {});
+      const resolved = props.metrics.map((m) => interpolate(m, variables));
+    
+      // Custom components (StatGrid, OverviewGrid) get OBJECT form
+      if (section.renderAs === "custom") {
+        result.data[dataKey] = resolved.reduce((acc, metric) => {
+          acc[metric] = getMetricData(flatData, {
+            metric,
+            submetric,
+            display,
+            groupField,
+          });
+          return acc;
+        }, {});
+      } else {
+        // All charts get FLAT ARRAY with 'series' field
+        result.data[dataKey] = resolved.flatMap((metric) =>
+          getMetricData(flatData, {
+            metric,
+            submetric,
+            display,
+            groupField,
+          }).map(row => ({ ...row, series: metric }))
+        );
+      }
       continue;
-    }
+    }    
 
+    // ↔️ Case: pivoted view
     if (props.pivotView && baseMetric) {
-      console.log(`↔️ Hydrating ${dataKey} via pivotMetricToViews with baseMetric:`, baseMetric);
-      result.data[dataKey] = pivotMetricToViews(flatData, baseMetric, groupField, variables.view ? `by ${groupField}` : "", display);
-    } else if (metricName) {
-      console.log(`📊 Hydrating ${dataKey} using getMetricData with:`, { metricName, submetric, display });
-      result.data[dataKey] = getMetricData(flatData, { metric: metricName, submetric, display });
+      console.log(`↔️ Hydrating ${dataKey} via pivotMetricToViews`, baseMetric);
+      result.data[dataKey] = pivotMetricToViews(
+        flatData,
+        baseMetric,
+        groupField,
+        variables.view ? `by ${groupField}` : "",
+        display
+      );
+    }
+    // 📚 Case: multiple metricNames
+    else if (Array.isArray(metricName)) {
+      console.log(`📊 Hydrating ${dataKey} with multiple metricNames:`, metricName);
+      result.data[dataKey] = metricName.flatMap((m) =>
+        getMetricData(flatData, {
+          metric: m,
+          submetric,
+          display,
+          groupField,
+        }).map((row) => ({ ...row, metric: m }))
+      );
+    }
+    // ✅ Case: single metric
+    else if (metricName) {
+      console.log(`📊 Hydrating ${dataKey} using getMetricData with:`, {
+        metricName,
+        submetric,
+        display,
+      });
+      result.data[dataKey] = getMetricData(flatData, {
+        metric: metricName,
+        submetric,
+        display,
+        groupField,
+      });
     } else {
       console.warn(`⚠️ Section "${section.id}" missing metricName or baseMetric`);
     }
 
-    console.log(`📥 Resulting ${dataKey} row count:`, result.data[dataKey]?.length || 0);
+    const count = Array.isArray(result.data[dataKey])
+      ? result.data[dataKey].length
+      : Object.values(result.data[dataKey] || {}).flat().length;
+
+    console.log(`📥 Resulting ${dataKey} row count:`, count);
   }
 
   return result;
 }
-
-

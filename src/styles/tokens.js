@@ -74,7 +74,8 @@ const colorScales = {
   ],
   rsv: [
     "#00441B", "#1B7837", "#41AB5D", "#78C679", "#C2E699"
-  ]
+  ],
+  ari: ["#FF6600"]
 };
 
 export const tokens = {

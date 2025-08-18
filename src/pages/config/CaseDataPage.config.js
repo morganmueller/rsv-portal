@@ -2,10 +2,12 @@
 const caseDataPageConfig = {
   id: "caseDataPage",
   titleKey: "caseDataPage.mainTitle",
+  subtitleKey: "caseDataPage.mainSubtitle",
   dataPath:  "/data/caseData.csv",
 
   controls: {
-    virusToggle: true, 
+    dataTypeToggle: true,
+    virusToggle: false, 
     viewToggle: false,
   },
 
@@ -21,6 +23,7 @@ const caseDataPageConfig = {
   sections: [
     {
       id: "case-reports-season",
+      dataType: "lab",
       title: "caseDataPage.charts.seasonalComparison.title",
       subtitle: "caseDataPage.charts.seasonalComparison.subtitle",
       infoIcon: true,
@@ -28,15 +31,16 @@ const caseDataPageConfig = {
       trendEnabled: true, 
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Season",
+        title: "caseDataPage.charts.seasonalComparison.title",
         markdownPath: "/content/modals/cases-explainer.md"
       },
       chart: {
       type: "lineChart",
       props: {
         dataSourceKey: "seasonalCaseTrends",
+        dataSource: null,
         seasonal: true,
-        title: "{virus} Laboratory-Reported Cases by Season",
+        title: "Counts of {virusLowercase} laboratory-reported cases by season",
         metricName: "{virus} cases",
         submetric: "Total", // explicitly set for non-grouped
         xField: "dayOfSeason",
@@ -55,22 +59,25 @@ const caseDataPageConfig = {
     
     {
       id: "case-reports-test-type",
+      dataType: "lab",
       title: "caseDataPage.charts.reportsByTestType.title",
+      subtitle: null,
       showIfVirus: "COVID-19", 
       // subtitle: "Cases for {virus} are {trend} this week than last week.",
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Test Type",
+        title: "caseDataPage.charts.reportsByTestType.title",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
         type: "yearComparisonChart",
         props: {
           dataSourceKey: "casesByType",
+          dataSource: null,
           metricName: "{virus} cases by test type",
-          title: "{virus} Laboratory-Reported Cases by Test Type",
+          title: "Counts of {virusLowercase} laboratory-reported cases by test type",
           groupField: "submetric",
           field: "isoWeek",
           yField: "value",
@@ -94,21 +101,25 @@ const caseDataPageConfig = {
 
     {
       id: "case-reports-subtype",
+      dataType: "lab",
+
       title: "caseDataPage.charts.reportsBySubtype.title",
+      subtitle: null,
       showIfVirus: "Influenza", 
       infoIcon: true,
       downloadIcon: true,
       trendEnabled: true, 
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Subtype",
+        title: "caseDataPage.charts.reportsBySubtype.title",
         markdownPath: "/content/modals/cases-explainer.md"
       },
       chart: {
       type: "yearComparisonChart",
       props: {
         dataSourceKey: "casesBySubType",
-        title: "{virus} Laboratory-Reported Cases by Subtype",
+        dataSource: null,
+        title: "Counts of {virusLowercase} laboratory-reported cases by subtype",
         metricName: "{virus} cases by subtype",
         groupField: "submetric",
         xField: "date",
@@ -133,25 +144,28 @@ const caseDataPageConfig = {
 
     {
       id: "case-reports-age",
+      dataType: "lab",
+
       title: "caseDataPage.charts.reportsByAge.title",
-      // subtitle: "Cases for {virus} are {trend} this week than last week.",
+      subtitle: null,
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Age Group",
+        title: "caseDataPage.charts.reportsByAge.title",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
         type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByAge",
+          dataSource: null,
           seasonal: null,
           metricName: "{virus} cases by age group",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          title: "{virus} Laboratory-Reported Cases by Age Group",
+          title: "Counts of {virusLowercase} laboratory-reported cases by age group",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 
@@ -167,25 +181,28 @@ const caseDataPageConfig = {
     },
     {
       id: "case-reports-borough",
+      dataType: "lab",
+
       title: "caseDataPage.charts.reportsByBorough.title",
-      // subtitle: "Cases for {virus} are {trend} this week than last week.",
+      subtitle: null,
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Borough",
+        title: "caseDataPage.charts.reportsByBorough.title",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
         type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByBorough",
+          dataSource: null,
           seasonal: null,
           metricName: "{virus} cases by borough",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          title: "{virus} Laboratory-Reported Cases by Borough",
+          title: "Counts of {virusLowercase} laboratory-reported cases by borough",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number",
@@ -196,31 +213,34 @@ const caseDataPageConfig = {
           } 
 
         }
-        // footer: "Source: NYC Health Department Syndromic Surveillance",
       },
     },
     {
       id: "case-reports-re",
+      dataType: "lab",
+
       title: "caseDataPage.charts.reportsByRE.title",
+      subtitle: null,
       showIfVirus: "COVID-19", 
       // subtitle: "Cases for {virus} are {trend} this week than last week.",
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
       modal: {
-        title: "Laboratory-Reported Cases by Race and Ethnicity",
+        title: "caseDataPage.charts.reportsByRE.title",
         markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
         type: "smallMultipleLineChart",
         props: {
           dataSourceKey: "casesByRE",
+          dataSource: null,
           seasonal: null,
           metricName: "{virus} cases by race and ethnicity",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          title: "{virus} Laboratory-Reported Cases by Race and Ethnicity",
+          title: "Counts of {virusLowercase} laboratory-reported cases by race and ethnicity",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 
@@ -231,7 +251,6 @@ const caseDataPageConfig = {
           }
 
         }
-        // footer: "Source: NYC Health Department Syndromic Surveillance",
       },
     },
   ],

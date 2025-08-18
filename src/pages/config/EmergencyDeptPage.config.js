@@ -5,10 +5,11 @@ const edPageConfig = {
   dataPath: "/data/emergencyDeptData.csv",
 
   controls: {
-    virusToggle: true,
+    dataTypeToggle: true,
+    virusToggle: false,
     viewToggle: true,
   },
-  
+
   defaultView: "visits",
 
   summary: {
@@ -17,18 +18,42 @@ const edPageConfig = {
     lastUpdated: "05/01/2025",
     showTrendArrow: false,
     showSecondaryTitle: false,
+    bullets: [
+      {
+        id: "flu-peds-deaths",
+        renderAs: "custom",
+        component: "SeasonalBullet",
+        // This drives which hydrated slice the component receives as `dataSource`
+        dataSourceKey: "deathData",
+        componentProps: {
+          dataPath: "/data/deathData.csv",
+          diseaseLabel: "Pediatric influenza deaths",
+          season: { start: { month: 10, day: 1 }, end: { month: 5, day: 31 } },
+          // ✅ must match CSV exactly
+          filters: { metric: "Pediatric influenza deaths", submetric: "Weekly" },
+          weeklyField: "value",
+          seasonalSubmetric: "Seasonal total",
+          dateField: "date",
+          showWhen: ({ virus, dataType }) =>
+            virus === "Influenza" && dataType === "ed",
+          as: "p",
+          className: "seasonal-bullet",
+        },
+      },
+    ],
   },
 
   sections: [
     {
       id: "ed-trends",
+      dataType: "ed",
       title: "emergencyDeptPage.charts.seasonalEdVisits.title",
       subtitle: "emergencyDeptPage.charts.seasonalEdVisits.subtitle",
       trendEnabled: true,
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "Emergency Department {viewLabel}",
+        title: "emergencyDeptPage.charts.seasonalEdVisits.title",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -36,33 +61,35 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "seasonalEDTrends",
-          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
-          footnote: "*Data includes only hospitals that report syndromic data consistently.*",
+          dataSource: null,
+          footnote: null,
           seasonal: null,
-          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis",
-          metricName: "{virus} {view}",
+          title:
+            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
+          getMetricNames: ({ virus, view }) => [`${virus} ${view}`, `ARI ${view}`],
           submetric: "Overall",
           xField: "date",
           yField: "value",
-          colorField: null,
+          colorField: "metric",
           tooltipFields: ["date", "value"],
           columnLabels: {
             date: "Week",
             value: "Number of {view}",
-          }
-        }
-      }
+          },
+        },
+      },
     },
 
     {
       id: "percent-ed-visits-age",
+      dataType: "ed",
       title: "emergencyDeptPage.charts.percentEdVisitsByAge.title",
-      subtitle: "emergencyDeptPage.charts.percentEdVisitsByAge.subtitle",
+      subtitle: null,
       trendEnabled: true,
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "Emergency Department {viewLabel}",
+        title: "emergencyDeptPage.charts.percentEdVisitsByAge.title",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -70,10 +97,11 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "edByAge",
-          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
-          footnote: "*Age groups are based on patient-reported data and may contain missing values.*",
+          dataSource: null,
+          footnote: null,
           seasonal: null,
-          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis, by Age Group",
+          title:
+            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by age group",
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
           groupLabel: "All Ages",
@@ -84,21 +112,22 @@ const edPageConfig = {
           columnLabels: {
             date: "Week",
             value: "Number of {view}",
-            submetric: "Age Group"
-          }
-        }
-      }
+            submetric: "Age Group",
+          },
+        },
+      },
     },
 
     {
       id: "percent-ed-visits-geo",
+      dataType: "ed",
       title: "emergencyDeptPage.charts.percentEdVisitsByGeo.title",
-      subtitle: "emergencyDeptPage.charts.percentEdVisitsByGeo.subtitle",
+      subtitle: null,
       trendEnabled: true,
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "Emergency Department {viewLabel}",
+        title: "emergencyDeptPage.charts.percentEdVisitsByGeo.title",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -106,9 +135,10 @@ const edPageConfig = {
         props: {
           isPercent: true,
           dataSourceKey: "edByGeo",
-          dataSource: "[NYC Health Department Syndromic Surveillance](https://www.nyc.gov/)",
-          footnote: "*Borough-level data reflects patient residence, not facility location.*",
-          title: "Percent of All {viewLabel} {viewLabelPreposition} the Emergency Department That Have a {virus} Diagnosis, by Borough",
+          dataSource: null,
+          footnote: null,
+          title:
+            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by borough",
           seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",
@@ -120,12 +150,12 @@ const edPageConfig = {
           columnLabels: {
             date: "Week",
             value: "Number of {view}",
-            submetric: "Borough"
-          }
-        }
-      }
-    }
-  ]
+            submetric: "Borough",
+          },
+        },
+      },
+    },
+  ],
 };
 
 export default edPageConfig;

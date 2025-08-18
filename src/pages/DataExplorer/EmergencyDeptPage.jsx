@@ -5,7 +5,7 @@ import edPageConfig from "../../pages/config/EmergencyDeptPage.config";
 
 const EmergencyDeptPage = () => (
   <PageStateProvider>
-    <ConfigDrivenPage config={edPageConfig} />
+    <ConfigDrivenPage config={edPageConfig} enableDataTypeToggle={true}/>
   </PageStateProvider>
 );
 
