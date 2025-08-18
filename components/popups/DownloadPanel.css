@@ -1,0 +1,30 @@
+.download-panel-header {
+    display: flex;
+    justify-content: flex-start; /* right-aligned button */
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .download-panel-text {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #374151;
+  }
+  
+  /* compact button */
+  .download-btn {
+    display: inline-block;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 14px;
+    padding: 6px 12px; /* shorter */
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .download-btn:hover {
+    background-color: #1d4ed8;
+  }
+  

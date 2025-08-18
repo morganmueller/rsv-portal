@@ -1,0 +1,45 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "Weekly ARI visits in NYC",
+    "width": "container",
+    "height": 300,
+    "data": {
+      "values": [
+        { "week": "2025-01-01", "visits": 12456 },
+        { "week": "2025-01-08", "visits": 11789 },
+        { "week": "2025-01-15", "visits": 13210 },
+        { "week": "2025-01-22", "visits": 14032 },
+        { "week": "2025-01-29", "visits": 15044 },
+        { "week": "2025-02-05", "visits": 14321 }
+      ]
+    },
+    "mark": {
+      "type": "bar",
+      "cornerRadiusTopLeft": 4,
+      "cornerRadiusTopRight": 4
+    },
+    "encoding": {
+      "x": {
+        "field": "week",
+        "type": "temporal",
+        "title": "Week",
+        "axis": {
+          "format": "%b %d",
+          "labelAngle": -40
+        }
+      },
+      "y": {
+        "field": "visits",
+        "type": "quantitative",
+        "title": "ARI Visits"
+      },
+      "color": {
+        "value": "#2563EB"
+      },
+      "tooltip": [
+        { "field": "week", "type": "temporal", "title": "Week" },
+        { "field": "visits", "type": "quantitative", "title": "Visits" }
+      ]
+    }
+  }
+  

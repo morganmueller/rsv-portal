@@ -1,0 +1,338 @@
+.stat-card {
+  background-color: var(--card-bg, var(--gray-100));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 528px;
+  max-width: 528px;
+  min-width: 260px;
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  /* Optional hover styling */
+}
+
+/* === HEADER === */
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: 4px;
+}
+
+.stat-card-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.statcard-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: #111 !important;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* === BODY: 3-column layout === */
+.stat-card-body {
+  display: flex;
+  flex-wrap: wrap;             /* allow wrap at all sizes */
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+.stat-card-body > * {
+  min-width: 0;                /* prevent overflow from min-content sizing */
+}
+
+/* Big % value */
+.stat-percent {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--stat-value, var(--blue-primary));
+  display: flex;
+  align-items: center;
+}
+
+.stat-percent-change-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding-right: 60px;
+  gap: 15px; /* space between trend chip and % change */
+}
+
+/* Smaller % change text */
+.stat-change-number {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #111;
+}
+
+/* For ARI card — left aligned middle col */
+.stat-percent-change-col.left-align {
+  justify-content: right;
+  padding-right: 0;
+  padding-left: 8px;
+}
+
+/* Right-hand descriptive text for ARI card */
+.stat-right-text {
+  font-size: 16px;
+  color: var(--gray-700);
+  display: flex;
+  align-items: center;
+  text-align: right;
+  margin-left: auto;
+  max-width: 160px;
+  line-height: 1.4;
+}
+
+/* Special layout for ARI card */
+.ari-card-body {
+  align-items: center;
+}
+
+/* === TREND CHIP COLORS === */
+.trend-increasing {
+  color: #d97706;
+  background: #fff7ed;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.trend-decreasing {
+  color: #16a34a;
+  background: #f0fdf4;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.trend-nochange {
+  color: #64748b;
+  background: #f3f4f6;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-arrow {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 2px;
+}
+
+/* Tablet: single column with title, info text, trend+% on same row */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stat-card {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  /* Force body vertical stack */
+  .stat-card-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* Right-hand text (info) just under the title */
+  .stat-right-text {
+    order: 2;
+    font-size: 14px;
+    max-width: 100%;
+    margin-left: 0;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  /* Trend + % change side-by-side */
+  .stat-percent-change-col {
+    order: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    min-width: 0;
+  }
+
+  /* Reduce % change text size for fit */
+  .stat-change-number {
+    font-size: 16px;
+  }
+
+  /* Hide big % value if not wanted on tablet */
+  .stat-percent {
+    display: none;
+  }
+
+  /* Adjust chips */
+  .trend-increasing,
+  .trend-decreasing,
+  .trend-nochange {
+    font-size: 11px;
+    padding: 0 5px;
+  }
+}
+/* Tablet: single column with title, info text, trend+% on same row */
+@media (min-width: 769px) and (max-width: 1204px) {
+  .stat-card {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  /* Force body vertical stack */
+  .stat-card-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Right-hand text (info) just under the title */
+  .stat-right-text {
+    order: 2;
+    font-size: 14px;
+    max-width: 100%;
+    margin-left: 0;
+    text-align: center;
+    line-height: 1.4;
+    gap: 8px;
+  }
+
+  /* Trend + % change side-by-side */
+  .stat-percent-change-col {
+    order: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    min-width: 0;
+  }
+
+  /* Reduce % change text size for fit */
+  .stat-change-number {
+    font-size: 16px;
+  }
+
+  /* Hide big % value if not wanted on tablet */
+  .stat-percent {
+    display: none;
+  }
+
+  /* Adjust chips */
+  .trend-increasing,
+  .trend-decreasing,
+  .trend-nochange {
+    font-size: 11px;
+    padding: 0 5px;
+  }
+  .stat-arrow {
+    font-size: 16px;
+    margin-right: 2px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .stat-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* 1) Make body vertical */
+  .stat-card-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* 2) Title is already first in .stat-card-header */
+
+  /* 3) Hide big % value on mobile (since you want: title → info → trend → % change) */
+  .stat-percent {
+    display: none;
+  }
+
+  /* 4) Info text next */
+  .stat-right-text {
+    order: 2;
+    font-size: 12px;
+    max-width: 100%;
+    margin-left: 0;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  /* 5) Put trend chip on its own row, before % change */
+  .stat-percent-change-col {
+    order: 3;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-right: 0;
+    padding-left: 0;
+    min-width: 0;
+  }
+
+  .stat-trend-row {
+    /* (Trend chip row) will appear before the % number because of column direction */
+  }
+
+  /* 6) % change last */
+  .stat-change-number {
+    order: 4;
+    font-size: 13px;
+  }
+
+  /* 7) Smaller header text & icons */
+  .statcard-title {
+    font-size: 14px;
+  }
+
+  .stat-card-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* 8) Tighter trend chips */
+  .trend-increasing,
+  .trend-decreasing,
+  .trend-nochange {
+    font-size: 10px;
+    padding: 0 4px;
+  }
+
+  .stat-arrow {
+    font-size: 16px;
+    margin-right: 2px;
+  }
+}
+

@@ -1,0 +1,38 @@
+.info-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  max-width: 300px;
+  flex: 1 1 250px;
+}
+
+.info-card {
+  background-color: var(--gray-100);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+  text-align: left;
+  font-family: var(--font-body);
+}
+
+.info-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.info-card-icon {
+  height: 40px;
+  margin-bottom: var(--spacing-md);
+}
+
+.info-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm);
+  color: var(--gray-900);
+}
+
+.info-card-description {
+  font-size: 0.95rem;
+  color: var(--gray-800);
+}

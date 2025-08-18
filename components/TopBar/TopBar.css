@@ -1,0 +1,272 @@
+/* === Base Styles === */
+
+:root {
+  --bp-mobile: 768px;
+}
+
+.top-bar {
+  background-color: var(--top-bar-bg, var(--white));
+  color: var(--top-bar-text, var(--blue-primary));
+  width: 100%;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--top-bar-border, var(--gray-300));
+  position: relative;            /* keep bar above any injected iframes */
+  z-index: 10;
+}
+
+.top-bar-container {
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.top-bar-logo-image {
+  height: 24px;
+  max-width: 120px;
+  object-fit: contain;
+  display: block;
+  filter: var(--top-bar-logo-filter, brightness(0) saturate(100%) invert(16%) sepia(64%) saturate(603%) hue-rotate(181deg) brightness(92%) contrast(95%));
+}
+
+/* === Inline Controls === */
+
+.top-bar-extras {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+/* Force light styling for the custom language select (even in dark mode) */
+.language-select {
+  font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--top-bar-select-border, var(--gray-300));
+  background-color: #ffffff !important;  /* force white background */
+  color: #1f2937 !important;             /* force dark text */
+  font-family: var(--font-sans);
+  appearance: none;
+  cursor: pointer;                        /* pointer cursor */
+  line-height: 1.2;
+}
+
+.language-select:hover {
+  border-color: var(--blue-primary, #2563eb);
+  background-color: #f9fafb;
+}
+
+/* Ensure it stays light in dark theme as well */
+html[data-theme="dark"] .language-select {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: var(--top-bar-select-border, var(--gray-300)) !important;
+}
+
+/* === Slide Toggle Styles === */
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-label {
+  font-size: 12px;
+  color: var(--top-bar-toggle-label, var(--gray-400));
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: var(--top-bar-slider-bg, #c0c7c9);
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--top-bar-slider-knob, #ffffff);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+  background-color: var(--top-bar-slider-checked-bg, var(--blue-primary));
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(22px);
+  background-color: var(--top-bar-slider-knob-checked, #302e2e);
+}
+
+.slider .icon {
+  position: absolute;
+  left: 3px;
+  bottom: 3px;
+  height: 18px;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  pointer-events: none;
+  transition: transform 0.3s;
+}
+
+.switch input:checked + .slider .icon {
+  transform: translateX(22px);
+}
+
+/* === Utility Classes === */
+
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Hamburger defaults (hidden on desktop) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; /* space between bars */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 2px;
+  background-color: var(--top-bar-text, var(--blue-primary));
+  border-radius: 2px;
+}
+
+/* Mobile panel (hidden by default) */
+.top-bar-nav {
+  display: none;
+  width: 100%;
+}
+
+/* === Google Translate containment (prevent overlap) === */
+
+/* Keep the Google widget mounted but invisible and off-screen */
+#google_translate_element {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0.001 !important; /* avoid display:none so it initializes */
+  z-index: -1 !important;
+}
+
+/* Minimize any gadget UI the script might inject */
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-combo {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hide Google’s top banner and reset any body offset */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+
+/* If the menu iframe appears, keep it controlled */
+.goog-te-menu-frame {
+  z-index: 9999 !important; /* only relevant if user opens native menu */
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* ====== Mobile ====== */
+@media (max-width: 640px) {
+  /* Keep container as a row: logo left, hamburger right */
+  .top-bar-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 8px);
+  }
+
+  /* Show hamburger on the right */
+  .hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto; /* pushes it to the right */
+  }
+
+  /* Hide desktop extras on mobile */
+  .top-bar-extras {
+    display: none;
+  }
+
+  /* Slide-down panel, right-aligned stack */
+  .top-bar-nav.open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* keep left alignment inside panel */
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .top-bar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* space between symbol/icon and words */
+  }
+
+  .language-select {
+    font-size: var(--font-size-xs, 12px);
+    padding: 4px 6px;
+  }
+
+  .language-select:hover {
+    border-color: var(--blue-primary, #2563eb);
+    background-color: #f9fafb;
+  }
+}

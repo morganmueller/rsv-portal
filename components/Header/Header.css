@@ -1,0 +1,328 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-body);
+}
+
+/* === HEADER SECTION === */
+
+.header-buttons-wrapper { background: var(--gray-100); }
+
+.header-section {
+  width: 100%;
+  padding: var(--spacing-xl) 0;
+  background: var(--header-bg);
+  background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  box-sizing: border-box;
+  min-width: 0; /* allow flex shrink without overflow */
+}
+
+.header-content {
+  width: 100%;
+  max-width: 700px;
+  position: relative;
+  padding-left: var(--spacing-lg);
+  min-width: 0; /* prevent text from forcing overflow */
+}
+
+.header-image-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: 240px;
+  padding-right: var(--spacing-2xl);
+}
+
+.header-image {
+  width: 150%;
+  max-width: 460px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* === TEXT === */
+
+.header-title {
+  color: var(--header-title-color);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-xs);
+}
+
+.header-subtitle {
+  color: var(--header-subtitle-color);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: var(--spacing-md);
+}
+
+/* === BUTTONS WRAPPER (desktop/tablet defaults) === */
+
+.header-buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  gap: var(--spacing-sm);
+  box-sizing: border-box;
+}
+
+.left-buttons,
+.right-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.left-buttons { justify-content: flex-start; padding-left: var(--spacing-lg); }
+.right-buttons { justify-content: flex-end; }
+
+/* Keep virus group inline when it replaces Data on desktop */
+.virus-inline-slot { display: inline-flex; align-items: center; }
+
+/* Avoid double spacing: left-buttons already has a gap */
+.left-buttons .virus-filter-group { margin-left: 0; }
+
+/* === BASE BUTTON === */
+
+.outline-button {
+  border: 2px solid var(--header-button-border);
+  background: transparent;
+  color: var(--header-button-text);
+  border-radius: var(--radius-lg);
+  height: 44px;
+  line-height: 1.0;
+  min-width: 160px;
+  padding: 0 var(--spacing-lg);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* Active/hover states in white wrapper */
+.header-buttons-wrapper .outline-button {
+  border-color: var(--blue-primary);
+  color: var(--blue-primary);
+  background: var(--white);
+}
+
+.header-buttons-wrapper .outline-button.active,
+.header-buttons-wrapper .outline-button:hover {
+  background-color: var(--blue-primary);
+  color: var(--white);
+  border-color: var(--blue-primary);
+}
+
+/* === Utility visibility helpers === */
+.desktop-only { display: inline-flex; }
+.mobile-only  { display: none; }
+
+/* === VIRUS FILTER GROUP (generic) === */
+
+.virus-filter-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-xs);
+  margin-left: var(--spacing-md);
+}
+
+/* === RESPONSIVE BREAKPOINTS === */
+@media (max-width: 920px) {
+  .outline-button {
+    min-width: 120px;
+    padding: 0 14px;
+    font-size: var(--font-size-sm);
+    height: 40px;
+  }
+
+
+  /* allow virus chips to wrap instead of pushing into Info */
+  .virus-filter-group {
+    flex-wrap: wrap;
+    row-gap: 6px;
+    margin-left: var(--spacing-sm);
+  }
+}
+
+/* -----------------------------------------------------
+   2) At ~880px, begin wrapping rows to avoid overlap
+   ----------------------------------------------------- */
+@media (max-width: 880px) {
+  .header-buttons-wrapper {
+    flex-wrap: wrap;            /* allow second row */
+    row-gap: var(--spacing-sm);
+  }
+
+  /* keep Home/Data (and virus group) on row 1, Info on row 2 */
+  .left-buttons  { flex: 1 1 100%; order: 1; justify-content: center; padding-left: 0; }
+  .right-buttons { flex: 0 1 100%; order: 1; justify-content: center; }
+
+  /* make chips a bit tighter when they wrap */
+  .virus-filter-group {
+    gap: 6px;
+    margin-left: 0;
+  }
+
+  .outline-button {
+    min-width: 0;      /* let them shrink as needed */
+    padding: 0 12px;
+  }
+}
+
+/* -----------------------------------------------------
+   3) Below 768px, center everything and keep grid logic
+   ----------------------------------------------------- */
+@media (max-width: 768px) {
+  .header-buttons-wrapper {
+    justify-content: center;
+  }
+}
+
+/* ===== MOBILE (≤640px): fix right whitespace and stack cleanly ===== */
+@media (max-width: 640px) {
+  /* visibility helpers */
+  .desktop-only { display: none !important; }
+  .mobile-only  { display: block !important; }
+
+  /* Stack header content; remove left padding to avoid overflow */
+  .header-container {
+    flex-direction: column;          /* FIX */
+    align-items: center;             /* FIX */
+    text-align: center;
+    padding-right: 0;                /* FIX */
+    margin-right: 0;                 /* FIX */
+  }
+  .header-content { padding-left: 0; } /* FIX */
+
+  /* Image wrapper: no right padding, center, allow shrink */
+  .header-image-wrapper {
+    display: flex;                   /* ensure visible if used on mobile */
+    justify-content: center;         /* FIX */
+    padding-right: 0;                /* FIX */
+    max-width: 100%;                 /* FIX */
+  }
+  .header-image {
+    width: 100%;
+    max-width: 200px;                /* FITS MOBILE */
+  }
+
+  .header-section { padding: var(--spacing-lg) 0; }
+  .header-title {
+    font-size: var(--font-size-lg);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-xs);
+  }
+  .header-subtitle {
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  /* Constrain to content width and switch to grid for equal columns */
+  .header-buttons-wrapper {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    justify-items: stretch;
+    align-items: stretch;
+  }
+
+  /* Flatten groups so their children become grid items */
+  .header-buttons-wrapper .left-buttons,
+  .header-buttons-wrapper .right-buttons {
+    display: contents;
+    padding: 0;
+    gap: 0;
+  }
+
+  /* Buttons: equal width, sharp edges */
+  .header-buttons-wrapper .outline-button {
+    border-radius: 0;
+    margin: 0;
+    padding: 6px 0;
+    height: 36px;
+    min-width: 0;
+    width: 100%;
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+  }
+
+  /* When Data is active on mobile: hide Data button, use two columns (Home + Info) */
+  .header-buttons-wrapper.is-data-active { grid-template-columns: repeat(2, 1fr); }
+  .header-buttons-wrapper.is-data-active .btn-data { display: none; }
+
+  /* Virus row below, full width */
+  .mobile-virus-row {
+    grid-column: 1 / -1;
+    display: none;
+  }
+  .header-buttons-wrapper.is-data-active .mobile-virus-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Tighten VirusFilterGroup buttons on mobile */
+  .header-buttons-wrapper.is-data-active .mobile-virus-row .virus-filter-group {
+    width: 100%;
+    gap: 0;
+    margin-left: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .header-buttons-wrapper.is-data-active .mobile-virus-row button {
+    height: 32px;
+    border-radius: 0;
+    margin: 0;
+    padding: 6px 8px;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Extra guard for very small phones (≤600px) */
+@media (max-width: 600px) {
+  .header-container { max-width: 100%; }
+  .header-image-wrapper { padding-right: 0; } /* ensure no right gap */
+}

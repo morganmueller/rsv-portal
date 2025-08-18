@@ -1,0 +1,226 @@
+/* === Floating Pill Container === */
+.floating-pill {
+  position: fixed;
+  top: 100px;
+  left: var(--spacing-lg);
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.floating-pill.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.floating-pill.open .pill-button .arrow {
+  transform: rotate(180deg);
+}
+
+/* === Pill Button (Collapsed View) === */
+.pill-button {
+  background-color: var(--bg-light-blue);
+  color: var(--gray-800);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pill-button .arrow {
+  font-size: 10px;
+  transition: transform 0.3s ease;
+}
+
+.filter-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+}
+
+/* === Dropdown Panel === */
+.pill-dropdown {
+  margin-top: 8px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  box-shadow: var(--shadow-md);
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* === Section Wrapper === */
+/* Stack data type buttons vertically */
+.pill-section .data-type-toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+/* Stack virus buttons vertically INSIDE the floating pill dropdown */
+.floating-pill .pill-dropdown .pill-section .virus-filter-group {
+  display: flex;
+  flex-direction: column !important; /* override the global row */
+  align-items: stretch;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+/* Make each button full-width and left-aligned in the dropdown */
+.floating-pill .pill-dropdown .pill-section .virus-filter-group .filter-button {
+  width: 100% !important;        /* overrides the 140px width */
+  justify-content: flex-start;
+}
+
+/* Optional: slightly smaller in the compact dropdown */
+.floating-pill .pill-dropdown .pill-section .virus-filter-group .filter-button .virus-label {
+  font-size: 13px;
+}
+
+
+/* Style individual buttons smaller */
+.pill-section .data-type-toggle-group .view-toggle {
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  text-align: center;
+  width: 100%;
+  border-radius: var(--radius-md);
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-900);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover + Active */
+.pill-section .data-type-toggle-group .view-toggle:hover {
+  background-color: var(--gray-200);
+  color: var(--blue-primary);
+}
+
+.pill-section .data-type-toggle-group .view-toggle.active {
+  background-color: var(--blue-primary);
+  color: var(--white);
+}
+
+.small-toggle .toggle-button {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.pill-section label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gray-700);
+  font-family: var(--font-body);
+  margin-bottom: 2px;
+}
+
+/* === Toggle Buttons inside Pill === */
+.pill-section button,
+.pill-section .toggle-button {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--gray-900);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pill-section button:hover,
+.pill-section .toggle-button:hover {
+  background-color: var(--gray-200);
+  color: var(--blue-primary);
+}
+
+.pill-section .toggle-button.active {
+  background-color: var(--blue-primary);
+  color: var(--white);
+}
+
+/* === Reset Button Styling === */
+.pill-reset-button {
+  margin-top: 6px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  font-size: 12px;
+  color: var(--gray-800);
+  border-radius: var(--radius-sm);
+}
+
+.pill-reset-button:hover {
+  background-color: var(--gray-200);
+  color: var(--blue-primary);
+}
+
+/* === Mobile Styles === */
+@media (max-width: 640px) {
+  .floating-pill {
+    bottom: 10px;
+    top: auto;
+    left: 0;
+    right: 0;
+    width: 80%;
+    margin: 0 auto;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background: transparent;
+    z-index: 9999;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .pill-button {
+    max-width: 100%;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-700);
+  }
+
+  .pill-dropdown {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    max-width: 100%;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 12px;
+    z-index: 10000;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

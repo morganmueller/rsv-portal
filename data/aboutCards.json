@@ -1,0 +1,43 @@
+{
+    "prevention-info": [
+      {
+        "id": "covid",
+        "titleKey": "aboutPage.cards.covid.title",
+        "link": "https://www.nyc.gov/covid",
+        "icon": "/assets/covid-vector.svg"
+      },
+      {
+        "id": "flu",
+        "titleKey": "aboutPage.cards.flu.title",
+        "link": "https://www.nyc.gov/flu",
+        "icon": "/assets/flu-vector.svg"
+      },
+      {
+        "id": "rsv",
+        "titleKey": "aboutPage.cards.rsv.title",
+        "link": "https://www.nyc.gov/rsv",
+        "icon": "/assets/rsv-vector.svg"
+      }
+    ],
+    "provider-info": [
+      {
+        "id": "covidProvider",
+        "titleKey": "aboutPage.cards.covidProvider.title",
+        "link": "https://www.nyc.gov/covid-providers",
+        "icon": "/assets/covid-vector.svg"
+      },
+      {
+        "id": "fluProvider",
+        "titleKey": "aboutPage.cards.fluProvider.title",
+        "link": "https://www.nyc.gov/flu-providers",
+        "icon": "/assets/flu-vector.svg"
+      },
+      {
+        "id": "rsvProvider",
+        "titleKey": "aboutPage.cards.rsvProvider.title",
+        "link": "https://www.nyc.gov/rsv-providers",
+        "icon": "/assets/rsv-vector.svg"
+      }
+    ]
+  }
+  

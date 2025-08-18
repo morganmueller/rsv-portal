@@ -1,0 +1,231 @@
+.stat-card-bottom {
+  background-color: var(--card-bg, var(--gray-100));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-sm) var(--spacing-md); /* tighter for 172px */
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 172px;
+  max-width: 172px;
+  min-width: 172px;
+  box-sizing: border-box;
+  position: relative;
+  height: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card-bottom:hover {
+  /* transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  cursor: default; */
+}
+
+/* === Header === */
+.stat-card-header-bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: 4px;
+}
+
+.stat-card-icon-bottom {
+  width: 24px;
+  height: 24px;
+}
+
+.stat-card-title-bottom {
+  font-size: var(--font-size-lg);
+  font-weight: 700;               /* match bolding */
+  color: #111 !important;
+  flex: 1;
+}
+
+/* === Content Block === */
+.stat-block-bottom {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.stat-percent-bottom {
+  font-size: 28px;                /* compact variant (optional) */
+  font-weight: 700;
+  line-height: 1.2;
+  flex-shrink: 0;
+  color: var(--stat-value, var(--blue-primary));
+}
+
+.stat-detail-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;         /* left align */
+  justify-content: center;
+  text-align: left;                /* left align */
+  flex: 1;
+  word-wrap: break-word;
+  max-width: 100%;
+  min-width: 0;                    /* allow proper wrap inside 172px */
+}
+
+/* === Trend Row (wrap-safe) === */
+.stat-trend-row-bottom {
+  font-weight: 400;
+  font-size: 14px;                 /* slightly smaller in compact */
+  color: var(--card-trend-color, var(--gray-900));
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;     /* left align */
+  gap: 6px;
+  row-gap: 4px;
+  flex-wrap: wrap;                 /* avoid squish */
+  width: 100%;
+}
+
+
+/* Make the trend row center-aligned and % larger */
+.centered-trend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.stat-percent-change {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px; /* slightly larger */
+  font-weight: 700;
+  color: var(--card-trend-color, var(--gray-900));
+  margin-top: 2px;
+}
+
+/* Remove squish by allowing wrapping if needed */
+.centered-trend span {
+  white-space: nowrap;
+}
+
+/* strong delta number to match main card look */
+.stat-delta-strong {
+  font-weight: 700;
+  color: #111;
+  margin-left: 2px;
+  white-space: nowrap;             /* keep “0.5%” together */
+}
+
+.stat-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+/* reuse chip styles for consistency */
+.trend-increasing {
+  color: #d97706;
+  background: #fff7ed;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.trend-decreasing {
+  color: #16a34a;
+  background: #ffffffb8;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.trend-nochange {
+  color: #64748b;
+  background: #f3f4f6;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+/* Hide dates if any are rendered */
+.stat-trend-row-bottom .stat-date-bottom,
+.stat-date-bottom { display: none; }
+
+/* Tablet */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .stat-card-title-bottom { font-size: 16px; }
+}
+
+@media (max-width: 768px) {
+  .stat-card-bottom {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* 1) Stack the internals vertically */
+  .stat-block-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--spacing-sm);
+  }
+
+  /* 2) Title first */
+  .stat-card-title-bottom {
+    font-size: 14px;
+    order: 1;
+  }
+
+  /* 3) If you ever render the level % on bottom, hide it on mobile */
+  .stat-percent-bottom {
+    display: none;
+  }
+
+  /* 4) Trend chip second */
+  .stat-trend-row-bottom {
+    order: 2;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  /* 5) % change last */
+  .stat-percent-change {
+    order: 3;
+    flex-direction: column;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  /* Tighter chips */
+  .trend-increasing,
+  .trend-decreasing,
+  .trend-nochange {
+    font-size: 10px;
+    padding: 0 4px;
+  }
+}
