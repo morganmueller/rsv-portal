@@ -1,5 +1,12 @@
-## Respiratory Illness Overview
+## {viewLabel} {viewLabelPreposition} the Emergency Department that have a Respiratory Illness Diagnosis
 
-<p>Emergency department visits are visits that did not result in inpatient hospitalization after initial assessment in the emergency department. Hospitalizations from the emergency department are visits to the emergency department that result in admission.</p>
+**Emergency department visits** are visits that did not result in inpatient hospitalization after initial assessment in the emergency department. Hospitalizations from the emergency department are visits to the emergency department that result in admission.
 
-<p>Details on diagnosis codes included for respiratory illness can be found <a href='https://cdn.ymaws.com/www.cste.org/resource/resmgr/pdfs/CDC_Broad_Acute_Respiratory_.pdf' target='_blank' rel='noopener noreferrer'>here</a>. Visits to the emergency department and hospitalizations from the emergency department for COVID-19, influenza, and RSV are identified using diagnosis codes specific to each infection.</p>
+**Visits** to the emergency department and **hospitalizations** from the emergency department that have a **COVID-19**, **influenza**, and **RSV** diagnosis are identified using diagnosis codes specific to each infection.
+
+
+
+## Respiratory Panel Results
+
+**The NYC Health Department** receives data from selected NYC laboratories that test for an expanded panel of circulating respiratory viruses, including those that are not required to be reported to the NYC Health Department.
+

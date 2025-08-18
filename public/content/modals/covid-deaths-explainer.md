@@ -1,55 +1,33 @@
 
-## COVID-19 Deaths by Season
+## {virus} Deaths by Season
 
-<p>This chart presents <strong>weekly confirmed COVID-19 deaths</strong> reported to the NYC Department of Health.</p>
+To maintain confidentiality, we don't report **counts lower than 5**. 
 
+## {virus} Deaths by Age Group
+
+The **sum of counts** may not match values citywide if records are missing demographic information. 
+
+To maintain confidentiality, we don't report **counts lower than 5**. Due to small counts, we report trends in deaths by age group by month. 
+
+## {virus} Deaths by Borough
+
+The **sum of counts** may not match values citywide if records are missing geographic information. 
+
+Data by borough reflect people's residence at the time of reporting, and not necessarily the location of diagnosis, hospitalization, or death. 
+
+To maintain confidentiality, we don't report **counts lower than 5**. Due to small counts, we report trends in deaths by borough by month. 
+
+
+## {virus} Deaths by Race & Ethnicity
+
+The NYC Health Department classifies **race and ethnicity** into the following mutually exclusive categories:
 <ul>
-  <li>Deaths include individuals whose cause of death was directly attributed to COVID-19.</li>
-  <li>Counts may shift slightly over time due to reporting delays and death certificate review.</li>
+  <li>Asian/Pacific-Islander</li>
+  <li>Black/African-American</li>
+  <li>Hispanic/Latino</li>
+  <li>White</li>
 </ul>
 
-<blockquote style="background:#fef3c7; border-left:4px solid #f59e0b; padding:0.5em 1em; color:#92400e;">
-  COVID-19 mortality is a lagging indicator and often peaks weeks after cases or hospitalizations rise.
-</blockquote>
+Information on people identified as other categories, including Native American/Alaska Native or multi-racial, are not provided in files showing race/ethnicity data. The Hispanic/Latino category includes people of any race, and all other categories exclude those who identified as Hispanic/Latino.
 
-
-## COVID-19 Deaths by Age Group
-
-<p>This chart breaks down COVID-19 deaths by <strong>age category</strong>.</p>
-
-<ul>
-  <li><strong>65+ years</strong> consistently experiences the highest mortality burden.</li>
-  <li>Younger age groups (<em>18–64</em>) make up a smaller but non-negligible portion.</li>
-</ul>
-
-<p style="font-size: 0.9em; color: #6b7280;">
-  Age-specific patterns can guide vaccine outreach and clinical risk mitigation strategies.
-</p>
-
-
-## COVID-19 Deaths by Borough
-
-<p>This chart shows the number of COVID-19 deaths by borough of residence.</p>
-
-<ul>
-  <li><strong>Bronx</strong> and <strong>Brooklyn</strong> often experience higher mortality rates per capita.</li>
-  <li>Geographic patterns may reflect differences in underlying health, exposure risk, or healthcare access.</li>
-</ul>
-
-<p style="font-size: 0.9em; color: #6b7280;">
-  Local context is essential when interpreting borough-level trends.
-</p>
-
-
-## COVID-19 Deaths by Race & Ethnicity
-
-<p>This chart presents COVID-19 deaths stratified by race and ethnicity.</p>
-
-<ul>
-  <li>Data highlights persistent health disparities affecting historically marginalized communities.</li>
-  <li>Interpretation should account for demographic composition and data completeness.</li>
-</ul>
-
-<blockquote style="background:#fdf2f8; border-left:4px solid #ec4899; padding:0.5em 1em; color:#831843;">
-  Understanding inequities is vital for equitable public health response and resource allocation.
-</blockquote>
+To maintain confidentiality, we don't report **counts lower than 5**. Due to small counts, we report trends in race and ethnicity by month. 

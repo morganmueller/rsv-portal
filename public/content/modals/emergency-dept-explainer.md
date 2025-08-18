@@ -1,5 +1,9 @@
-## Emergency Department {viewLabel}
+## {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group
 
-<p>Emergency department visits are visits that did not result in inpatient hospitalization after initial assessment in the emergency department.</p>
+The **sum of counts** may not match values citywide if records are missing demographic information.
 
-<p>Hospitalizations from the emergency department are visits to the emergency department that result in admission. </p>
+## {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough
+
+The **sum of counts** may not match values citywide if records are missing geographic information. 
+
+Data by borough reflect people's residence at the time of reporting, and not necessarily the location of diagnosis, hospitalization, or death. 
