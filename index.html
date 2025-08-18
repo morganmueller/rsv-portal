@@ -8,6 +8,28 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Google Translate mount point (kept hidden) -->
+    <div id="google_translate_element" style="position:absolute; left:-9999px; top:-9999px;"></div>
+
+    <script>
+      // Called by the Google script when ready
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'en',
+            // Pick only the languages you actually support in your UI
+            includedLanguages: 'en,es,zh-CN,ru,ar,bn',
+            autoDisplay: false,
+          },
+          'google_translate_element'
+        );
+      }
+    </script>
+
+    <!-- Loads the Google Translate widget and calls googleTranslateElementInit -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
