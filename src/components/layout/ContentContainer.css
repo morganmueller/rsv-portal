@@ -1,3 +1,6 @@
+:root { --bp-mobile: 768px; }
+
+
 body {
   color: var(--text-body, var(--gray-800));
 }
@@ -24,6 +27,18 @@ body {
   margin-bottom: var(--spacing-md);
 }
 
+
+
+/* Generic highlight for dynamic placeholders (virus/view/date/etc.) */
+.dynamic-text {
+  font-weight: 700;
+  background-color: var(--gray-200);
+  color: var(--gray-900);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+
+
 .content-title {
   font-size: var(--content-title-size, var(--font-size-lg));
   /* font-family: var(--font-bold); */
@@ -32,8 +47,8 @@ body {
 }
 
 h3.content-title {
-  font-family: inherit !important;
-  font-weight: normal !important;
+  font-family: inherit ;
+  font-weight: 400;
 }
 
 .content-subtitle {
@@ -56,6 +71,14 @@ h3.content-title {
   width: 100%;
 }
 
+h3.content-title {
+  font-weight: 700 !important;
+}
+
+.content-title .dynamic-text,
+.content-title .trend-text {
+  font-weight: 700;
+}
 .icon {
   display: inline-block;
   vertical-align: middle;
@@ -153,8 +176,29 @@ h3.content-title {
   box-shadow: none;
 }
 
+.download-btn {
+  display: inline-block;
+  background-color: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 12px; /* shorter */
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.download-btn:hover {
+  background-color: #1d4ed8;
+}
+
+
 /* === Responsive Adjustments === */
-@media (max-width: 768px) {
+@media (max-width: calc(var(--bp-mobile))) {
+  .content-container {
+     padding: var(--spacing-lg); 
+  }
+
   .download-icon {
     display: none !important;
   }
@@ -167,3 +211,5 @@ h3.content-title {
     font-size: var(--font-size-sm);
   }
 }
+
+

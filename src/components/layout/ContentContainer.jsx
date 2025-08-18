@@ -1,23 +1,30 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
-import DownloadPreviewTable from "../tables/DownloadPreviewTable";
-import { getText } from "../../utils/contentUtils";
 import "./ContentContainer.css";
 
-const resolveText = (input, variables = {}) => {
-  const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
-  if (typeof raw !== "string") return raw;
+const resolveText = (input, vars = {}) => {
+  if (typeof input !== "string") return input;
 
-  return raw.replace(/{(\w+)}/g, (_, key) => {
-    const val = variables[key] ?? `{${key}}`;
+  return input.replace(/{(\w+)}/g, (_, key) => {
+    const raw = vars[key];
 
+    // normalize missing values to empty string
+    let val =
+      raw === null || raw === undefined || raw === "null" || raw === "undefined"
+        ? ""
+        : String(raw);
+
+    // if the value itself accidentally contains " null"/" undefined", remove it
     if (key === "trend") {
-      const direction = variables.trendDirection || "neutral";
-      return `<span class='trend-text trend-${direction}'>${val}</span>`;
+      val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
+      const direction = vars.trendDirection || "neutral";
+      return `<span class="trend-text trend-${direction} bg-highlight">${val}</span>`;
     }
 
-    return val;
+    // generic cleanup for other tokens too
+    val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
+    return `<span class="dynamic-text">${val}</span>`;
   });
 };
 
@@ -25,18 +32,16 @@ const ContentContainer = ({
   title,
   subtitle,
   subtitleVariables = {},
+  titleVariables = {},         // allow variables for title too
   children,
   className = "",
-  background = "white", 
+  background = "white",
   animateOnScroll = true,
   infoIcon = false,
   downloadIcon = false,
   modalTitle = "More Info",
   modalContent = null,
   onDownloadClick = null,
-  previewData = [],
-  columnLabels = {},
-
 }) => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -45,7 +50,6 @@ const ContentContainer = ({
 
   useEffect(() => {
     if (!animateOnScroll) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -53,22 +57,19 @@ const ContentContainer = ({
           observer.disconnect();
         }
       },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -10% 0px",
-      }
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
     );
-
     const node = ref.current;
     if (node) observer.observe(node);
-
     return () => observer.disconnect();
   }, [animateOnScroll]);
 
-  const renderedSubtitle =
-    typeof subtitle === "string"
-      ? resolveText(subtitle, subtitleVariables)
-      : subtitle;
+  const isTitleString = typeof title === "string";
+  const renderedTitle = isTitleString ? resolveText(title, titleVariables) : title;
+  const isDynamic = typeof title === "string" && /{.+?}/.test(title);
+
+  const isSubtitleString = typeof subtitle === "string";
+  const renderedSubtitle = isSubtitleString ? resolveText(subtitle, subtitleVariables) : subtitle;
 
   return (
     <div
@@ -80,14 +81,16 @@ const ContentContainer = ({
       {(title || subtitle) && (
         <div className="content-header">
           <div className="content-title-row">
-            {typeof title === "string" ? (
-              <h3
-                className="content-title"
-                dangerouslySetInnerHTML={{ __html: title }}
-              />
-            ) : (
-              <h3 className="content-title">{title}</h3>
-            )}
+          {isTitleString ? (
+  <h3
+    className={`content-title ${isDynamic ? "content-title-dynamic" : ""}`}
+    dangerouslySetInnerHTML={{ __html: renderedTitle }}
+  />
+) : (
+  <h3 className="content-title">{renderedTitle}</h3>
+)}
+
+
             <div className="content-title-icons">
               {infoIcon && (
                 <img
@@ -108,19 +111,22 @@ const ContentContainer = ({
               )}
             </div>
           </div>
-          {typeof renderedSubtitle === "string" ? (
-            <p
-              className="content-subtitle"
-              dangerouslySetInnerHTML={{ __html: renderedSubtitle }}
-            />
-          ) : (
-            <p className="content-subtitle">{renderedSubtitle}</p>
-          )}
+
+          {renderedSubtitle &&
+            (isSubtitleString ? (
+              <div
+                className="content-subtitle"
+                dangerouslySetInnerHTML={{ __html: renderedSubtitle }}
+              />
+            ) : (
+              <div className="content-subtitle">{renderedSubtitle}</div>
+            ))}
         </div>
       )}
 
       <div className="content-body">{children}</div>
 
+      {/* Info Modal */}
       {infoIcon && modalContent && (
         <InfoModal
           isOpen={isModalOpen}
@@ -130,6 +136,7 @@ const ContentContainer = ({
         />
       )}
 
+      {/* Download Modal */}
       {downloadIcon && onDownloadClick && (
         <InfoModal
           isOpen={isDownloadModalOpen}
@@ -138,9 +145,6 @@ const ContentContainer = ({
           content={
             <>
               <p>Would you like to download a CSV of this chart’s data?</p>
-              {Array.isArray(previewData) && previewData.length > 0 && (
-               <DownloadPreviewTable data={previewData} columnLabels={columnLabels} maxRows={100} />
-              )}
               <button
                 className="toggle-button active"
                 onClick={() => {
@@ -160,9 +164,10 @@ const ContentContainer = ({
 };
 
 ContentContainer.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.node,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subtitleVariables: PropTypes.object,
+  titleVariables: PropTypes.object,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   background: PropTypes.oneOf(["white", "gray", "transparent"]),
@@ -172,7 +177,6 @@ ContentContainer.propTypes = {
   modalTitle: PropTypes.string,
   modalContent: PropTypes.node,
   onDownloadClick: PropTypes.func,
-  previewData: PropTypes.array,
 };
 
 export default ContentContainer;

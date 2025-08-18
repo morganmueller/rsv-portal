@@ -1,3 +1,24 @@
+:root {
+  --bp-tablet: 1024px;
+  --bp-mobile: 768px;
+}
+
+/* safe “100%” reset */
+.chart-container,
+.content-container,
+.content-body,
+.data-container,
+.data-highlight,
+.data-section-wrapper,
+.data-section-container,
+.data-page,
+.flex-grow,
+main {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+}
+
 .chart-container {
   background-color: var(--chart-bg, var(--white));
   border-radius: var(--radius-lg);
@@ -26,57 +47,97 @@
   color: var(--chart-subtitle-color, var(--gray-700));
 }
 
+/* --- Layout switcher --- */
 .chart-content {
   display: flex;
-  justify-content: flex-start;
   gap: var(--spacing-lg);
-  padding-left: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chart-content.side {            /* sidebar at the side (row) */
+  flex-direction: row;
+}
+
+.chart-content.stack {           /* sidebar above (column) */
+  flex-direction: column;
 }
 
 .chart-sidebar {
   flex: 0 0 120px;
 }
 
+
+/* When the sidebar sits ABOVE the chart, make the buttons inline */
+.chart-content.stack .chart-sidebar {
+  display: block;     /* the row is the .toggle-controls, not this wrapper */
+  width: 100%;
+  flex: none;
+  position: static;
+  margin-bottom: var(--spacing-md);
+}
+
+/* When the sidebar is ABOVE the chart, force a horizontal row of buttons */
+.chart-content.stack .chart-sidebar .toggle-controls {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  align-items: center;
+  justify-content: flex-start; /* or center */
+  width: 100%;
+}
+
+/* Kill any "full-width button" rules coming from ToggleControls.css */
+.chart-content.stack .chart-sidebar .toggle-controls .toggle-button {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 120px;       /* optional: nice pill width */
+  flex: 0 0 auto;
+  justify-content: center;
+  /* remove if ToggleControls sets block-level margins */
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+
+
 .chart-body {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto;               /* <- no width:0 here */
+  min-width: 0;                 /* allow shrink inside flex */
 }
 
 .chart-vega {
   width: 100%;
-  max-width: 100%;
-  min-width: 300px;
+  min-width: 0;                 /* <- don’t force 300px; avoids overflow on small screens */
   flex: 1;
 }
 
-.chart-fade-wrapper {
-  transition: opacity 0.6s ease;
+/* Optional fade helpers */
+.chart-fade-wrapper { transition: opacity 0.6s ease; }
+.chart-fade-wrapper.fade-in { opacity: 1; }
+.chart-fade-wrapper.fade-out { opacity: 0; }
+
+/* ====== Tablet and up ====== */
+@media (min-width: var(--bp-tablet)) {
+  /* sticky only when the sidebar is on the side */
+  .chart-content.side .chart-sidebar {
+    position: sticky;
+    top: var(--spacing-xl);
+    align-self: flex-start;
+  }
 }
 
-.chart-fade-wrapper.fade-in {
-  opacity: 1;
-}
-
-.chart-fade-wrapper.fade-out {
-  opacity: 0;
-}
-
-/* === Responsive === */
-@media (max-width: 768px) {
-  .chart-content {
-    flex-direction: column;
+/* ====== Mobile / small tablet ====== */
+@media (max-width: var(--bp-mobile)) {
+  .chart-container {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md, 6px);
   }
 
-  .chart-sidebar {
-    width: 100%;
-    margin-bottom: var(--spacing-md);
-  }
+  .chart-title { font-size: var(--font-size-lg); }
+  .chart-subtitle { font-size: var(--font-size-sm); }
 
-  .chart-title {
-    font-size: var(--font-size-lg);
-  }
-
-  .chart-subtitle {
-    font-size: var(--font-size-sm);
-  }
+  /* stacking on small screens is natural; no grid props needed */
+  .chart-sidebar { width: 100%; }
 }

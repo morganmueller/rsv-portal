@@ -15,6 +15,8 @@ const TrendSummaryContainer = forwardRef(({
   metricLabel,
   virus = "COVID-19",
   view = "visits",
+  virusLabelArticle = "a",
+  virusLowercase = "COVID-19",
 }, ref) => {
   const localRef = useRef(null);
   const resolvedRef = ref ?? localRef;
@@ -51,7 +53,7 @@ const TrendSummaryContainer = forwardRef(({
     >
       {date && (
         <p className="trend-date">
-          Latest data as of <strong>{date}</strong>
+          Page updated on <strong>{date}</strong>
         </p>
       )}
 
@@ -73,10 +75,11 @@ const TrendSummaryContainer = forwardRef(({
           sectionTitle={sectionTitle}
           showTitle={false}
           className="markdown-body"
+          variables={{virus, view, virusLabelArticle, virusLowercase}}
         />
       )}
 
-      {children && <div className="trend-body">{children}</div>}
+      {children && <div className="trend-body" aria-live="polite">{children}</div>}
     </div>
   );
 });

@@ -3,7 +3,7 @@ import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
 import ChartFooter from "./ChartFooter";
 
-const { covid, flu, rsv } = tokens.colorScales;
+const { covid, flu, rsv , ari} = tokens.colorScales;
 const { colors, typography } = tokens;
 
 const getXAxisFormat = (data, xField) => {
@@ -36,17 +36,24 @@ const LineChart = ({
   seasonal,
   dataSource = "NYC Health Department Syndromic Surveillance",
   footnote,
+  colorMap
 }) => {
+  const legendLabelMap = {
+  "ARI visits": "Respiratory illness visits",
+  "ARI hospitalizations": "Respiratory illness hospitalizations",
+};
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
     "RSV": colors.greenPrimary,
+    "ARI": colors.orangePrimary,
   };
 
   const virusColorRangeMap = {
     "COVID-19": covid,
     "Influenza": flu,
     "RSV": rsv,
+    "ARI": ari,
   };
 
   const defaultColor = colors.gray600;
@@ -54,7 +61,7 @@ const LineChart = ({
     tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
 
   const filteredData =
-    virus && data.some((d) => d.virus)
+    virus && data.some((d) => d.virus === virus)
       ? data.filter((d) => d.virus === virus)
       : data;
 
@@ -83,20 +90,24 @@ const LineChart = ({
         scale: { padding: 10 },
       };
 
-  const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map(
-    (field) => {
-      const sample = filteredData.find((d) => d[field] != null)?.[field];
-      return {
-        field,
-        type:
-          field === xField
-            ? "temporal"
-            : typeof sample === "number"
-            ? "quantitative"
-            : "nominal",
-      };
-    }
-  );
+      const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map(
+        (field) => {
+          const sample = filteredData.find((d) => d[field] != null)?.[field];
+          if (field === yField && filteredData.some((d) => d.valueRaw)) {
+            return { field: "valueRaw", title: "Reported", type: "nominal" }; // show raw strings
+          }
+          return {
+            field,
+            type:
+              field === xField
+                ? "temporal"
+                : typeof sample === "number"
+                ? "quantitative"
+                : "nominal",
+          };
+        }
+      );
+      
 
   const specTemplate = {
     width: "container",
@@ -206,8 +217,13 @@ const LineChart = ({
             ? {
                 field: "{colorField}",
                 type: "nominal",
-                scale: { range: virusColorRangeMap[virus] || undefined },
+                scale: { range: (virusColorRangeMap[virus] && (colorField === "metric")) ? [virusColorRangeMap[virus][2], virusColorMap["ARI"]]: virusColorRangeMap[virus]  },
                 sort: ["0-4", "5-17", "18-64", "65+"],
+                legend: {
+                  labelExpr: "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
+                  labelLimit: 300,
+                  clipHeight: 30
+                }
               }
             : { value: selectedColor },
           tooltip: sharedTooltip,
@@ -227,6 +243,7 @@ const LineChart = ({
       },
     ],
   };
+  console.log('Rendering chart with data:', data);
 
   return (
     <div style={{ width: "100%" }}>

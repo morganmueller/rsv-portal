@@ -3,7 +3,7 @@
   gap: var(--spacing-md);
   justify-content: flex-end;
   width: 100%;
-  max-width: 280px;
+  max-width: 340px;
 }
 
 .view-toggle {
@@ -28,4 +28,18 @@
 .view-toggle.active {
   background-color: var(--gray-900) !important;; 
   color: var(--white) !important;;
+}
+
+
+/* === Mobile: stays as a single row under the stacked data-type buttons === */
+@media (max-width: 768px) {
+  .view-toggle-group {
+    justify-content: stretch;
+    max-width: none;
+    gap: 8px;
+    width: 100%;
+  }
+  .view-toggle-group .view-toggle {
+    flex: 1; /* keep two equal buttons side-by-side */
+  }
 }

@@ -8,12 +8,13 @@ html, body, #root {
 
 /* === HEADER SECTION === */
 
+.header-buttons-wrapper { background: var(--gray-100); }
+
 .header-section {
   width: 100%;
   padding: var(--spacing-xl) 0;
   background: var(--header-bg);
   background-size: 200% 200%;
-  /* animation: gradientShift 6s ease infinite; */
 }
 
 @keyframes gradientShift {
@@ -32,6 +33,8 @@ html, body, #root {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--spacing-lg);
+  box-sizing: border-box;
+  min-width: 0; /* allow flex shrink without overflow */
 }
 
 .header-content {
@@ -39,6 +42,7 @@ html, body, #root {
   max-width: 700px;
   position: relative;
   padding-left: var(--spacing-lg);
+  min-width: 0; /* prevent text from forcing overflow */
 }
 
 .header-image-wrapper {
@@ -77,14 +81,40 @@ html, body, #root {
   margin-bottom: var(--spacing-md);
 }
 
-/* === BUTTONS === */
+/* === BUTTONS WRAPPER (desktop/tablet defaults) === */
 
-.header-buttons {
+.header-buttons-wrapper {
   display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xs);
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  gap: var(--spacing-sm);
+  box-sizing: border-box;
 }
+
+.left-buttons,
+.right-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.left-buttons { justify-content: flex-start; padding-left: var(--spacing-lg); }
+.right-buttons { justify-content: flex-end; }
+
+/* Keep virus group inline when it replaces Data on desktop */
+.virus-inline-slot { display: inline-flex; align-items: center; }
+
+/* Avoid double spacing: left-buttons already has a gap */
+.left-buttons .virus-filter-group { margin-left: 0; }
+
+/* === BASE BUTTON === */
 
 .outline-button {
   border: 2px solid var(--header-button-border);
@@ -102,278 +132,197 @@ html, body, #root {
   justify-content: center;
   box-sizing: border-box;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.outline-button.active {
-  background: var(--header-button-active-bg);
-  color: var(--header-button-active-text);
-  border: none;
-}
-
-/* === Override for white section buttons === */
+/* Active/hover states in white wrapper */
 .header-buttons-wrapper .outline-button {
   border-color: var(--blue-primary);
   color: var(--blue-primary);
   background: var(--white);
 }
 
-.header-buttons-wrapper .outline-button.active {
-  background: var(--blue-primary);
-  color: var(--white);
-  border: none;
-}
-
+.header-buttons-wrapper .outline-button.active,
 .header-buttons-wrapper .outline-button:hover {
   background-color: var(--blue-primary);
   color: var(--white);
-  border: 2px solid var(--blue-primary);
+  border-color: var(--blue-primary);
 }
 
-/* === DROPDOWN === */
+/* === Utility visibility helpers === */
+.desktop-only { display: inline-flex; }
+.mobile-only  { display: none; }
 
-.data-dropdown-wrapper {
-  margin-top: var(--spacing-xs);
-  width: auto;
-}
+/* === VIRUS FILTER GROUP (generic) === */
 
-.dropdown-block {
+.virus-filter-group {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: nowrap;
   gap: var(--spacing-xs);
-}
-
-.dropdown-label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--gray-100);
-}
-
-.data-topic-select {
-  height: 40px;
-  font-size: var(--font-size-sm);
-  padding: 6px 28px 6px 12px;
-  border-radius: 9999px;
-  background-color: var(--gray-100);
-  color: var(--gray-800);
-  border: 1px solid var(--gray-300);
-  font-weight: 600;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' fill='none' stroke='%234B5563' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-}
-
-.data-topic-select:hover {
-  border-color: var(--gray-400);
-}
-
-.data-topic-select:focus {
-  border-color: var(--blue-secondary);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
-.dropdown-hint {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--gray-100);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+  margin-left: var(--spacing-md);
 }
 
 /* === RESPONSIVE BREAKPOINTS === */
-
-@media (max-width: 1105px) {
-  .header-image-wrapper {
-    display: none;
-  }
-}
-
-@media (max-width: 1024px) and (min-width: 769px) {
-  .header-container {
-    justify-content: flex-start;
-    gap: var(--spacing-md);
-  }
-
-  .header-content {
-    padding-left: var(--spacing-lg);
-  }
-
-  .header-title,
-  .header-subtitle {
-    text-align: left;
-  }
-
-  .header-buttons {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: var(--spacing-sm);
-  }
-
+@media (max-width: 920px) {
   .outline-button {
-    padding: 0 var(--spacing-sm);
-    height: 44px;
+    min-width: 120px;
+    padding: 0 14px;
     font-size: var(--font-size-sm);
-  }
-
-  .data-topic-select {
-    padding: 6px 26px 6px 10px;
     height: 40px;
-    font-size: var(--font-size-sm);
   }
 
-  .data-dropdown-wrapper {
+
+  /* allow virus chips to wrap instead of pushing into Info */
+  .virus-filter-group {
+    flex-wrap: wrap;
+    row-gap: 6px;
     margin-left: var(--spacing-sm);
-    margin-top: 0;
   }
 }
 
-@media (max-width: 900px) and (min-width: 769px) {
-  .header-buttons {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: var(--spacing-sm);
+/* -----------------------------------------------------
+   2) At ~880px, begin wrapping rows to avoid overlap
+   ----------------------------------------------------- */
+@media (max-width: 880px) {
+  .header-buttons-wrapper {
+    flex-wrap: wrap;            /* allow second row */
+    row-gap: var(--spacing-sm);
+  }
+
+  /* keep Home/Data (and virus group) on row 1, Info on row 2 */
+  .left-buttons  { flex: 1 1 100%; order: 1; justify-content: center; padding-left: 0; }
+  .right-buttons { flex: 0 1 100%; order: 1; justify-content: center; }
+
+  /* make chips a bit tighter when they wrap */
+  .virus-filter-group {
+    gap: 6px;
+    margin-left: 0;
   }
 
   .outline-button {
-    font-size: var(--font-size-sm);
-    padding: 6px 10px;
-    height: auto;
-  }
-
-  .data-dropdown-wrapper {
-    width: 100%;
-    max-width: none;
-    margin-top: var(--spacing-xs);
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  .data-topic-select {
-    width: 100%;
-    max-width: 300px;
+    min-width: 0;      /* let them shrink as needed */
+    padding: 0 12px;
   }
 }
 
+/* -----------------------------------------------------
+   3) Below 768px, center everything and keep grid logic
+   ----------------------------------------------------- */
 @media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    align-items: center;
+  .header-buttons-wrapper {
     justify-content: center;
+  }
+}
+
+/* ===== MOBILE (≤640px): fix right whitespace and stack cleanly ===== */
+@media (max-width: 640px) {
+  /* visibility helpers */
+  .desktop-only { display: none !important; }
+  .mobile-only  { display: block !important; }
+
+  /* Stack header content; remove left padding to avoid overflow */
+  .header-container {
+    flex-direction: column;          /* FIX */
+    align-items: center;             /* FIX */
     text-align: center;
+    padding-right: 0;                /* FIX */
+    margin-right: 0;                 /* FIX */
+  }
+  .header-content { padding-left: 0; } /* FIX */
+
+  /* Image wrapper: no right padding, center, allow shrink */
+  .header-image-wrapper {
+    display: flex;                   /* ensure visible if used on mobile */
+    justify-content: center;         /* FIX */
+    padding-right: 0;                /* FIX */
+    max-width: 100%;                 /* FIX */
+  }
+  .header-image {
+    width: 100%;
+    max-width: 200px;                /* FITS MOBILE */
   }
 
-  .header-content {
-    padding-left: 0;
-    text-align: center;
-    align-items: center;
-  }
-
-  .header-section {
-    padding: var(--spacing-lg) 0;
-  }
-
+  .header-section { padding: var(--spacing-lg) 0; }
   .header-title {
     font-size: var(--font-size-lg);
     line-height: 1.4;
     margin-bottom: var(--spacing-xs);
-    text-align: center;
   }
-
   .header-subtitle {
     font-size: var(--font-size-sm);
     line-height: 1.4;
     margin-bottom: var(--spacing-sm);
+  }
+
+  /* Constrain to content width and switch to grid for equal columns */
+  .header-buttons-wrapper {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    justify-items: stretch;
+    align-items: stretch;
+  }
+
+  /* Flatten groups so their children become grid items */
+  .header-buttons-wrapper .left-buttons,
+  .header-buttons-wrapper .right-buttons {
+    display: contents;
+    padding: 0;
+    gap: 0;
+  }
+
+  /* Buttons: equal width, sharp edges */
+  .header-buttons-wrapper .outline-button {
+    border-radius: 0;
+    margin: 0;
+    padding: 6px 0;
+    height: 36px;
+    min-width: 0;
+    width: 100%;
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+  }
+
+  /* When Data is active on mobile: hide Data button, use two columns (Home + Info) */
+  .header-buttons-wrapper.is-data-active { grid-template-columns: repeat(2, 1fr); }
+  .header-buttons-wrapper.is-data-active .btn-data { display: none; }
+
+  /* Virus row below, full width */
+  .mobile-virus-row {
+    grid-column: 1 / -1;
+    display: none;
+  }
+  .header-buttons-wrapper.is-data-active .mobile-virus-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Tighten VirusFilterGroup buttons on mobile */
+  .header-buttons-wrapper.is-data-active .mobile-virus-row .virus-filter-group {
+    width: 100%;
+    gap: 0;
+    margin-left: 0;
+    align-items: center;
     text-align: center;
   }
-
-  .header-image-wrapper {
-    width: 100%;
-    max-width: 100%;
-    padding-right: 0;
-    justify-content: center;
-  }
-
-  .header-image {
-    max-width: 120px;
-    width: 100%;
-  }
-
-  .header-buttons {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-sm);
-    gap: var(--spacing-sm);
-  }
-
-  .outline-button {
+  .header-buttons-wrapper.is-data-active .mobile-virus-row button {
+    height: 32px;
+    border-radius: 0;
+    margin: 0;
+    padding: 6px 8px;
     font-size: var(--font-size-sm);
-    padding: 8px 12px;
-    height: auto;
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .data-dropdown-wrapper {
-    margin: var(--spacing-xs) auto 0 auto;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .data-topic-select {
-    height: 36px;
-    font-size: var(--font-size-xs);
-    padding: 4px 36px 4px 10px;
-    width: 100%;
-    max-width: 280px;
   }
 }
 
-.header-buttons-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
-  width: 100%;
-  max-width: 1280px;
-  margin-inline: auto;
-  gap: var(--spacing-sm);
-}
-
-.left-buttons,
-.right-buttons {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex: 1
-}
-
-.left-buttons {
-  justify-content: flex-start;
-  padding-left: var(--spacing-lg);
-}
-
-.right-buttons {
-  justify-content: flex-end;
-}
-.button-with-dropdown {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.inline-dropdown {
-  margin-left: var(--spacing-xs);
-  display: flex;
-  align-items: center;
+/* Extra guard for very small phones (≤600px) */
+@media (max-width: 600px) {
+  .header-container { max-width: 100%; }
+  .header-image-wrapper { padding-right: 0; } /* ensure no right gap */
 }

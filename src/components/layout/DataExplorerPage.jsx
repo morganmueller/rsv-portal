@@ -9,7 +9,6 @@ import MarkdownRenderer from "../../components/contentUtils/MarkdownRenderer";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
 
-import config from "../../pages/config/EmergencyDeptPage.config"; // ✅ adjust path as needed
 
 const DataExplorerPage = ({ config }) => {
   const { titleKey, subtitleKey, summary, sections = [], data = {} } = config;
@@ -57,6 +56,7 @@ const DataExplorerPage = ({ config }) => {
             title={section.title?.replace("{virus}", activeVirus)}
             subtitle={section.subtitle}
             subtitleVariables={{ virus: activeVirus, trend: "higher" }}
+            titleVariables={{virus: activeVirus, trend: "higher"}}
             infoIcon={section.infoIcon}
             downloadIcon={section.downloadIcon}
             onDownloadClick={handleDownload}

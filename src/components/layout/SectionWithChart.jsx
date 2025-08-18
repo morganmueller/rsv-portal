@@ -18,6 +18,10 @@ const SectionWithChart = ({
   animateOnScroll,
   previewData = [],
   columnLabels = {},
+  viewToggle,
+  view,
+  onViewChange,
+
 
 }) => {
   return (
@@ -25,6 +29,7 @@ const SectionWithChart = ({
       title={title}
       subtitle={subtitle}
       subtitleVariables={subtitleVariables}
+      titleVariables={subtitleVariables}
       infoIcon={infoIcon}
       downloadIcon={downloadIcon}
       modalTitle={modalTitle}
@@ -33,6 +38,9 @@ const SectionWithChart = ({
       animateOnScroll={animateOnScroll}
       previewData={previewData}
       columnLabels={columnLabels}
+      viewToggle={viewToggle}
+      view={view}
+      onViewChange={onViewChange}
 
     >
       {children ?? (

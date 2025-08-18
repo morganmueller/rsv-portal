@@ -184,6 +184,7 @@ const specTemplate = {
   }
 };
 
+console.log("📊 Chart data after filtering:", filtered);
 
   return (
     <div style={{ width: "100%" }}>

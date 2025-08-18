@@ -5,8 +5,8 @@ import { tokens } from "../../styles/tokens";
 const { typography, colors, spacing } = tokens;
 
 /**
- * ChartFooter displays a data source (supports markdown), a latest date,
- * and an optional footnote (also markdown-supported).
+ * ChartFooter displays a latest date and an 
+ * optional data source and footnote (both markdown-supported).
  */
 const ChartFooter = ({ dataSource, latestDate, footnote }) => {
   const formattedDate = latestDate
@@ -33,16 +33,18 @@ const ChartFooter = ({ dataSource, latestDate, footnote }) => {
           gap: spacing.sm,
         }}
       >
-        <span>
-          <strong>Data Source:</strong>{" "}
-          <span
-            dangerouslySetInnerHTML={{
-              __html: marked.parseInline(dataSource || ""),
-            }}
-          />
-        </span>
-
         {formattedDate && <span>Data as of: {formattedDate}</span>}
+        
+        {dataSource && (
+          <span>
+            <strong>Data Source:</strong>{" "}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: marked.parseInline(dataSource),
+              }}
+            />
+          </span>
+        )}
       </div>
 
       {footnote && (

@@ -10,7 +10,8 @@ const InfoModal = ({ title, content, markdownPath, isOpen, onClose }) => {
     <div className="info-modal-overlay" onClick={onClose}>
       <div className="info-modal" onClick={(e) => e.stopPropagation()}>
         <button className="info-modal-close" onClick={onClose} aria-label="Close info popup">×</button>
-        <h3 className="info-modal-title">{title}</h3>
+        {/* EM 7/22: Commenting out below as RPU/Comms have decided against showing titles for the Info modals
+        <h3 className="info-modal-title">{title}</h3>  */}
         <div className="info-modal-content">
           {markdownPath ? (
             <MarkdownRenderer filePath={markdownPath} />

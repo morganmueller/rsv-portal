@@ -1,19 +1,19 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import HeaderButtons from "./HeaderButtons";
+import { usePageState } from "../hooks/usePageState";
 import "./Header.css";
 
 const Header = () => {
   const location = useLocation();
   const path = location.pathname;
 
-  let activeButton = "home";
+  // This context will now always be defined!
+  const { activeVirus, setVirus } = usePageState();
 
-  if (path.startsWith("/data")) {
-    activeButton = "data";
-  } else if (path.startsWith("/info")) {
-    activeButton = "info";
-  }
+  let activeButton = "home";
+  if (path.startsWith("/data")) activeButton = "data";
+  else if (path.startsWith("/info")) activeButton = "info";
 
   return (
     <>
@@ -24,8 +24,14 @@ const Header = () => {
           </div>
         </div>
       </section>
-      <HeaderButtons activeButton={activeButton} />
-      </>
+
+      <HeaderButtons
+        activeButton={activeButton}
+        activeVirus={activeVirus}
+        onVirusChange={setVirus}
+        virusToggle={activeButton === "data"} // show virus buttons only on /data
+      />
+    </>
   );
 };
 

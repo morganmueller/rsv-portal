@@ -14,14 +14,23 @@ import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
+import CombinedVirusChart from "../charts/CombinedVirusChart";
+import DynamicParagraph from "../sections/DynamicParagraph";
+import SeasonalBullet from "../bullets/SeasonalBullet"
+
+import HydratedDataContext from "../../context/HydratedDataContext";
 
 import {
   getTrendFromTimeSeries,
   generateTrendSubtitle,
   formatDate,
+  coerceNoChange,
+  formatTrendPhrase,
   capitalizeFirstHtml,
   getTrendInfo,
+  getLatestWeekFromData,
 } from "../../utils/trendUtils";
+
 import { loadConfigWithData } from "../../utils/loadConfigWithData";
 import { getGroupOptions } from "../../utils/getGroupOptions";
 import StatGrid from "../grids/StatGrid";
@@ -34,6 +43,9 @@ import "./ConfigDrivenPage.css";
 const customComponents = {
   StatGrid,
   OverviewGrid,
+  CombinedVirusChart,
+  DynamicParagraph,
+  SeasonalBullet
 };
 
 const viewDisplayLabels = {
@@ -41,11 +53,22 @@ const viewDisplayLabels = {
   hospitalizations: "Hospitalizations",
 };
 
-const viewDisplayLabelsPreposition = {
-  visits: "to",
-  hospitalizations: "from"
+const virusLowercaseDisplay = {
+  "COVID-19": "COVID-19",
+  Influenza: "influenza",
+  RSV: "RSV",
 };
 
+const viewDisplayLabelsPreposition = {
+  visits: "to",
+  hospitalizations: "from",
+};
+
+const virusDisplayLabelsArticle = {
+  "COVID-19": "a",
+  Influenza: "an",
+  RSV: "an",
+};
 
 const groupDisplayNames = {
   Bronx: "the Bronx",
@@ -57,10 +80,9 @@ const groupDisplayNames = {
   "All Boroughs": "All Boroughs",
 };
 
-
-
 const resolveText = (input, variables = {}) => {
-  const raw = typeof input === "string" && input.includes(".") ? getText(input) : input;
+  const raw =
+    typeof input === "string" && input.includes(".") ? getText(input) : input;
   return typeof raw === "string"
     ? raw.replace(/{(\w+)}/g, (_, key) => variables[key] ?? `{${key}}`)
     : raw;
@@ -77,12 +99,15 @@ const interpolateObject = (obj, vars) =>
   JSON.parse(JSON.stringify(obj), (_, value) => interpolateTokens(value, vars));
 
 const ConfigDrivenPage = ({ config }) => {
-  const { titleKey, subtitleKey, summary, sections = [], controls = {} } = config;
+  const { titleKey, subtitleKey, summary, sections = [], controls = {} } =
+    config;
 
   const pageState = usePageState(config.data, controls);
   const {
     activeVirus = "COVID-19",
     view = "visits",
+    dataType = "ed",
+    setDataType = () => {},
     handleDownload = () => {},
     setView = () => {},
     setVirus = () => {},
@@ -124,10 +149,16 @@ const ConfigDrivenPage = ({ config }) => {
     }
     const selectedVirus = activeVirus || config.defaultVirus || "COVID-19";
     const selectedView = view || config.defaultView || "visits";
-    loadConfigWithData(config, { virus: selectedVirus, view: selectedView })
+    const safeDataType = dataType || "ed";
+
+    loadConfigWithData(config, {
+      virus: selectedVirus,
+      view: selectedView,
+      dataType: safeDataType,
+    })
       .then(setHydratedConfig)
       .catch(console.error);
-  }, [config, activeVirus, view]);
+  }, [config, activeVirus, view, dataType]);
 
   useEffect(() => {
     if (summary?.markdownPath) {
@@ -141,23 +172,38 @@ const ConfigDrivenPage = ({ config }) => {
   if (!hydratedConfig) return <div className="loading"></div>;
   const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
 
+  const pageTextVars = {
+    virus: activeVirus,
+    view,
+    dataType,
+    viewLabel: viewDisplayLabels[view],
+    viewLabelPreposition: viewDisplayLabelsPreposition[view],
+    virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
+    virusLowercase: virusLowercaseDisplay[activeVirus],
+  };
+
+  const resolvedTitleKey =
+    typeof titleKey === "object" ? titleKey[dataType] : titleKey;
+  const resolvedSubtitleKey =
+    typeof subtitleKey === "object" ? subtitleKey[dataType] : subtitleKey;
+
   return (
-    <>
-      <DataPageLayout
-        title={resolveText(titleKey)}
-        subtitle={resolveText(subtitleKey)}
+    <HydratedDataContext.Provider value={{ data }}>      <DataPageLayout
+        title={resolveText(resolvedTitleKey, pageTextVars)}
+        subtitle={resolveText(resolvedSubtitleKey, pageTextVars)}
         topControls={
           config.showTopControls === false ? null : (
             <TopControls
               controls={controls}
               activeVirus={activeVirus}
               onVirusChange={setVirus}
+              dataType={dataType}
+              onDataTypeChange={setDataType}
               view={view}
               onViewChange={setView}
             />
           )
         }
-        
       >
         {summary?.markdownPath && (
           <TrendSummaryContainer
@@ -169,17 +215,63 @@ const ConfigDrivenPage = ({ config }) => {
             animateOnScroll={summary.animateOnScroll !== false}
             virus={activeVirus}
             view={view}
+            virusLowercase={virusLowercaseDisplay[activeVirus]}
+            virusLabelArticle={virusDisplayLabelsArticle[activeVirus]}
             {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
-          />
+          >
+       {Array.isArray(summary?.bullets) &&
+  activeVirus === "Influenza" && // ← only show for Influenza
+  summary.bullets.map((b) => {
+    // Use the component registry (customComponents) just like DynamicParagraph
+    if (b.renderAs === "custom" && b.component && customComponents[b.component]) {
+      const Cmp = customComponents[b.component];
+      const slice = b.dataSourceKey ? data?.[b.dataSourceKey] : undefined;
+
+      // For SeasonalBullet we pass options via config, from componentProps
+      const cfg = { id: b.id, ...(b.componentProps || {}) };
+
+      return (
+        <Cmp
+          key={b.id}
+          config={cfg}
+          dataSource={slice}                         // ← single data slice for this bullet
+          pageState={{ virus: activeVirus, dataType }} // ensures showWhen can work too
+          as={b.componentProps?.as}
+          className={b.componentProps?.className}
+        />
+      );
+    }
+
+    // Fallback: direct SeasonalBullet config (if you ever keep legacy bullets)
+    const slice =
+      b.dataSourceKey && data?.[b.dataSourceKey] ? data[b.dataSourceKey] : undefined;
+
+    return (
+      <SeasonalBullet
+        key={b.id}
+        config={b}
+        dataSource={slice}
+        pageState={{ virus: activeVirus, dataType }}
+      />
+    );
+  })}
+
+          </TrendSummaryContainer>
         )}
 
         {hydratedSections
           .filter((section) => {
             const allowed = section.showIfVirus;
-            return (
+            const allowedDataType = section.dataType;
+            const matchesDataType =
+              !allowedDataType || allowedDataType === dataType;
+            const matchesVirus =
               !allowed ||
-              (Array.isArray(allowed) ? allowed.includes(activeVirus) : allowed === activeVirus)
-            );
+              (Array.isArray(allowed)
+                ? allowed.includes(activeVirus)
+                : allowed === activeVirus);
+
+            return matchesDataType && matchesVirus;
           })
           .map((section, idx) => {
             const key = section.id || idx;
@@ -188,96 +280,233 @@ const ConfigDrivenPage = ({ config }) => {
               view,
               displayView: `<span class="bg-highlight">${viewDisplayLabels[view]}</span>`,
               viewLabelPreposition: viewDisplayLabelsPreposition[view],
-              viewLabel: viewDisplayLabels[view]
+              viewLabel: viewDisplayLabels[view],
+              virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
+              virusLowercase: virusLowercaseDisplay[activeVirus],
             };
-            const interpolatedProps = interpolateObject(section.chart?.props || {}, textVars);
+
+            let interpolatedProps = interpolateObject(
+              section.chart?.props || {},
+              textVars
+            );
+
+            if (section.chart?.props?.getMetricNames) {
+              interpolatedProps.metricName =
+                section.chart.props.getMetricNames({
+                  virus: activeVirus,
+                  view,
+                });
+            }
+            if (interpolatedProps.submetric === "undefined") {
+              interpolatedProps.submetric = undefined;
+            }
+
             const dataSourceKey =
               section.dataSourceKey ||
               interpolatedProps.dataSourceKey ||
               section.chart?.props?.dataSourceKey ||
               null;
+
             const filteredData =
               dataSourceKey && data[dataSourceKey] ? data[dataSourceKey] : [];
-            if (section.renderAs === "overview" || section.renderAs === "hidden") return null;
 
+            if (section.renderAs === "overview" || section.renderAs === "hidden")
+              return null;
+
+            /** ---------- CUSTOM COMPONENT BRANCH ---------- */
             if (section.renderAs === "custom") {
               const CustomComponent = customComponents[section.component];
               if (!CustomComponent) return null;
-              const shouldPassData = CustomComponent.length > 0;
+
+              const chartProps = interpolateObject(
+                section.chart?.props || {},
+                textVars
+              );
+              const compProps = interpolateObject(
+                section.componentProps || {},
+                textVars
+              );
+              const mergedProps = { ...compProps, ...chartProps };
+
+              // Build subtitle variables safely (combined-virus needs date/trend)
+              let subtitleVars = { ...textVars };
+
+              if (section.id === "combined-virus") {
+                // combined-virus uses ARI series for the WoW trend
+                const seriesKey =
+                  view === "visits" ? "ARI visits" : "ARI hospitalizations";
+                const ariSeries = Array.isArray(filteredData)
+                  ? filteredData
+                  : filteredData?.[seriesKey] || [];
+
+                const last = ariSeries?.at?.(-1) || {};
+                const latestISO = last.week || last.date || null;
+
+                const trendObjRaw = getTrendFromTimeSeries(ariSeries, "value");
+                const trendObj = coerceNoChange(trendObjRaw);
+                const trendText = trendObj ? formatTrendPhrase(trendObj) : "not available";
+
+                subtitleVars = {
+                  ...subtitleVars,
+                  date: latestISO ? formatDate(latestISO) : "N/A",
+                  trend: trendText,
+                  trendDirection: trendObj?.direction || "same",
+                };
+              }
+
+              // Safely resolve the raw subtitle template from text.json (or plain string)
+              const rawSubtitleTemplate =
+                typeof section.subtitle === "string"
+                  ? getText(section.subtitle)
+                  : section.subtitle || "";
+
               return (
                 <ContentContainer
                   key={key}
-                  title={resolveText(section.titleKey)}
-                  subtitle={resolveText(section.subtitle, textVars)}
-                  subtitleVariables={textVars}
+                  title={resolveText(section.title, textVars)}
+                  subtitle={rawSubtitleTemplate}
+                  subtitleVariables={subtitleVars}
                   animateOnScroll={section.animateOnScroll !== false}
                   background={section.background || "white"}
+                  infoIcon={section.infoIcon}
+                  downloadIcon={section.downloadIcon}
+                  modalTitle={resolveText(section.modal?.title, textVars)}
+                  modalContent={
+                    section.modal?.markdownPath && (
+                      <MarkdownRenderer
+                        filePath={section.modal.markdownPath}
+                        sectionTitle={resolveText(
+                          section.modal.title || "",
+                          textVars
+                        )}
+                        showTitle={false}
+                        variables={textVars}
+                      />
+                    )
+                  }
                 >
-                  {shouldPassData ? <CustomComponent data={filteredData} /> : <CustomComponent />}
+                  <ChartContainer
+                    title={resolveText(section.title, textVars)}
+                    chart={
+                      <CustomComponent
+                        {...(Array.isArray(filteredData)
+                          ? { data: filteredData }
+                          : { data: filteredData })}
+                        view={view}
+                        onViewChange={setView}
+                        {...mergedProps}
+                      />
+                    }
+                    {...(section.showSidebarToggle
+                      ? {
+                          sidebar: (
+                            <ToggleControls
+                              data={
+                                Array.isArray(filteredData)
+                                  ? filteredData
+                                  : Object.values(filteredData || {}).flat()
+                              }
+                              view={view}
+                              onToggle={setView}
+                            />
+                          ),
+                        }
+                      : {})}
+                    stackSidebarAbove={!!section.sidebarAboveChart}
+                    footer={section.chart.footer}
+                  />
                 </ContentContainer>
               );
             }
 
+            /** ---------- DEFAULT (NON-CUSTOM) BRANCH ---------- */
             const groupField = section.chart?.props?.groupField;
             const groupLabel = section.chart?.props?.groupLabel || "All Groups";
-            const groupOptions = getGroupOptions(filteredData, groupField, groupLabel);
+            const safeDataArray = Array.isArray(filteredData)
+              ? filteredData
+              : [];
+            const groupOptions = getGroupOptions(
+              safeDataArray,
+              groupField,
+              groupLabel
+            );
             const activeGroup = groupSelections[key] ?? groupOptions[0] ?? null;
-            
-            
+
             const normalizedGroup = (activeGroup || "").trim();
             const normalizedLabel = (groupLabel || "").trim();
-            const groupDisplay = groupDisplayNames[normalizedGroup] || normalizedGroup;
+            const groupDisplay =
+              groupDisplayNames[normalizedGroup] || normalizedGroup;
+
+            const isMultiSeries =
+              typeof filteredData === "object" && !Array.isArray(filteredData);
+            const flattenedData = isMultiSeries
+              ? Object.entries(filteredData).flatMap(([seriesName, rows]) =>
+                  (rows || []).map((row) => ({
+                    ...row,
+                    series: seriesName,
+                  }))
+                )
+              : filteredData;
 
             const groupFilteredData =
               !activeGroup || activeGroup === groupLabel
-                ? filteredData
-                : filteredData.filter((d) => d[groupField] === activeGroup);
+                ? flattenedData
+                : flattenedData.filter((d) => d[groupField] === activeGroup);
+
+            const virusFilteredData =
+              groupFilteredData?.filter?.((row) => {
+                const series = row.series || row.metric || row.virus || "";
+                return series.includes(`${activeVirus} ${view}`);
+              }) ?? [];
 
             const trendKey = section.chart?.props?.yField || view;
             const trendObj = section.trendEnabled
-              ? getTrendFromTimeSeries(groupFilteredData, trendKey)
+              ? getTrendFromTimeSeries(virusFilteredData, trendKey)
               : null;
+
             const trendInfo = getTrendInfo({
               trendDirection: trendObj?.direction,
               metricLabel: viewDisplayLabels[view],
               virus: activeVirus,
             });
+
             const trendClass =
               trendObj?.direction === "up"
                 ? "trend-up"
                 : trendObj?.direction === "down"
                 ? "trend-down"
                 : "trend-neutral";
-            const latestWeek = groupFilteredData.at?.(-1)?.week || groupFilteredData.at?.(-1)?.date;
+
+            const latestWeek = getLatestWeekFromData(groupFilteredData);
+
             const groupLabelText =
-            normalizedGroup && normalizedGroup !== normalizedLabel
-              ? `in ${groupDisplay}`
-              : `across ${normalizedLabel.toLowerCase()}`;
-            
+              normalizedGroup && normalizedGroup !== normalizedLabel
+                ? `in ${groupDisplay}`
+                : `across ${normalizedLabel.toLowerCase()}`;
+
             const fullVars = {
               ...textVars,
               date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
               trend: trendObj
-                ? `<span class="${trendClass}">${trendObj.label} ${trendObj.value}%</span>`
-                : "not available",
-                group: groupLabelText, 
-
-                         
+                ? `<span class="${trendClass}">${trendObj.label} ${trendObj.value}</span>`
+                : "not changed",
+              group: groupLabelText,
               trendDirection: trendObj?.direction,
               arrow: trendInfo?.arrow,
               viewLabel: viewDisplayLabels[view],
               viewLabelPreposition: viewDisplayLabelsPreposition[view],
+              virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
+              virusLowercase: virusLowercaseDisplay[activeVirus],
               directionText: trendInfo?.directionText,
               trendColor: trendInfo?.trendColor,
             };
 
-            const rawSubtitleTemplate = resolveText(section.subtitle); // resolves i18n key to "{group}..." string
-
+            const rawSubtitleTemplate = resolveText(section.subtitle);
 
             const computedSubtitle = (
               <TrendSubtitle
-              template={rawSubtitleTemplate}
-              variables={fullVars}
+                template={rawSubtitleTemplate}
+                variables={fullVars}
                 groupProps={{
                   options: groupOptions,
                   active: activeGroup,
@@ -285,29 +514,28 @@ const ConfigDrivenPage = ({ config }) => {
                 }}
               />
             );
-            
 
             const ChartComponent = chartRegistry[section.chart?.type];
             if (!ChartComponent) {
               console.warn(`Chart type '${section.chart?.type}' not found`);
               return null;
             }
+
             const resolvedProps = {
               ...interpolatedProps,
               data: groupFilteredData,
               virus: activeVirus,
               view,
               colorMap: tokens.colorScales?.[activeVirus],
+              tooltip: true,
             };
-            
+
             if (
               section.chart?.type?.toLowerCase().includes("line") &&
               !resolvedProps.xField
             ) {
-              resolvedProps.xField = "date"; 
+              resolvedProps.xField = "date";
             }
-            
-            
 
             return (
               <SectionWithChart
@@ -317,38 +545,86 @@ const ConfigDrivenPage = ({ config }) => {
                 subtitleVariables={fullVars}
                 infoIcon={section.infoIcon}
                 downloadIcon={section.downloadIcon}
-                onDownloadClick={() => downloadCSV(groupFilteredData, `${section.id}.csv`)}
+                onDownloadClick={() => {
+                  const flattened = Object.entries(
+                    data[section.dataSourceKey] || {}
+                  ).flatMap(([seriesName, rows]) =>
+                    (rows || []).map((row) => ({
+                      ...row,
+                      series: seriesName
+                        .replace(" visits", "")
+                        .replace(" hospitalizations", "")
+                        .replace("COVID-19", "COVID")
+                        .replace("Influenza", "Flu"),
+                    }))
+                  );
+                  downloadCSV(
+                    flattened,
+                    section.chart?.props?.downloadFileName ||
+                      `${section.id}.csv`
+                  );
+                }}
                 columnLabels={interpolatedProps.columnLabels}
                 modalTitle={resolveText(section.modal?.title, fullVars)}
                 modalContent={
                   section.modal?.markdownPath && (
                     <MarkdownRenderer
                       filePath={section.modal.markdownPath}
-                      sectionTitle={resolveText(section.modal.title || "", fullVars)}
+                      sectionTitle={resolveText(
+                        section.modal.title || "",
+                        fullVars
+                      )}
                       showTitle={false}
                       variables={fullVars}
                     />
                   )
                 }
                 animateOnScroll={section.animateOnScroll !== false}
-                previewData={groupFilteredData}
+                previewData={
+                  section.id === "combined-virus"
+                    ? Object.entries(
+                        data[section.dataSourceKey] || {}
+                      ).flatMap(([seriesName, rows]) =>
+                        (rows || []).map((row) => ({
+                          ...row,
+                          series: seriesName
+                            .replace(" visits", "")
+                            .replace(" hospitalizations", "")
+                            .replace("COVID-19", "COVID")
+                            .replace("Influenza", "Flu"),
+                        }))
+                      )
+                    : groupFilteredData
+                }
+                {...(section.id === "combined-virus"
+                  ? {
+                      viewToggle: controls.viewToggle,
+                      view,
+                      onViewChange: setView,
+                    }
+                  : {})}
               >
-<ChartContainer
-  title={resolveText(section.title, fullVars)}
-  chart={<ChartComponent {...resolvedProps} />}
-  {...(section.showSidebarToggle
-    ? {
-        sidebar: (
-          <ToggleControls
-            data={filteredData}
-            view={view}
-            onToggle={setView}
-          />
-        ),
-      }
-    : {})}
-  footer={section.chart.footer}
-/>
+                <ChartContainer
+                  title={resolveText(section.title, fullVars)}
+                  chart={<ChartComponent {...resolvedProps} />}
+                  {...(section.showSidebarToggle
+                    ? {
+                        sidebar: (
+                          <ToggleControls
+                            data={
+                              Array.isArray(filteredData)
+                                ? filteredData
+                                : Object.values(filteredData).flat()
+                            }
+                            view={view}
+                            onToggle={setView}
+                          />
+                        ),
+                      }
+                    : {})}
+                  stackSidebarAbove={!!section.sidebarAboveChart}
+                  footer={section.chart.footer}
+                />
               </SectionWithChart>
             );
           })}
@@ -358,14 +634,16 @@ const ConfigDrivenPage = ({ config }) => {
         <FloatingTogglePill
           className={showPill ? "visible" : ""}
           activeVirus={activeVirus}
+          dataType={dataType}
+          onDataTypeChange={setDataType}
           view={view}
           viewLabel={viewDisplayLabels[view]}
           onVirusChange={setVirus}
           onViewChange={setView}
           controls={controls}
-        /> 
+        />
       )}
-    </>
+   </HydratedDataContext.Provider>
   );
 };
 

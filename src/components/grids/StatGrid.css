@@ -36,8 +36,8 @@
 }
 
 .stat-info-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+  font-size: var(--content-title-size, var(--font-size-lg));
+  font-weight: 700;
   color: var(--gray-900);
   margin-bottom: var(--spacing-xl);
 }
@@ -59,69 +59,72 @@
   text-align: right;
 }
 
-/* Tablet-specific styles */
-@media (max-width: 1200px) and (min-width: 769px) {
-  .top-row,
-  .bottom-row {
-    flex-direction: column;
-    align-items: center;
-  }
+/* Tablet: make text stack above cards, but keep card rows */
+@media (min-width: 769px) and (max-width: 1200px) {
+  /* 1) Stack the left (text) and right (cards) containers vertically */
   .stat-info-box {
     display: flex;
-    justify-content: space-between;
-    flex: 0 1 90%;
-    max-width: 100%;
-    max-height: 300px;
-    padding: var(--spacing-md) 0px;
+    flex-direction: column;   /* text on top, cards below */
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+  }
+
+  /* 2) Text takes full width */
+  .stat-card-container-left {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;             /* allow wrapping without overflow */
   }
 
   .stat-info-title {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: var(--spacing-sm);
   }
 
   .stat-info-description {
-    flex: 0 1 90%;
     max-width: 100%;
-    max-height: 250px;
-    margin: 0 auto;
+    margin: 0 0 var(--spacing-lg) 0;
   }
 
-  .stat-card-container-left {
-    margin-right: 10px;
-  }
-
+  /* 3) Cards container also full width, but preserves its own internal rows */
   .stat-card-container-right {
-    margin-left: 10px;
-  }
-
-  .stat-grid .stat-card {
+    flex: 1 1 100%;
     width: 100%;
-    max-width: 100%;
-    max-height: 100px;
-    margin: 0 auto;
+    min-width: 0;
   }
 
-  .stat-grid .stat-card .stat-trend-row {
-    margin-top: -20px;
+  /* 4) Keep card rows as rows with wrapping (DON'T force to column on tablet) */
+  .top-row,
+  .bottom-row {
+    display: flex;
+    flex-direction: row;      /* keep row layout */
+    flex-wrap: wrap;          /* allow wrap if tight */
+    justify-content: center;
+    gap: var(--spacing-md);
   }
 
+  .bottom-row .stat-card-bottom {
+    flex: 1 1 0;                /* grow to share row space equally */
+    max-width: 100%;            /* prevent overflow */
+  }
+  /* optional: slightly tighten card padding to avoid squish on small tablets */
+  .stat-grid .stat-card,
   .stat-grid .stat-card-bottom {
-    width: 100%;
-    max-width: 100%;
-    max-height: 70px;
-    margin: 0 auto;
+    padding: var(--spacing-sm) var(--spacing-md);
   }
 
-  .stat-grid .stat-card-bottom .stat-block-bottom {
-    margin-top: -5px;
+  /* optional: ensure flex items can shrink nicely */
+  .stat-grid .stat-card .stat-card-body > *,
+  .stat-grid .stat-card-bottom .stat-block-bottom > * {
+    min-width: 0;
   }
 
   .week-of {
-    margin-right: 5px;
-    margin-top: 100px;
+    margin-top: var(--spacing-md);
+    text-align: right;
   }
 }
+
 
 
 /* Mobile styles */
@@ -133,29 +136,33 @@
   }
 
   .stat-info-title {
-    text-align: center;
+    text-align: left;
   }
 
   .stat-info-box {
-    min-width: 268px;
+    min-width: 0;
     margin-bottom: var(--spacing-md);
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
   }
 
+  .stat-info-description {
+    width: 100%;
+    min-width: 268px;
+    justify-self: center;
+  }
+
   .stat-grid {
     gap: var(--spacing-xs) !important;
   }
 
-  .stat-grid .stat-card {
-    width: 268px;
-    max-width: 268px;
+  .stat-grid .stat-card,
+  .stat-grid .stat-card-bottom {
+    width: 100%;
+    max-width: 100%;
   }
+
 }
 
-.stat-grid .stat-card-bottom {
-  width: 268px;
-  max-width: 268px;
-}
 

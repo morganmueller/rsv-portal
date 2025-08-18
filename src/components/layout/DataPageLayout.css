@@ -1,10 +1,14 @@
-.data-page {
-  background-color: var(--gray-100);
-  width: 100%;
-}
+/* ==============================
+   DataPageLayout.css (full file)
+   ============================== */
 
-.sr-only {
-  	position: absolute;
+   .data-page {
+    background-color: var(--gray-100);
+    width: 100%;
+  }
+  
+  .sr-only {
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0;
@@ -13,176 +17,242 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
-}
-
-/* White top section */
-.data-section-wrapper {
-  box-sizing: border-box;    /* ← include padding in the 100% width */
-  background-color: var(--white);
-  width: 100%;
-  padding: var(--spacing-lg);
-  max-height: 280px;
-}
-
-
-.data-section-container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-.data-section-container * {
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-wrap: break-word;
-}
-
-/* Titles and subtitles */
-.data-title {
-  font-size: clamp(24px, 4vw, 36px);
-  font-family: var(--font-heading);
-  color: var(--gray-900);
-  margin-bottom: var(--spacing-sm);
-}
-
-.data-subtitle {
-  color: var(--gray-700);
-  font-family: var(--font-body);
-  font-size: clamp(14px, 2vw, var(--font-size-md));
-  font-weight: 400;
-  line-height: 1.5;
-  margin-bottom: var(--spacing-md);
-}
-
-.data-divider {
-  width: 100%;
-  height: 1.5px;
-  background-color: var(--gray-300);
-  border: none;
-  margin-bottom: var(--spacing-lg);
-}
-
-/* Gray background section */
-.data-highlight {
-  background-color: var(--gray-100);
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-top: var(--spacing-lg);
-}
-
-
-
-/* Main content block */
-.data-container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
-}
-
-.data-container * {
-  box-sizing: border-box;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* Filter controls */
-.data-controls-wrapper {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.data-controls-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
-  margin: var(--spacing-md) 0;
-}
-
-.data-filter-label {
-  font-size: var(--font-size-sm, 12px);
-  color: var(--gray-600);
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--spacing-xs);
-}
-
-.data-filter-group {
-  display: flex;
-  flex-direction: column;
-  min-width: 200px;
-  margin-top: 0;
-}
-
-.data-filter-group.right-aligned {
-  align-items: flex-start;
-}
-
-/* Compact mode support */
-.data-page.compact .data-section-container {
-  padding: 0 clamp(var(--spacing-md), 4vw, 40px);
-}
-
-.data-page.compact .data-container {
-  padding: clamp(var(--spacing-lg), 4vw, 40px);
-  gap: var(--spacing-lg);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .data-controls-row {
+  }
+  
+  /* ===== White top section ===== */
+  .data-section-wrapper {
+    box-sizing: border-box;    /* include padding in width */
+    background-color: var(--white);
+    width: 100%;
+    padding: var(--spacing-lg);
+  }
+  
+  .data-section-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-md);
+    align-items: flex-start;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
-
-  .data-title {
-    font-size: 28px;
-    text-align: left;
-  }
-
-  .data-subtitle {
-    font-size: var(--font-size-sm);
-    text-align: left;
-  }
-
-  .data-container {
-    padding: var(--spacing-md);
+  
+  .data-section-container * {
     max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
   }
-
-}
-.top-controls-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  width: 100%;
-}
-
-.virus-filter-group-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.view-toggle-wrapper {
-  display: flex;
-  align-items: center;
-}
+  
+  /* ===== Titles and subtitles ===== */
+  .data-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-family: var(--font-heading);
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .data-subtitle {
+    color: var(--gray-700);
+    font-family: var(--font-body);
+    font-size: clamp(14px, 2vw, var(--font-size-md));
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Highlight any dynamic placeholders (virus/view/date/etc.) */
+  .dynamic-text {
+    font-weight: 700;
+    background-color: var(--gray-200);
+    color: var(--gray-900);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    display: inline;
+  }
+  
+  /* Divider (optional; keep if used elsewhere) */
+  .data-divider {
+    width: 100%;
+    height: 1.5px;
+    background-color: var(--gray-300);
+    border: none;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  /* ===== Gray background section ===== */
+  .data-highlight {
+    background-color: var(--gray-100);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* ===== Main content block ===== */
+  .data-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+  }
+  
+  .data-container * {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  
+  /* ===== Top controls wrapper/row ===== */
+  .data-controls-wrapper {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  
+  /* Row that receives injected topControls */
+  .data-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;                /* mobile can wrap; desktop overridden below */
+    margin: var(--spacing-md) 0;
+  }
+  
+  /* Inner grouping used by TopControls */
+  .top-controls-wrapper {
+    display: flex;                  /* ensure row on desktop */
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+    width: 100%;
+  }
+  
+  /* Left/right sub-wrappers */
+  .data-type-toggle-wrapper,
+  .view-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    min-width: 0;                   /* allow shrink to avoid forced wrapping */
+  }
+  
+  /* ===== Data-type buttons group (ED / Cases / Deaths) ===== */
+  .data-type-toggle-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;               /* long labels won’t push to new line */
+    -webkit-overflow-scrolling: touch;
+    min-width: 0;
+  }
+  
+  /* ===== Visits/Hospitalizations group ===== */
+  .view-toggle-group {
+    display: flex;
+    gap: var(--spacing-md);
+    flex: 0 0 auto;
+  }
+  
+  /* Generic label alignment if used */
+  .data-filter-label {
+    font-size: var(--font-size-sm, 12px);
+    color: var(--gray-600);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .data-filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    margin-top: 0;
+  }
+  
+  .data-filter-group.right-aligned {
+    align-items: flex-start;
+  }
+  
+  /* ===== Compact mode support ===== */
+  .data-page.compact .data-section-container {
+    padding: 0 clamp(var(--spacing-md), 4vw, 40px);
+  }
+  
+  .data-page.compact .data-container {
+    padding: clamp(var(--spacing-lg), 4vw, 40px);
+    gap: var(--spacing-lg);
+  }
+  
+  /* ===== Desktop constraints (prevent wrap) ===== */
+  @media (min-width: 993px) {
+    .data-controls-row {
+      flex-wrap: nowrap;            /* keep top controls in one line on desktop */
+    }
+  }
+  
+  /* ===== Mobile stacking ===== */
+  @media (max-width: 992px) {
+    .data-controls-row {
+      flex-direction: column;       /* stack groups vertically */
+      align-items: stretch;
+      gap: var(--spacing-md);
+    }
+    .data-controls-row > * {
+      width: 100%;
+    }
+  
+    .data-title {
+      font-size: 28px;
+      text-align: left;
+    }
+  
+    .data-subtitle {
+      font-size: var(--font-size-sm);
+      text-align: left;
+    }
+  
+    .data-container {
+      padding: var(--spacing-md);
+      max-width: 100%;
+    }
+  
+    .top-controls-wrapper {
+      flex-direction: column;       /* put groups on separate lines */
+      align-items: stretch;
+      gap: var(--spacing-md);
+    }
+  
+    /* Data-type buttons become single-column stack */
+    .data-type-toggle-group {
+      flex-direction: column;
+      gap: 8px;
+      white-space: normal;
+      overflow-x: visible;
+    }
+    .data-type-toggle-group .view-toggle {
+      width: 100%;
+    }
+  
+    /* Visits/Hospitalizations: single row beneath */
+    .view-toggle-group {
+      flex-direction: row;
+      width: 100%;
+      gap: 8px;
+      justify-content: stretch;
+    }
+    .view-toggle-group .view-toggle {
+      flex: 50;                      /* two equal-width buttons */
+    }
+  }
+  

@@ -21,6 +21,8 @@
   position: relative;
   animation: scaleIn 0.4s ease;
   box-sizing: border-box;
+  padding-top: calc(var(--spacing-lg) + 8px);
+
 }
 
 @keyframes scaleIn {
@@ -36,14 +38,16 @@
 
 .info-modal-close {
   position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-lg);
+  top: 8px;
+  right: 8px;
   background: transparent;
   border: none;
   font-size: 24px;
   color: var(--modal-close, var(--gray-600));
   cursor: pointer;
   transition: color 0.2s ease;
+  z-index: 10; /* make sure it stays on top */
+
 }
 
 .info-modal-close:hover {
@@ -84,8 +88,8 @@
 
   .info-modal-close {
     font-size: 20px;
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
+    top: 6px;
+    right: 6px;
     z-index: 10; /* Ensure above text */
   }
 }
@@ -107,7 +111,7 @@
 
   .info-modal-close {
     font-size: 22px;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
+    top: 6px;
+    right: 6px;
   }
 }

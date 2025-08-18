@@ -8,7 +8,7 @@ const headerButtons = [
     {
       id: "data",
       labelKey: "nav.data",
-      path: "/data",
+      path: "/data/covid-19",
     },
     {
       id: "info",

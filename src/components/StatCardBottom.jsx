@@ -1,59 +1,83 @@
 import React from "react";
 import { getThemeByTitle } from "../utils/themeUtils";
-import { tokens } from "../styles/tokens";
+import { normalizePercentChange, getTrendDirection } from "../utils/trendUtils";
 import "./StatCardBottom.css";
 
-const { colors, typography } = tokens;
+const TrendChip = ({ rawChange }) => {
+  const dir = getTrendDirection(rawChange);
+  if (dir === null) return null;
+
+  if (dir === "same") {
+    return (
+      <span className="trend-nochange">
+        <span className="stat-arrow">→</span>
+        No change
+      </span>
+    );
+  }
+  if (dir === "up") {
+    return (
+      <span className="trend-increasing">
+        <span className="stat-arrow">▲</span>
+        Increasing
+      </span>
+    );
+  }
+  return (
+    <span className="trend-decreasing">
+      <span className="stat-arrow">▼</span>
+      Decreasing
+    </span>
+  );
+};
 
 const StatCardBottom = ({
   title,
-  icon,
-  visitPercent,
-  hospitalizationPercent,
-  visitChange,
-  admitChange,
-  visitDate,
-  admitDate,
+  visitChange,   // WoW delta (%)
+  visitPercent,  // optional current level (hidden by default in compact)
 }) => {
-  const { color: statColor, background: cardBackground, icon: defaultIcon} = getThemeByTitle(title);
-  const iconSrc = icon || defaultIcon;
-
-  const getChangeArrow = (change) => {
-    const num = parseFloat(change);
-    if (isNaN(num)) return null;
-  
-    const epsilon = 0.001; // tolerance for what counts as no change
-    const isNoChange = Math.abs(num) < epsilon;
-  
-    if (isNoChange) {
-      return <span style={{ color: colors.gray900, marginRight: 1 }}>Not changing</span>;
-    }
-  
-    const isUp = num > 0;
-    const trend = isUp ? "Increasing" : "Decreasing";
-    const color = colors.gray900;
-  
-    return <span style={{ color, marginRight: 1 }}>{trend}</span>;
-  };
-  
+  const theme = getThemeByTitle(title);
+  const normalizedChange = normalizePercentChange(visitChange);
 
   return (
-    <div className="stat-card-bottom" style={{ backgroundColor: cardBackground }}>
+    <div
+      className="stat-card-bottom"
+      style={{
+        "--card-bg": theme.background,
+        "--stat-value": theme.color,
+      }}
+      aria-label={`${title} stat card (compact)`}
+    >
       <div className="stat-card-header-bottom">
-        {iconSrc && <img className="stat-card-icon-bottom" src={iconSrc} alt={`${title} icon`} />}
+        {theme.icon && (
+          <img
+            className="stat-card-icon-bottom"
+            src={theme.icon}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+          />
+        )}
         <div className="stat-card-title-bottom">{title}</div>
       </div>
 
       <div className="stat-block-bottom">
+        {/* Optional: show level, rounded to whole numbers if desired
+        <div className="stat-percent-bottom">
+          {Number.isFinite(+visitPercent) ? `${Math.round(visitPercent)}%` : ""}
+        </div>
+        */}
         <div className="stat-detail-bottom">
           <div className="stat-trend-row-bottom">
-          {visitChange !== null && (
-  <>
-    {getChangeArrow(visitChange)}
-    {Math.abs(visitChange)}% 
-    {/* · <span className="stat-date">{visitDate}</span> */}
-  </>
-)}  </div>
+            {normalizedChange !== null && (
+              <>
+                <TrendChip rawChange={visitChange} />
+                <span className="stat-percent-change">
+                  {Math.abs(normalizedChange)}%
+                </span>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
