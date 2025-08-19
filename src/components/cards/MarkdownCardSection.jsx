@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import InfoCard from "./InfoCard";
 
 // Extract cards from a markdown section with ### subheaders and icon/link lines
-const extractCards = (markdown, sectionTitle) => {
+const extractCards = (markdown, sectionTitle, sectionSubtitle) => {
   if (!markdown || !sectionTitle) return [];
 
   const sectionRegex = new RegExp(`## ${sectionTitle}[\\s\\S]*?(?=\\n## |$)`, "i");
@@ -42,12 +42,13 @@ const extractCards = (markdown, sectionTitle) => {
   }));
 };
 
-const MarkdownCardSection = ({ markdown, sectionTitle }) => {
-  const cards = extractCards(markdown, sectionTitle);
+const MarkdownCardSection = ({ markdown, sectionTitle, sectionSubtitle }) => {
+  const cards = extractCards(markdown, sectionTitle, sectionSubtitle);
 
   return (
     <section className="card-section">
       <h2>{sectionTitle}</h2>
+      <p>{sectionSubtitle}</p>
       <div className="card-grid">
         {cards.map((card, idx) => (
           <InfoCard key={idx} {...card} />
@@ -60,6 +61,8 @@ const MarkdownCardSection = ({ markdown, sectionTitle }) => {
 MarkdownCardSection.propTypes = {
   markdown: PropTypes.string.isRequired,
   sectionTitle: PropTypes.string.isRequired,
+  sectionTitle: PropTypes.string,
+
 };
 
 export default MarkdownCardSection;

@@ -36,13 +36,13 @@
 }
 
 /* Narrow inner column for long-form text */
-.about-narrow {
+/* .about-narrow {
   max-width: var(--about-narrow-max);
   margin: 0 auto;
-}
+} */
 
 /* ===== Intro / Overview ===== */
-.intro-section { }
+
 .intro-section h2 {
   font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
   margin: var(--spacing-lg) 0 var(--spacing-md);
@@ -53,9 +53,10 @@
 /* ===== Card Sections ===== */
 .card-section h2 {
   margin: 0 0 var(--spacing-md);
-  font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
+  font-size: 20px;
   line-height: 1.25;
   text-align: left;
+  width: 100%;
 }
 
 .card-grid {
@@ -75,7 +76,7 @@
 
 /* ===== Markdown Paragraph Sections ===== */
 .markdown-paragraph-section h2 {
-  font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
+  /* font-size: clamp(1.5rem, 1.5rem + 1.5vw, var(--font-size-2xl)); */
   margin: 0 0 var(--spacing-sm);
   font-weight: 600;
   line-height: 1.25;
@@ -83,8 +84,8 @@
 }
 
 /* Group wrapper + title before grouped paragraphs */
-.markdown-group-title {
-  font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
+.markdown-group-title h2{
+  font-size: clamp(2.5rem, 2rem + 1.5vw, var(--font-size-3xl));
   font-weight: 700;
   line-height: 1.25;
   margin: 0 0 var(--spacing-md);
@@ -112,6 +113,49 @@
 .about-page .markdown-body code {
   padding: 0.15em 0.35em; background: var(--gray-100); border-radius: var(--radius-xs);
 }
+
+.card-subtitle {
+  font-size: 16px;
+  color: var(--gray-700);
+  margin: 0 0 var(--spacing-md);
+  line-height: 1.4;
+}
+
+.about-nav {
+  padding: var(--surface-pad);
+  background: none;
+  border-radius: none;
+  box-shadow: none;
+}
+
+.about-nav-title {
+  margin: 0 0 var(--spacing-md);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.about-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.about-nav-list li {
+  margin-bottom: var(--spacing-sm);
+}
+
+.about-nav-link {
+  color: rgb(87, 139, 208);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.about-nav-link:hover {
+  text-decoration: underline;
+  color: var(--blue-900);
+}
+
 
 /* ===== Responsive Tweaks ===== */
 @media (max-width: 1024px) {

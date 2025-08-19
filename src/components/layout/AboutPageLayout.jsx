@@ -64,6 +64,8 @@ const AboutPageLayout = ({ config }) => {
           </div>
         )}
 
+        
+
         {sections.map((section, idx) => {
           const isOverview = section.renderAs === "overview";
           const isHidden = section.renderAs === "hidden";
@@ -73,13 +75,15 @@ const AboutPageLayout = ({ config }) => {
           // --- cards ---
           if (section.renderAs === "cards") {
             return (
-              <div className="about-row" key={key}>
-                <section className="about-surface card-section" aria-labelledby={`${key}-h`}>
+              <div className="about-row" >
+                <section key={key} className="about-surface card-section" aria-labelledby={`${key}-h`}>
                   {/* Let the card section render its own internal title if provided */}
                   <MarkdownCardSection
                     title={resolveText(section.titleKey)}
+                    
                     markdown={markdown}
                     sectionTitle={section.markdownSection}
+                    sectionSubtitle={section.subtitle}
                     cards={section.cards.map((card) => ({
                       ...card,
                       title: resolveText(card.titleKey),
@@ -94,7 +98,7 @@ const AboutPageLayout = ({ config }) => {
           if (section.renderAs === "paragraph") {
             return (
               <div className="about-row" key={key}>
-                <section className="about-surface markdown-paragraph-section" aria-labelledby={`${key}-h`}>
+                <section id={key} className="about-surface markdown-paragraph-section" aria-labelledby={`${key}-h`}>
                   <div className="about-narrow">
                     <MarkdownParagraphSection
                       title={resolveText(section.titleKey)}
@@ -115,7 +119,7 @@ const AboutPageLayout = ({ config }) => {
 
             return (
               <div className="about-row" key={key}>
-                <section className="about-surface" aria-labelledby={`${key}-h`}>
+                <section id={key} className="about-surface" aria-labelledby={`${key}-h`}>
                   <div className="about-narrow">
                     {groupTitle && (
                       <h2 className="markdown-group-title" id={`${key}-h`}>

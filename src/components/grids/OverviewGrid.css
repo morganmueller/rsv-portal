@@ -1,31 +1,46 @@
-/* ============== Base tweaks (all sizes) ============== */
 
-.overview-grid-section {
+/* OverviewGrid.css */
+/* .overview-grid-section {
+  background-color: var(--white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
+  width: 100%;
   padding: var(--spacing-xl) 0;
+  overflow: clip;
+  
+} */
+
+.overview-grid-container {
+  width: 100%;
+  max-width: 1280px;      
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  box-sizing: border-box;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
 }
 
 
+
 .overview-grid-title {
+  /* remove extra side margins so width lines up */
+  /* margin: 15px 0 0 0; */
+  /* keep the rest */
   text-align: left;
   font-size: var(--font-size-lg);
   font-family: var(--font-heading);
   color: var(--content-title-color);
-  margin: 15px var(--spacing-xl) 0 var(--spacing-xl);
   font-weight: 700;
   letter-spacing: 0.01em;
 }
-
 .overview-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--spacing-xl);
-  margin: 0 auto;
   width: 100%;
-  max-width: 1200px;
-  background: transparent;
+  background: transparent; 
+  
 }
 
 /* Card shell */

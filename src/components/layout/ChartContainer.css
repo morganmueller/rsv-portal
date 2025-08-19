@@ -24,7 +24,15 @@ main {
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-xl);
   width: 100%;
-  max-width: 1120px;
+  max-width: 1280px;         /* was 1120px — match other sections */
+  margin-inline: auto;       /* ensure centered */
+}
+.content-container.background-transparent {
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .chart-header {

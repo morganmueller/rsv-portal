@@ -29,6 +29,7 @@ body {
 
 
 
+
 /* Generic highlight for dynamic placeholders (virus/view/date/etc.) */
 .dynamic-text {
   font-weight: 700;
@@ -63,6 +64,7 @@ h3.content-title {
   padding: 0;
   box-sizing: border-box;
 }
+
 
 .content-title-row {
   display: flex;
@@ -192,11 +194,10 @@ h3.content-title {
   background-color: #1d4ed8;
 }
 
-
 /* === Responsive Adjustments === */
-@media (max-width: calc(var(--bp-mobile))) {
+@media (max-width: 768px) {
   .content-container {
-     padding: var(--spacing-lg); 
+    padding: var(--spacing-lg); 
   }
 
   .download-icon {
@@ -210,6 +211,42 @@ h3.content-title {
   .content-subtitle {
     font-size: var(--font-size-sm);
   }
+
+  /* New rules for mobile icon alignment */
+  .content-title-row {
+    position: relative;          /* so icons can be placed inside */
+    flex-direction: column;      /* stack title + subtitle */
+    align-items: flex-start;
+  }
+
+  .content-title-icons {
+    position: absolute;
+    top: 0;                      /* stick to top */
+    right: 0;                    /* stick to right */
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-sm);
+  }
+
+  .content-title {
+    width: 100%;
+    text-align: left;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .info-icon {
+    height: 20px;
+    margin-left: var(--spacing-sm);
+  }
+  
+  .download-icon {
+    height: 16px;
+    margin-left: var(--spacing-md);
+  }
+  .icon {
+    margin-left: 0;             /* remove inline spacing */
+  }
 }
+
 
 
