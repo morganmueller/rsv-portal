@@ -64,8 +64,8 @@ const edPageConfig = {
           dataSource: null,
           footnote: null,
           seasonal: null,
-          title:
-            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
+          // title:
+          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
           getMetricNames: ({ virus, view }) => [`${virus} ${view}`, `ARI ${view}`],
           submetric: "Overall",
           xField: "date",
@@ -100,8 +100,8 @@ const edPageConfig = {
           dataSource: null,
           footnote: null,
           seasonal: null,
-          title:
-            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by age group",
+          // title:
+          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by age group",
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
           groupLabel: "All Ages",
@@ -137,8 +137,8 @@ const edPageConfig = {
           dataSourceKey: "edByGeo",
           dataSource: null,
           footnote: null,
-          title:
-            "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by borough",
+          // title:
+          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by borough",
           seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",

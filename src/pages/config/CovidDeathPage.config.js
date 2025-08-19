@@ -38,13 +38,12 @@ const covidDeathPageConfig = {
           props: {
             dataSourceKey: "seasonalCovidDeaths",
             dataSource: null,
-            title: "Counts of {virus} deaths by season",
+            // title: "Counts of {virus} deaths by season",
             seasonal: true,
             metricName: "{virus} deaths",
             submetric: "Total", // explicitly set for non-grouped
             xField: "dayOfSeason",
             yField: "value",
-            title: "COVID-19 deaths",
             colorField: "season",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
@@ -73,7 +72,7 @@ const covidDeathPageConfig = {
           props: {
             dataSourceKey: "covidDeathsByAge",
             dataSource: null,
-            title: "Counts of {virus} deaths by age group",
+            // title: "Counts of {virus} deaths by age group",
             seasonal: null,
             metricName: "{virus} deaths by age group",
             groupedAges: true,
@@ -81,7 +80,7 @@ const covidDeathPageConfig = {
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
             yField: "value",
-            title: "COVID-19 deaths",
+            // title: "COVID-19 deaths",
             colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number"
@@ -107,13 +106,13 @@ const covidDeathPageConfig = {
           props: {
             dataSourceKey: "covidDeathsByGeo",
             dataSource: null,
-            title: "Counts of {virus} deaths by borough",
+            // title: "Counts of {virus} deaths by borough",
             seasonal: null,
             metricName: "{virus} deaths by borough",
             groupField: "submetric", // explicitly set for non-grouped
             xField: "date",
             yField: "value",
-            title: "COVID-19 deaths",
+            // title: "COVID-19 deaths",
             colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 
@@ -144,13 +143,13 @@ const covidDeathPageConfig = {
           props: {
             dataSourceKey: "covidDeathsByRE",
             dataSource: null, 
-            title: "Counts of {virus} deaths by race and ethnicity",
+            // title: "Counts of {virus} deaths by race and ethnicity",
             seasonal: null,
             metricName: "{virus} deaths by race and ethnicity",
             groupField: "submetric", 
             xField: "date",
             yField: "value",
-            title: "COVID-19 deaths",
+            // title: "COVID-19 deaths",
             colorField: "submetric",
             tooltipFields: ["date", "value"],
             defaultDisplay: "Number", 

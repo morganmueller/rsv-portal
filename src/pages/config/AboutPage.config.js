@@ -77,18 +77,14 @@ const aboutPageConfig = {
         
       ],
     },
-    {
-      id: "learn",
-      titleKey: "Learn about Respiratory Illnesses",
-      renderAs: "paragraph",
-      markdownSection: "Learn about Respiratory Illnesses",
-    },
+
 
     {
       id: "provider-info",
       titleKey: "",
       renderAs: "cards",
-      markdownSection: "Quick navigation",
+      subtitle:`The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department. Find health information and guidance for each illness:`,
+      markdownSection: "Learn about Respiratory Illnesses",
       cards: aboutCards["provider-info"],
     },
 
