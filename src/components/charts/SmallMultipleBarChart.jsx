@@ -1,6 +1,7 @@
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
+import ChartFooter from "./ChartFooter";
 
 const { colors, typography, spacing } = tokens;
 
@@ -19,6 +20,7 @@ const SmallMultipleBarChart = ({
   yField = "value",
   colorField = "submetric",
   metricName,
+  footnote,
   display,
   legendTitle = "Category",
   showRollingAvg = false,
@@ -64,6 +66,11 @@ if (metricName.includes('COVID')) {
 } else {
   console.log('metric name not identified')
 }
+
+const filteredData =
+virus && data.some((d) => d.virus === virus)
+? data.filter((d) => d.virus === virus)
+: data;
 
 const specTemplate = {
   width: "container",
@@ -189,6 +196,12 @@ console.log("📊 Chart data after filtering:", filtered);
   return (
     <div style={{ width: "100%" }}>
       <VegaLiteWrapper data={filtered} specTemplate={specTemplate} />
+      <ChartFooter
+        latestDate={
+          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d["date"]))) : null
+        }
+        footnote={footnote}
+      /> 
       <div
         style={{
           fontSize: typography.fontSizeBase,
@@ -196,7 +209,6 @@ console.log("📊 Chart data after filtering:", filtered);
           marginTop: spacing.sm,
         }}
       >
-        Source: NYC Health Department Syndromic Surveillance
       </div>
     </div>
   );

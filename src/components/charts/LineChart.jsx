@@ -255,7 +255,7 @@ const LineChart = ({
       <ChartFooter
         dataSource={dataSource}
         latestDate={
-          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d[xField]))) : null
+          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d["date"]))) : null
         }
         footnote={footnote}
       />

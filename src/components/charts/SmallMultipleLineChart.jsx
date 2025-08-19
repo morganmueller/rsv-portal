@@ -41,6 +41,11 @@ const SmallMultipleLineChart = ({
     "RSV": colors.greenPrimary,
   };
 
+  const filteredData =
+  virus && data.some((d) => d.virus === virus)
+  ? data.filter((d) => d.virus === virus)
+  : data;
+
   const explicitTokenColor =
     color && tokens.colors?.[color] ? tokens.colors[color] : null;
 
@@ -208,7 +213,12 @@ const SmallMultipleLineChart = ({
     // minWidth:0 helps inside flex parents so the chart can grow to full width
     <div style={{ width: "100%", minWidth: 0 }}>
       <VegaLiteWrapper data={filtered} specTemplate={specTemplate} />
-      <ChartFooter dataSource={dataSource} footnote={footnote} />
+      <ChartFooter
+        latestDate={
+          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d["date"]))) : null
+        }
+        footnote={footnote}
+      /> 
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { tokens } from "../../styles/tokens";
 import { field } from "vega";
 import ChartFooter from "./ChartFooter";
 
-const CombinedVirusChart = ({ data = {}, view = "visits",title}) => {
+const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title}) => {
   // Validate data
   if (!data || (!Array.isArray(data) && typeof data !== "object")) {
     return null;
@@ -272,6 +272,12 @@ const CombinedVirusChart = ({ data = {}, view = "visits",title}) => {
   return (
     <div>
       <VegaLite key={view} spec={spec} data={{ table: flattened }} />
+      <ChartFooter
+        latestDate={
+          latestWeek ? formatDate(latestWeek) : "N/A"
+        }
+        footnote={footnote}
+      />
       <div style={{ marginTop: "1rem",
                     fontSize: "14px",
                     // color: "#6B7280",
@@ -279,8 +285,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits",title}) => {
                     justifyContent: "space-between",
                     padding: "0 1rem", }}>
         <div>
-          Data as of:{" "}
-          {latestWeek ? formatDate(latestWeek) : "N/A"}
+
         </div>
       </div>
     </div>

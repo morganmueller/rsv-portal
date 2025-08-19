@@ -29,6 +29,7 @@ import {
   capitalizeFirstHtml,
   getTrendInfo,
   getLatestWeekFromData,
+  getLatestWeek
 } from "../../utils/trendUtils";
 
 import { loadConfigWithData } from "../../utils/loadConfigWithData";
@@ -182,6 +183,8 @@ const ConfigDrivenPage = ({ config }) => {
     virusLowercase: virusLowercaseDisplay[activeVirus],
   };
 
+  const latestDate = getLatestWeek(data)
+
   const resolvedTitleKey =
     typeof titleKey === "object" ? titleKey[dataType] : titleKey;
   const resolvedSubtitleKey =
@@ -209,7 +212,7 @@ const ConfigDrivenPage = ({ config }) => {
           <TrendSummaryContainer
             ref={summaryRef}
             sectionTitle={resolveText(summary.titleKey || summary.title)}
-            date={summary.lastUpdated}
+            date={latestDate}
             markdownPath={summary.markdownPath}
             showTitle
             animateOnScroll={summary.animateOnScroll !== false}

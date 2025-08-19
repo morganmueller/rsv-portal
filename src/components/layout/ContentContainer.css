@@ -225,13 +225,15 @@ h3.content-title {
     right: 0;                    /* stick to right */
     display: flex;
     flex-direction: row;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
+    margin-bottom: 10px;
   }
 
   .content-title {
     width: 100%;
     text-align: left;
     margin-bottom: var(--spacing-xs);
+    padding-top:12px;
   }
   
   .info-icon {
@@ -245,6 +247,8 @@ h3.content-title {
   }
   .icon {
     margin-left: 0;             /* remove inline spacing */
+    margin-bottom: 10px;
+
   }
 }
 
