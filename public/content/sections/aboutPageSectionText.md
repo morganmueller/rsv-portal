@@ -35,9 +35,6 @@ Differences in outcomes among racial and ethnic groups stem from long‑term str
 
 
 
-## Learn about Respiratory Illnesses
-The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department.  
-Find health information and guidance for each illness:
 
 ## Prevention and Vaccination Information
 ### COVID‑19
@@ -58,7 +55,7 @@ RSV causes cold‑like symptoms but may be serious for infants and older adults.
 
 
 
-## Quick navigation
+## Learn about Respiratory Illnesses
 
 ### Respiratory Illness GitHub repository
 icon: /assets/covid-vector.svg  
