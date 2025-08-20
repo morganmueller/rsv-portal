@@ -8,5 +8,8 @@
 
 ## Respiratory Panel Results
 
-**The NYC Health Department** receives data from selected NYC laboratories that test for an expanded panel of circulating respiratory viruses, including those that are not required to be reported to the NYC Health Department.
+
+* The percent of positive test results for each virus is based on the number of tests performed, **not** the number of people tested. Data are calculated from a subset of multiplex respiratory panel tests administered and reported during a given week.  
+
+* These data are collected through passive surveillance and may not be representative of citywide trends. 
 
