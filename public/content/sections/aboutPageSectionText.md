@@ -1,11 +1,6 @@
 # More info page
 
 
-## About the Tracker
-The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department.  
-
-
-
 ## About the data
 Data are updated every Thursday with data through the previous Saturday. All data are preliminary and may change as more information is received. Counts less than 5 are suppressed to maintain confidentiality. 
 
@@ -44,9 +39,7 @@ Data received from emergency departments and electronic laboratory reports often
 Differences in health outcomes among racial and ethnic groups are due to long-term structural racism, not biological or personal traits. Structural racism — centuries of racist policies and discriminatory practices across institutions, including government agencies, and society — prevents communities of color from accessing vital resources (such as health care, housing and food) and opportunities (such as employment and education), and negatively affects overall health and well-being. 
 
 
-
-
-## Prevention and Vaccination Information
+## Learn about Respiratory Illnesses
 ### COVID‑19
 icon: /assets/covid-vector.svg  
 externalIcon: /assets/external-link-icon.png
@@ -67,9 +60,7 @@ RSV causes cold‑like symptoms but may be serious for infants and older adults.
 
 
 
-
-## Learn about Respiratory Illnesses
-
+## Additional Resources
 ### Respiratory Illness GitHub repository
 icon: /assets/github-logo.png
 externalIcon: /assets/external-link-icon.png
