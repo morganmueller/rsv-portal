@@ -3,9 +3,9 @@ import aboutCards from "../../data/aboutCards.json";
 
 const aboutPageConfig = {
   id: "aboutPage",
-  titleKey: "More Information",
+  titleKey: "About the Tracker",
   subtitleKey:
-    "Learn about Respiratory Illnesses, the tracker, data sources, and where to find additional resources.",
+    "The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department.",
   controls: { dataTypeToggle: false, virusToggle: false, viewToggle: false },
 
   summary: {
@@ -17,21 +17,15 @@ const aboutPageConfig = {
   },
 
   sections: [
-    // Overview (unchanged)
- 
     {
-      id: "about-tracker",
-      titleKey: "About the Tracker",
-      renderAs: "paragraph",
-      markdownSection: "About the Tracker",
-    },
-    {
-      id: "prevention-info",
-      titleKey: "Prevention and Vaccination Information",
+      id: "provider-info",
+      titleKey: "",
       renderAs: "cards",
-      markdownSection: "Prevention and Vaccination Information",
-      cards: aboutCards["prevention-info"],
+      subtitle:`The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department. Find health information and guidance for each illness:`,
+      markdownSection: "Learn about Respiratory Illnesses",
+      cards: aboutCards["provider-info"],
     },
+
 
     // NEW: group header before the data paragraphs
     {
@@ -79,15 +73,6 @@ const aboutPageConfig = {
     },
 
 
-    {
-      id: "provider-info",
-      titleKey: "",
-      renderAs: "cards",
-      subtitle:`The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department. Find health information and guidance for each illness:`,
-      markdownSection: "Learn about Respiratory Illnesses",
-      cards: aboutCards["provider-info"],
-    },
-
     // Paragraphs (unchanged)
     {
       id: "seasonality",
@@ -101,6 +86,14 @@ const aboutPageConfig = {
       renderAs: "paragraph",
       markdownSection: "Data Transparency",
     },
+    {
+      id: "prevention-info",
+      titleKey: "Additional Resources",
+      renderAs: "cards",
+      markdownSection: "Additional Resources",
+      cards: aboutCards["prevention-info"],
+    },
+
   ],
 };
 
