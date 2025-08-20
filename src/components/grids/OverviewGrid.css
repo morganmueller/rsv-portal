@@ -66,15 +66,14 @@
 }
 
 .external-icon {
-  position: static;           /* no absolute positioning */
+  position: static;          
   width: 16px;
   height: 16px;
   opacity: 0.85;
-  flex-shrink: 0;             /* keep icon size consistent */
+  flex-shrink: 0;             
 }
 
 
-/* subtle accent bar for hierarchy */
 .grid-card::before {
   content: "";
   position: absolute;
@@ -85,7 +84,6 @@
   opacity: 0.1;
 }
 
-/* Headings & body */
 .grid-card h3 {
   font-size: var(--font-size-md);
   font-family: var(--font-heading);
@@ -93,9 +91,9 @@
   color: var(--blue-primary);
   padding-bottom: 20px ;
   line-height: 1.2;
-  display: flex;              /* make h3 a flex container */
-  align-items: center;        /* vertically center icon with text */
-  gap: 6px;                   /* space between text and icon */
+  display: flex;            
+  align-items: center;       
+  gap: 6px;                  
 }
 
 .grid-card p {
@@ -106,7 +104,6 @@
   margin: var(--spacing-2xs) 0 0;
 }
 
-/* Hover/Focus (pointer devices only) */
 @media (hover: hover) and (pointer: fine) {
   .grid-card:hover {
     box-shadow: var(--shadow-lg, 0 6px 20px rgba(16, 40, 120, 0.12));
@@ -120,12 +117,11 @@
   }
 }
 
-/* ============== Mobile polish ============== */
 @media (max-width: 780px) {
   .overview-grid {
     flex-direction: column;
     gap: var(--spacing-sm);
-    align-items: center;               /* full-width cards */
+    align-items: center;             
     padding: 15px var(--spacing-sm);
     max-width: 720px;
   }
@@ -140,11 +136,10 @@
     padding: var(--spacing-md) var(--spacing-md);
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-sm);
-    box-shadow: var(--shadow-sm);       /* calmer shadow on small screens */
-    transform: none;                    /* prevent jank */
+    box-shadow: var(--shadow-sm);      
+    transform: none;                   
   }
 
-  /* Bigger touch targets, tighter type rhythm */
   .grid-card h3 {
     font-size: clamp(16px, 4vw, 18px);
     margin-bottom: 2px;
@@ -157,7 +152,6 @@
     margin-top: 4px;
   }
 
-  /* Clear, quick tap feedback */
   .grid-card:active {
     background: var(--gray-100);
     border-color: var(--blue-primary);
@@ -165,7 +159,6 @@
     transform: translateY(0);           /* keep stable */
   }
 
-  /* Add a subtle chevron affordance without changing markup */
   .grid-card::after {
     content: "›";
     position: absolute;
@@ -178,14 +171,12 @@
     opacity: 0.85;
   }
 
-  /* Give the accent bar a little more visibility on mobile */
   .grid-card::before {
     height: 3px;
     opacity: 0.18;
   }
 }
 
-/* ============== Very small phones ============== */
 @media (max-width: 400px) {
   .overview-grid-title {
     margin-left: var(--spacing-md);
@@ -197,7 +188,6 @@
   }
 }
 
-/* ============== Accessibility & reduced motion ============== */
 @media (prefers-reduced-motion: reduce) {
   .grid-card {
     transition: none;

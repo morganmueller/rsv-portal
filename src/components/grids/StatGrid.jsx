@@ -2,7 +2,7 @@ import React from "react";
 import StatCard from "../StatCard";
 import StatCardBottom from "../StatCardBottom";
 import "./StatGrid.css";
-import text from "../../content/text.json"; // keep your path
+import text from "../../content/text.json"; 
 
 const StatGrid = ({ data }) => {
   if (!data) return null;
@@ -36,16 +36,14 @@ const StatGrid = ({ data }) => {
           })}`
         : "–";
 
-    // Pull localized copy for each virus
     const statText = text?.overview?.statCards?.[key] || {};
-    // Fallbacks so we don’t blow up if keys aren’t present yet
     const title = statText.title || label;
     const infoText = statText.infoText || "";
 
     return {
       key,
       title,
-      infoText, // ⬅️ pass into card
+      infoText, 
       visitPercent: formatValue(latestVisit),
       hospitalizationPercent: formatValue(latestAdmit),
       visitChange: computeChange(latestVisit, prevVisit),
@@ -77,7 +75,6 @@ const StatGrid = ({ data }) => {
 
         <div className="stat-card-container-right">
           <div className="top-row">
-            {/* Top ARI card gets the infoText and shows it on the right */}
             <StatCard {...statCards[0]} />
           </div>
 

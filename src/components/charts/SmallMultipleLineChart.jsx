@@ -1,4 +1,3 @@
-// SmallMultipleLineChart.jsx
 import React from "react";
 import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
@@ -22,7 +21,7 @@ const SmallMultipleLineChart = ({
   yField = "value",
   colorField = "submetric",
   virus,
-  color,            // can be a key in tokens.colors ("bluePrimary", etc.)
+  color,
   title,
   metricName,
   display,
@@ -34,7 +33,6 @@ const SmallMultipleLineChart = ({
   footnote,
   sharedY = false
 }) => {
-  // Prefer tokens, then virus, then fallback
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
@@ -42,9 +40,9 @@ const SmallMultipleLineChart = ({
   };
 
   const filteredData =
-  virus && data.some((d) => d.virus === virus)
-  ? data.filter((d) => d.virus === virus)
-  : data;
+    virus && Array.isArray(data) && data.some((d) => d.virus === virus)
+      ? data.filter((d) => d.virus === virus)
+      : Array.isArray(data) ? data : [];
 
   const explicitTokenColor =
     color && tokens.colors?.[color] ? tokens.colors[color] : null;
@@ -52,7 +50,6 @@ const SmallMultipleLineChart = ({
   const selectedColor =
     explicitTokenColor ||
     (virus && virusColorMap[virus]) ||
-    // Metric name fallback (still using tokens, not hex)
     (metricName?.includes("COVID")
       ? colors.bluePrimary
       : metricName?.match(/Influenza|Flu/i)
@@ -64,7 +61,7 @@ const SmallMultipleLineChart = ({
   const normalizedDisplay =
     typeof display === "string" ? display.trim().toLowerCase() : null;
 
-  const parsed = (Array.isArray(data) ? data : []).map((d) => {
+  const parsed = filteredData.map((d) => {
     const dateObj = new Date(d[xField] ?? d.date);
     const year = dateObj.getFullYear();
     const week = getISOWeek(dateObj);
@@ -78,8 +75,8 @@ const SmallMultipleLineChart = ({
       date: dateObj,
       year,
       isoWeek: `${year}-W${String(week).padStart(2, "0")}`,
-      value: valueNum,                               // numeric for plotting
-      valueRaw: d.valueRaw ?? d[yField] ?? d.value,  // keep for tooltip only
+      value: valueNum,
+      valueRaw: d.valueRaw ?? d[yField] ?? d.value,
       metric: d.metric ?? metricName,
       [colorField]: d[colorField] ?? "Unknown",
       display: normalizedRowDisplay || "unknown",
@@ -92,7 +89,6 @@ const SmallMultipleLineChart = ({
     return isMatch && isDisplayMatch;
   });
 
-  // establish groups with safe fallback
   let groups;
   if (metricName?.includes("age") && !groupedAges) {
     groups = ["0-4", "5-17", "18-64", "65+"];
@@ -101,12 +97,7 @@ const SmallMultipleLineChart = ({
   } else if (metricName?.includes("borough")) {
     groups = ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"];
   } else if (metricName?.includes("race")) {
-    groups = [
-      "Asian/Pacific Islander",
-      "Black/African American",
-      "White",
-      "Hispanic/Latino",
-    ];
+    groups = ["Asian/Pacific Islander", "Black/African American", "White", "Hispanic/Latino"];
   } else {
     const set = new Set(filtered.map((d) => d[colorField]).filter(Boolean));
     groups = Array.from(set);
@@ -115,9 +106,7 @@ const SmallMultipleLineChart = ({
   if (!groups || groups.length === 0) {
     return (
       <div style={{ width: "100%", minWidth: 0 }}>
-        <div style={{ padding: "1rem", color: colors.gray600 }}>
-          No data to display.
-        </div>
+        <div style={{ padding: "1rem", color: colors.gray600 }}>No data to display.</div>
         <ChartFooter dataSource={dataSource} footnote={footnote} />
       </div>
     );
@@ -127,7 +116,7 @@ const SmallMultipleLineChart = ({
 
   const specTemplate = {
     width: "container",
-    autosize: { type: "fit", contains: "padding", resize: true }, // ← responsive, fixes “compressed” on mount
+    autosize: { type: "fit", contains: "padding", resize: true },
     title: {
       text: title,
       subtitlePadding: 10,
@@ -144,14 +133,7 @@ const SmallMultipleLineChart = ({
         titleColor: colors.gray800,
         labelFontSize: 12
       },
-      axisY: {
-        domain: false,
-        ticks: false,
-        tickCount: 2,
-        orient: "left",
-        zindex: 0,
-        gridDash: [2],
-      },
+      axisY: { domain: false, ticks: false, tickCount: 2, orient: "left", zindex: 0, gridDash: [2] },
       axisX: { domain: true, grid: false },
       view: { stroke: "transparent" },
       legend: {
@@ -162,11 +144,17 @@ const SmallMultipleLineChart = ({
         symbolSize: 100,
         symbolStrokeWidth: 5,
         orient: "bottom",
+        title: legendTitle
       }
     },
     ...(sharedY ? { resolve: { scale: { y: "shared" } } } : {}),
     vconcat: []
   };
+
+  const valueTooltipField =
+    filtered.some((d) => d.valueRaw != null)
+      ? { field: "valueRaw", title: "Reported" }
+      : { field: "value", title: "Reported" };
 
   specTemplate.vconcat = groups.map((group) => ({
     title: {
@@ -178,31 +166,33 @@ const SmallMultipleLineChart = ({
       color: "#374151"
     },
     height: 75,
-    width: "{containerWidth}", // responsive inside wrapper
+    width: "{containerWidth}",
     transform: [{ filter: `datum['${colorField}'] === '${group}'` }],
-    // shared encodings so layers stay aligned
     encoding: {
-      x: {
-        field: "date",
-        type: "temporal",
-        axis: { title: null, format: dateFormat, tickCount: 6, labelAngle: 0 }
-      },
-      y: {
-        field: "value",
-        type: "quantitative",
-        title: null
-      }
+      x: { field: "date", type: "temporal", axis: { title: null, format: dateFormat, tickCount: 6, labelAngle: 0 } },
+      y: { field: "value", type: "quantitative", title: null }
     },
     layer: [
       { mark: { type: "area", opacity: 0.15, color: selectedColor } },
       {
-        mark: { type: "line", point: true },
+        mark: { type: "line", point: { filled: true, size: 40 }, strokeWidth: 2 },
         encoding: {
           color: { value: selectedColor },
           tooltip: [
             { field: "date", type: "temporal", format: "%d %b %Y" },
             { field: colorField, type: "nominal", title: "Group" },
-            { field: "value", title: "Reported" }
+            valueTooltipField
+          ]
+        }
+      },
+      {
+        mark: { type: "point", size: 300, opacity: 0.001 }, 
+        encoding: {
+          color: { value: selectedColor },
+          tooltip: [
+            { field: "date", type: "temporal", format: "%d %b %Y" },
+            { field: colorField, type: "nominal", title: "Group" },
+            valueTooltipField
           ]
         }
       }
@@ -210,15 +200,20 @@ const SmallMultipleLineChart = ({
   }));
 
   return (
-    // minWidth:0 helps inside flex parents so the chart can grow to full width
     <div style={{ width: "100%", minWidth: 0 }}>
-      <VegaLiteWrapper data={filtered} specTemplate={specTemplate} />
+      <VegaLiteWrapper
+        data={filtered}
+        specTemplate={specTemplate}
+        rendererMode="svg"               
+      />
       <ChartFooter
         latestDate={
-          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d["date"]))) : null
+          filteredData?.length > 0
+            ? Math.max(...filteredData.map((d) => new Date(d["date"])))
+            : null
         }
         footnote={footnote}
-      /> 
+      />
     </div>
   );
 };

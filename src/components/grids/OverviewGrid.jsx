@@ -5,7 +5,6 @@ import "./OverviewGrid.css";
 
 const OverviewGrid = () => (
   <section className="overview-grid-section">
-    {/* Full-bleed inside ContentContainer, with same max-width + side padding */}
     <div className="overview-grid-container">
       <div className="content-header">
         <h2 className="overview-grid-title">{getText("overviewBottomNav.title")}</h2>

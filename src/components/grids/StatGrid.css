@@ -59,21 +59,18 @@
   text-align: right;
 }
 
-/* Tablet: make text stack above cards, but keep card rows */
 @media (min-width: 769px) and (max-width: 1200px) {
-  /* 1) Stack the left (text) and right (cards) containers vertically */
   .stat-info-box {
     display: flex;
-    flex-direction: column;   /* text on top, cards below */
+    flex-direction: column; 
     gap: var(--spacing-md);
     padding: var(--spacing-md) 0;
   }
 
-  /* 2) Text takes full width */
   .stat-card-container-left {
     flex: 1 1 100%;
     width: 100%;
-    min-width: 0;             /* allow wrapping without overflow */
+    min-width: 0;            
   }
 
   .stat-info-title {
@@ -86,34 +83,30 @@
     margin: 0 0 var(--spacing-lg) 0;
   }
 
-  /* 3) Cards container also full width, but preserves its own internal rows */
   .stat-card-container-right {
     flex: 1 1 100%;
     width: 100%;
     min-width: 0;
   }
 
-  /* 4) Keep card rows as rows with wrapping (DON'T force to column on tablet) */
   .top-row,
   .bottom-row {
     display: flex;
-    flex-direction: row;      /* keep row layout */
-    flex-wrap: wrap;          /* allow wrap if tight */
+    flex-direction: row;    
+    flex-wrap: wrap;         
     justify-content: center;
     gap: var(--spacing-md);
   }
 
   .bottom-row .stat-card-bottom {
-    flex: 1 1 0;                /* grow to share row space equally */
-    max-width: 100%;            /* prevent overflow */
+    flex: 1 1 0;                
+    max-width: 100%;           
   }
-  /* optional: slightly tighten card padding to avoid squish on small tablets */
   .stat-grid .stat-card,
   .stat-grid .stat-card-bottom {
     padding: var(--spacing-sm) var(--spacing-md);
   }
 
-  /* optional: ensure flex items can shrink nicely */
   .stat-grid .stat-card .stat-card-body > *,
   .stat-grid .stat-card-bottom .stat-block-bottom > * {
     min-width: 0;
@@ -127,7 +120,6 @@
 
 
 
-/* Mobile styles */
 @media (max-width: 768px) {
   .top-row,
   .bottom-row {

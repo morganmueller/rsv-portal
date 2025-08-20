@@ -55,7 +55,6 @@ const SmallMultipleBarChart = ({
     return isMatch && isDisplayMatch;
   });
 
-// Set color values by metricName
 let colorValue
 if (metricName.includes('COVID')) {
   colorValue = '#2B83BA'
@@ -191,7 +190,6 @@ const specTemplate = {
   }
 };
 
-console.log("📊 Chart data after filtering:", filtered);
 
   return (
     <div style={{ width: "100%" }}>

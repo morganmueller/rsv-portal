@@ -1,4 +1,3 @@
-// config/overviewGridConfig.js
 const overviewGridItems = [
   {
     labelKey: "overviewBottomNav.wastewater.title",
