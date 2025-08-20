@@ -44,21 +44,6 @@ export const getMetricData = memoize(function (
     return isMatch;
   });
 
-  console.log(
-    `✅ getMetricData('${metric}', submetric: ${submetric ?? "[ALL]"}, display: '${display}') matched ${filtered.length} rows`
-  );
-
-  console.log(
-    "🔎 Available submetrics for",
-    metric,
-    ":",
-    [...new Set(data.filter((d) => d.metric === metric).map((d) => d.submetric).filter(Boolean))]
-  );
-
-  console.log(
-    "📋 Available metrics in data:",
-    [...new Set(data.map((d) => d.metric))]
-  );
 
   return filtered.map((d) => ({
     date: new Date(d.date),
@@ -167,7 +152,6 @@ export function hydrateConfigData(config, flatData, variables = {}) {
 
     // ↔️ Case: pivoted view
     if (props.pivotView && baseMetric) {
-      console.log(`↔️ Hydrating ${dataKey} via pivotMetricToViews`, baseMetric);
       result.data[dataKey] = pivotMetricToViews(
         flatData,
         baseMetric,
@@ -178,7 +162,6 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     }
     // 📚 Case: multiple metricNames
     else if (Array.isArray(metricName)) {
-      console.log(`📊 Hydrating ${dataKey} with multiple metricNames:`, metricName);
       result.data[dataKey] = metricName.flatMap((m) =>
         getMetricData(flatData, {
           metric: m,
@@ -190,11 +173,6 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     }
     // ✅ Case: single metric
     else if (metricName) {
-      console.log(`📊 Hydrating ${dataKey} using getMetricData with:`, {
-        metricName,
-        submetric,
-        display,
-      });
       result.data[dataKey] = getMetricData(flatData, {
         metric: metricName,
         submetric,
@@ -205,11 +183,7 @@ export function hydrateConfigData(config, flatData, variables = {}) {
       console.warn(`⚠️ Section "${section.id}" missing metricName or baseMetric`);
     }
 
-    const count = Array.isArray(result.data[dataKey])
-      ? result.data[dataKey].length
-      : Object.values(result.data[dataKey] || {}).flat().length;
-
-    console.log(`📥 Resulting ${dataKey} row count:`, count);
+  
   }
 
   return result;
