@@ -67,13 +67,13 @@ externalIcon: /assets/external-link-icon.png
 link: https://www.nyc.gov/covid-providers  
 Respiratory Illness GitHub repository
 
-### NYS wastewater surveillance data
+### NYS Wastewater Surveillance Data
 icon: /assets/nys-logo.svg 
 externalIcon: /assets/external-link-icon.png
 link: https://coronavirus.health.ny.gov/covid-19-wastewater-surveillance 
 NYS wastewater surveillance data
 
-### NYS influenza surveillance reports
+### NYS Influenza Surveillance Reports
 icon: /assets/nys-logo.svg
 externalIcon: /assets/external-link-icon.png
 link: https://www.health.ny.gov/diseases/communicable/influenza/surveillance/
