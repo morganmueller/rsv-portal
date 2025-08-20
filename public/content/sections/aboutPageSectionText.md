@@ -61,7 +61,7 @@ RSV causes cold‑like symptoms but may be serious for infants and older adults.
 
 
 ## Additional Resources
-### Respiratory Illness GitHub repository
+### Respiratory Illness GitHub Repository
 icon: /assets/github-logo.png
 externalIcon: /assets/external-link-icon.png
 link: https://www.nyc.gov/covid-providers  
