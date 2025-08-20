@@ -8,9 +8,9 @@ const overviewGridItems = [
     
   },
     {
-      labelKey: "overviewBottomNav.emergencyDept.title",
-      descriptionKey: "overviewBottomNav.emergencyDept.description",
-      link: "/data/emergency-dept",
+      labelKey: "overviewBottomNav.nysSurveillance.title",
+      descriptionKey: "overviewBottomNav.nysSurveillance.description",
+      link: "https://www.health.ny.gov/diseases/communicable/influenza/surveillance/",
       icon: "/assets/external-link-icon.png",  
 
     },

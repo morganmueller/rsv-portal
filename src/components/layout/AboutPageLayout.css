@@ -66,12 +66,48 @@
   width: 100%;
 }
 
+.info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--blue-primary);
+  opacity: 0.1;
+}
+
 .info-card {
   background-color: var(--gray-50);
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  box-sizing: border-box;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-decoration: none;
+  transition: box-shadow 0.22s, transform 0.22s, background-color 0.22s;
+  margin-bottom: var(--spacing-lg);
+  border: 1.5px solid var(--gray-200);
+  position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+
+
+/* Hover/Focus (pointer devices only) */
+@media (hover: hover) and (pointer: fine) {
+  .info-card:hover {
+    box-shadow: var(--shadow-lg, 0 6px 20px rgba(16, 40, 120, 0.12));
+    transform: translateY(-3px) scale(1.02);
+    border-color: var(--blue-primary);
+    background: var(--gray-100);
+  }
+  .info-card:focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--blue-primary) 60%, white);
+    outline-offset: 2px;
+  }
 }
 
 /* ===== Markdown Paragraph Sections ===== */

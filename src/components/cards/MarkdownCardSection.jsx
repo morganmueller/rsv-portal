@@ -23,10 +23,13 @@ const extractCards = (markdown, sectionTitle, sectionSubtitle) => {
         title: trimmed.replace("### ", "").trim(),
         description: "",
         icon: "",
+        externalIcon: "",
         link: "",
       };
     } else if (trimmed.startsWith("icon:")) {
       if (current) current.icon = trimmed.replace("icon:", "").trim();
+    } else if (trimmed.startsWith("externalIcon:")) {
+      if (current) current.externalIcon = trimmed.replace("externalIcon:", "").trim();
     } else if (trimmed.startsWith("link:")) {
       if (current) current.link = trimmed.replace("link:", "").trim();
     } else if (current) {

@@ -12,9 +12,9 @@
       "title": "COVID-19 Wastewater Surveillance",
       "description": "View NYC COVID-19 wastewater surveillance through the New York State dashboard"
     },
-    "emergencyDept": {
-      "title": "Emergency Department Visits & Hospitalizations",
-      "description": "Explore emergency department trends across boroughs"
+    "nysSurveillance": {
+      "title": "Influenza Activity, Surveillance and Reports",
+      "description": "Explore additional State influenza reporting information"
     },
     "github": {
       "title": "Explore our Github Repository",
