@@ -1,5 +1,5 @@
 {
-    "prevention-info": [
+    "provider-info": [
       {
         "id": "covid",
         "titleKey": "aboutPage.cards.covid.title",
@@ -19,7 +19,7 @@
         "icon": "/assets/rsv-vector.svg"
       }
     ],
-    "provider-info": [
+    "prevention-info": [
       {
         "id": "covidProvider",
         "titleKey": "aboutPage.cards.covidProvider.title",
