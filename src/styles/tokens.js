@@ -2,11 +2,12 @@ const colors = {
   // Grayscale
   white: "#FFFFFF",
   black: "#000000",
+  footnoteGray: "#687482",
   gray100: "#F9FAFB",
   gray200: "#F3F4F6",
   gray300: "#E5E7EB",
   gray400: "#D1D5DB",
-  gray500: "#9CA3AF",
+  gray500: "#9CA3AF", 
   gray600: "#6B7280",
   gray700: "#4B5563",
   gray800: "#374151",
@@ -52,6 +53,7 @@ const typography = {
   heading: '"Inter", sans-serif',
   fontSizeBase: "14px",
   fontSizeLg: "18px",
+  weightBold: "bold" 
 };
 
 const radii = {

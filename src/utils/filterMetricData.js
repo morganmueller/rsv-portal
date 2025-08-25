@@ -33,13 +33,6 @@ export const getMetricData = memoize(function (
 
     const isMatch = matchesMetric && matchesSubmetric && matchesDisplay;
 
-    if (!isMatch && matchesMetric) {
-      console.log("❌ Rejected row:", d);
-    }
-    if (matchesMetric) {
-      console.log("🔬 Submetric:", JSON.stringify(d.submetric));
-      console.log("🔬 Display:", JSON.stringify(d.display));
-    }
 
     return isMatch;
   });

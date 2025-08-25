@@ -242,34 +242,27 @@ export function getLatestWeek(data){
     return ""
   } else {
     for(const graph in data){
-      console.log("data[graph]", data[graph])
       const dates = data[graph]
-      console.log("dates", dates)
       if (!dates || dates.length === 0) {
         return null; // Handle empty or invalid input
       }
       for(const [key, value] of Object.entries(dates)){
         // console.log("key", key)
-        console.log("value", value)
         let currentDate
         if(Array.isArray(value)){
           for(let i = 0; i < value.length; i++){
-            currentDate = new Date(value[i]["date"])
-            console.log("currentDate inside home page")
+            currentDate = new Date(value[i]["date"]);
           }
         } else {
           currentDate = new Date(value["date"]);
-          console.log("currentDate on ancillary pages")
         }
       
-          console.log("currentDate", currentDate)
           if(latestDate < currentDate){
             latestDate = currentDate
           }
         }
     }
   }
-  console.log("latestDate at end", latestDate)
   const formattedDate = latestDate
   ? new Date(latestDate).toLocaleDateString("en-US", {
       month: "numeric",
