@@ -1,3 +1,7 @@
+## {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis
+
+Section TBD
+
 ## {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group
 
 The **sum of counts** may not match values citywide if records are missing demographic information.
