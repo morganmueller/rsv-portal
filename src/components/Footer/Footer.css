@@ -123,14 +123,15 @@
 
 
   .footer-grid {
-    flex-direction: column; /* stack vertically */
-    align-items: center;
+    flex-direction: row; /* stack vertically */
+    align-items: left;
+    flex-wrap: wrap;
   }
 
   .footer-columns {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
     gap: var(--spacing-lg);
     max-width: 100%;
   }
@@ -188,7 +189,7 @@
     list-style: disc;
     padding-left: var(--spacing-sm);
     gap: var(--spacing-xs);
-    align-items: flex-start;
+    align-items: center;
   }
 
   .footer-col a {
@@ -199,7 +200,7 @@
   }
 
   .footer-col a::before {
-    content: "•";
+    /* content: "•"; */
     color: var(--gray-400);
     display: inline-block;
     width: var(--spacing-sm);
