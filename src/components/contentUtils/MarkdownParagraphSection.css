@@ -10,3 +10,19 @@
     margin-bottom: 1rem;
   }
   
+  .markdown-paragraph-section a {
+    color: var(--blue-primary) !important;
+    text-decoration: underline !important;
+    font-weight: 600; 
+
+  }
+
+  .markdown-paragraph-section a:hover,
+  .markdown-paragraph-section  a:focus {
+    color:  #273665f3 !important;
+    text-decoration-thickness: 2px;    
+    text-underline-offset: 3px; 
+  }
+  .markdown-paragraph-section a:active {
+    color: var(--blue-light, #3b82f6) !important;
+  }

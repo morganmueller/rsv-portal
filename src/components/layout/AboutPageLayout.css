@@ -64,6 +64,7 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--spacing-lg);
   width: 100%;
+  box-sizing: border-box; /* make padding count toward width */
 }
 
 .info-card::before {
@@ -77,6 +78,8 @@
 }
 
 .info-card {
+  width: 100%;
+  box-sizing: border-box;
   background-color: var(--gray-50);
   padding: var(--spacing-lg) var(--spacing-xl);
   border-radius: var(--radius-lg);
@@ -93,10 +96,16 @@
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
+.info-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
 
+.about-surface {
+  overflow: hidden; /* safety guard */
+}
 
-
-/* Hover/Focus (pointer devices only) */
 @media (hover: hover) and (pointer: fine) {
   .info-card:hover {
     box-shadow: var(--shadow-lg, 0 6px 20px rgba(16, 40, 120, 0.12));
@@ -110,16 +119,13 @@
   }
 }
 
-/* ===== Markdown Paragraph Sections ===== */
 .markdown-paragraph-section h2 {
-  /* font-size: clamp(1.5rem, 1.5rem + 1.5vw, var(--font-size-2xl)); */
   margin: 0 0 var(--spacing-sm);
   font-weight: 600;
   line-height: 1.25;
   text-align: left;
 }
 
-/* Group wrapper + title before grouped paragraphs */
 .markdown-group-title h2{
   font-size: clamp(2.5rem, 2rem + 1.5vw, var(--font-size-3xl));
   font-weight: 700;
@@ -128,7 +134,6 @@
   text-align: left;
 }
 
-/* ===== Tighter Markdown Content (scoped) ===== */
 .about-page .markdown-body {
   font-size: 16px;
   line-height: 1.5;
@@ -201,7 +206,34 @@
   .about-page { padding: var(--spacing-lg); }
   .about-row { padding: 0 var(--spacing-md); }
   .about-surface { padding: var(--spacing-lg); }
-  .card-grid { gap: var(--spacing-md); }
+  .card-grid {
+    /* overwrite any earlier mobile overrides */
+    max-width: 100% !important;
+    max-height: none !important;
+    gap: var(--spacing-md);
+  }
   .info-card { padding: var(--spacing-md); }
   .about-page .markdown-body p { margin-bottom: 0.6rem; }
+}
+
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr; /* single column */
+    gap: var(--spacing-md);
+    max-height: none !important;
+    justify-items: center;       /* ✅ center the cards horizontally */
+  }
+
+  .info-card {
+    margin: 0; /* avoid horizontal push */
+    width: 100%;
+    max-width: 340px;            /* ✅ optional: keep cards from getting too wide */
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-2xl); 
+    /* ↑ more bottom padding than top/sides */
+  }
+
+  .info-card-description {
+    margin-bottom: var(--spacing-md); /* ensure spacing before card bottom */
+  }
 }

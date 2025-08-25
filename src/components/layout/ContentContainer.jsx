@@ -1,28 +1,24 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
+import DownloadPanel from "../popups/DownloadPanel"; // ✅ correct path
 import "./ContentContainer.css";
 
 const resolveText = (input, vars = {}) => {
   if (typeof input !== "string") return input;
-
   return input.replace(/{(\w+)}/g, (_, key) => {
     const raw = vars[key];
-
-    // normalize missing values to empty string
     let val =
       raw === null || raw === undefined || raw === "null" || raw === "undefined"
         ? ""
         : String(raw);
 
-    // if the value itself accidentally contains " null"/" undefined", remove it
     if (key === "trend") {
       val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
       const direction = vars.trendDirection || "neutral";
       return `<span class="trend-text trend-${direction} bg-highlight">${val}</span>`;
     }
 
-    // generic cleanup for other tokens too
     val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
     return `<span class="dynamic-text">${val}</span>`;
   });
@@ -32,7 +28,7 @@ const ContentContainer = ({
   title,
   subtitle,
   subtitleVariables = {},
-  titleVariables = {},         // allow variables for title too
+  titleVariables = {},
   children,
   className = "",
   background = "white",
@@ -41,6 +37,12 @@ const ContentContainer = ({
   downloadIcon = false,
   modalTitle = "More Info",
   modalContent = null,
+
+  // preview props for the download modal
+  downloadPreviewData = [],
+  downloadColumnLabels = {},
+  downloadDescription = "This will download a CSV of this chart’s currently visible data.",
+
   onDownloadClick = null,
 }) => {
   const ref = useRef(null);
@@ -81,15 +83,14 @@ const ContentContainer = ({
       {(title || subtitle) && (
         <div className="content-header">
           <div className="content-title-row">
-          {isTitleString ? (
-  <h3
-    className={`content-title ${isDynamic ? "content-title-dynamic" : ""}`}
-    dangerouslySetInnerHTML={{ __html: renderedTitle }}
-  />
-) : (
-  <h3 className="content-title">{renderedTitle}</h3>
-)}
-
+            {isTitleString ? (
+              <h3
+                className={`content-title ${isDynamic ? "content-title-dynamic" : ""}`}
+                dangerouslySetInnerHTML={{ __html: renderedTitle }}
+              />
+            ) : (
+              <h3 className="content-title">{renderedTitle}</h3>
+            )}
 
             <div className="content-title-icons">
               {infoIcon && (
@@ -137,25 +138,21 @@ const ContentContainer = ({
       )}
 
       {/* Download Modal */}
-      {downloadIcon && onDownloadClick && (
+      {downloadIcon && (
         <InfoModal
           isOpen={isDownloadModalOpen}
           onClose={() => setIsDownloadModalOpen(false)}
           title="Download Data"
           content={
-            <>
-              <p>Would you like to download a CSV of this chart’s data?</p>
-              <button
-                className="toggle-button active"
-                onClick={() => {
-                  onDownloadClick();
-                  setIsDownloadModalOpen(false);
-                }}
-                style={{ marginTop: "12px" }}
-              >
-                Yes, Download
-              </button>
-            </>
+            <DownloadPanel
+              onConfirm={() => {
+                onDownloadClick?.();
+                setIsDownloadModalOpen(false);
+              }}
+              previewData={downloadPreviewData}
+              columnLabels={downloadColumnLabels}
+              description={downloadDescription}
+            />
           }
         />
       )}
@@ -176,6 +173,9 @@ ContentContainer.propTypes = {
   downloadIcon: PropTypes.bool,
   modalTitle: PropTypes.string,
   modalContent: PropTypes.node,
+  downloadPreviewData: PropTypes.array,
+  downloadColumnLabels: PropTypes.object,
+  downloadDescription: PropTypes.string,
   onDownloadClick: PropTypes.func,
 };
 

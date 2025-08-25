@@ -8,7 +8,7 @@ import SectionWithChart from "./SectionWithChart";
 import ChartContainer from "./ChartContainer";
 import ContentContainer from "./ContentContainer";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
-import { downloadCSV } from "../../utils/downloadUtils";
+import { downloadCSV, buildDownloadName } from "../../utils/downloadUtils"; // ← add buildDownloadName
 import FloatingTogglePill from "../controls/FloatingTogglePill";
 import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
@@ -191,7 +191,8 @@ const ConfigDrivenPage = ({ config }) => {
     typeof subtitleKey === "object" ? subtitleKey[dataType] : subtitleKey;
 
   return (
-    <HydratedDataContext.Provider value={{ data }}>      <DataPageLayout
+    <HydratedDataContext.Provider value={{ data }}>      
+    <DataPageLayout
         title={resolveText(resolvedTitleKey, pageTextVars)}
         subtitle={resolveText(resolvedSubtitleKey, pageTextVars)}
         topControls={
@@ -373,6 +374,9 @@ const ConfigDrivenPage = ({ config }) => {
                   background={section.background || "white"}
                   infoIcon={section.infoIcon}
                   downloadIcon={section.downloadIcon}
+                  downloadPreviewData={Array.isArray(filteredData) ? filteredData : Object.values(filteredData || {}).flat()}
+                  downloadColumnLabels={interpolatedProps.columnLabels}
+                  downloadDescription={interpolatedProps.downloadDescription}
                   modalTitle={resolveText(section.modal?.title, textVars)}
                   modalContent={
                     section.modal?.markdownPath && (
@@ -387,6 +391,58 @@ const ConfigDrivenPage = ({ config }) => {
                       />
                     )
                   }
+                  onDownloadClick={() => {
+                    // Export exactly what this section is rendering
+                    const exportRows = Array.isArray(filteredData)
+                      ? filteredData
+                      : Object.entries(filteredData || {}).flatMap(([seriesName, rows]) =>
+                          (rows || []).map((row) => ({
+                            ...row,
+                            series: String(seriesName)
+                              .replace(" visits", "")
+                              .replace(" hospitalizations", "")
+                              .replace("COVID-19", "COVID")
+                              .replace("Influenza", "Flu"),
+                          }))
+                        );
+                  
+                    // Build a sensible name:
+                    // - for the combined-virus overview, use "ARI" as the virus label
+                    // - include view only for ED data
+                    const virusForFile = section.id === "combined-virus" ? "ARI" : activeVirus;
+                    const metricForFile = dataType === "ed" ? view : undefined;
+                    const categoryForFile = section.id || "section";
+                  
+                    const fileName =
+                      section.chart?.props?.downloadFileName ||
+                      buildDownloadName({
+                        virus: virusForFile,
+                        metric: metricForFile,
+                        category: categoryForFile,
+                        date: latestDate,
+                        ext: "csv",
+                      });
+                  
+                    // If we have rendered rows, download them.
+                    if (exportRows && exportRows.length) {
+                      downloadCSV(exportRows, fileName);
+                      return;
+                    }
+                  
+                    // Fallback: if this custom section points to a static CSV, download that.
+                    const rawPath = section.componentProps?.dataPath || section.chart?.props?.dataPath;
+                    if (rawPath) {
+                      const a = document.createElement("a");
+                      a.href = rawPath;
+                      a.download = fileName;
+                      a.style.display = "none";
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                    }
+                  }}
+                  
+                  
                 >
                   <ChartContainer
                     title={resolveText(section.title, textVars)}
@@ -540,6 +596,15 @@ const ConfigDrivenPage = ({ config }) => {
               resolvedProps.xField = "date";
             }
 
+            // For filenames, use the selected group when one is chosen; else the section id
+            const categoryForFile =
+              normalizedGroup && normalizedGroup !== normalizedLabel
+                ? normalizedGroup
+                : section.id || "chart";
+
+            // include view in filename only for ED data
+            const metricForFile = dataType === "ed" ? view : undefined;
+
             return (
               <SectionWithChart
                 key={key}
@@ -549,24 +614,35 @@ const ConfigDrivenPage = ({ config }) => {
                 infoIcon={section.infoIcon}
                 downloadIcon={section.downloadIcon}
                 onDownloadClick={() => {
-                  const flattened = Object.entries(
-                    data[section.dataSourceKey] || {}
-                  ).flatMap(([seriesName, rows]) =>
-                    (rows || []).map((row) => ({
-                      ...row,
-                      series: seriesName
-                        .replace(" visits", "")
-                        .replace(" hospitalizations", "")
-                        .replace("COVID-19", "COVID")
-                        .replace("Influenza", "Flu"),
-                    }))
-                  );
-                  downloadCSV(
-                    flattened,
+                  const flattened = Array.isArray(groupFilteredData)
+                    ? groupFilteredData
+                    : Object.entries(groupFilteredData || {}).flatMap(([seriesName, rows]) =>
+                        (rows || []).map((row) => ({
+                          ...row,
+                          series: seriesName
+                            .replace(" visits", "")
+                            .replace(" hospitalizations", "")
+                            .replace("COVID-19", "COVID")
+                            .replace("Influenza", "Flu"),
+                        }))
+                      );
+
+                  if (!flattened?.length) return;
+
+                  const fileName =
                     section.chart?.props?.downloadFileName ||
-                      `${section.id}.csv`
-                  );
+                    buildDownloadName({
+                      virus: activeVirus,
+                      metric: metricForFile,           // ← omit for case/death
+                      category: categoryForFile,
+                      date: latestDate,
+                      ext: "csv",
+                      includeMetric: !(dataType === "cases" || dataType === "deaths"),
+                    });
+
+                  downloadCSV(flattened, fileName);
                 }}
+                
                 columnLabels={interpolatedProps.columnLabels}
                 modalTitle={resolveText(section.modal?.title, fullVars)}
                 modalContent={
@@ -585,9 +661,8 @@ const ConfigDrivenPage = ({ config }) => {
                 animateOnScroll={section.animateOnScroll !== false}
                 previewData={
                   section.id === "combined-virus"
-                    ? Object.entries(
-                        data[section.dataSourceKey] || {}
-                      ).flatMap(([seriesName, rows]) =>
+                  ? Object.entries(data[dataSourceKey] || {})
+                  .flatMap(([seriesName, rows]) =>
                         (rows || []).map((row) => ({
                           ...row,
                           series: seriesName

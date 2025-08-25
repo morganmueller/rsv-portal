@@ -62,6 +62,22 @@
     margin-bottom: var(--spacing-md);
   }
   
+.data-subtitle a {
+  color: var(--blue-primary);
+  text-decoration: underline;
+  font-weight: 600; 
+}
+
+.data-subtitle a:hover,
+.data-subtitle a:focus {
+  color:  #273665f3 !important;
+  text-decoration-thickness: 2px;    
+  text-underline-offset: 3px;        
+}
+
+.data-subtitle a:active {
+  color: var(--blue-light, #3b82f6) !important;
+}
   /* Highlight any dynamic placeholders (virus/view/date/etc.) */
   .dynamic-text {
     font-weight: 700;

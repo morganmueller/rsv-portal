@@ -53,9 +53,9 @@
 }
 
 .week-of {
-  font-weight: 300;
+  font-weight: bold;
   font-size: 14px;
-  color: var(--gray-700);
+  color: var(--footnote-gray);
   text-align: right;
 }
 

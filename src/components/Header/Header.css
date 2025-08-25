@@ -155,12 +155,7 @@ html, body, #root {
 
 /* === VIRUS FILTER GROUP (generic) === */
 
-.virus-filter-group {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: var(--spacing-xs);
-  margin-left: var(--spacing-md);
-}
+
 
 /* === RESPONSIVE BREAKPOINTS === */
 @media (max-width: 920px) {
@@ -172,12 +167,6 @@ html, body, #root {
   }
 
 
-  /* allow virus chips to wrap instead of pushing into Info */
-  .virus-filter-group {
-    flex-wrap: wrap;
-    row-gap: 6px;
-    margin-left: var(--spacing-sm);
-  }
 }
 
 /* -----------------------------------------------------
@@ -193,11 +182,7 @@ html, body, #root {
   .left-buttons  { flex: 1 1 100%; order: 1; justify-content: center; padding-left: 0; }
   .right-buttons { flex: 0 1 100%; order: 1; justify-content: center; }
 
-  /* make chips a bit tighter when they wrap */
-  .virus-filter-group {
-    gap: 6px;
-    margin-left: 0;
-  }
+
 
   .outline-button {
     min-width: 0;      /* let them shrink as needed */
@@ -305,7 +290,7 @@ html, body, #root {
   }
 
   /* Tighten VirusFilterGroup buttons on mobile */
-  .header-buttons-wrapper.is-data-active .mobile-virus-row .virus-filter-group {
+  .header-buttons-wrapper.is-data-active .mobile-virus-row  {
     width: 100%;
     gap: 0;
     margin-left: 0;

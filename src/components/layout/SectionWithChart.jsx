@@ -16,13 +16,16 @@ const SectionWithChart = ({
   footer,
   children,
   animateOnScroll,
+
+  // preview props for the download modal
   previewData = [],
   columnLabels = {},
+  downloadDescription = "This will download a CSV of this chart’s currently visible data.",
+
+  // optional view toggle passthroughs for combined-virus, etc.
   viewToggle,
   view,
   onViewChange,
-
-
 }) => {
   return (
     <ContentContainer
@@ -36,12 +39,16 @@ const SectionWithChart = ({
       modalContent={modalContent}
       onDownloadClick={onDownloadClick}
       animateOnScroll={animateOnScroll}
-      previewData={previewData}
-      columnLabels={columnLabels}
+
+      // IMPORTANT: pass preview props using the names ContentContainer expects
+      downloadPreviewData={previewData}
+      downloadColumnLabels={columnLabels}
+      downloadDescription={downloadDescription}
+
+      // (ContentContainer doesn’t use these two directly; harmless if ignored)
       viewToggle={viewToggle}
       view={view}
       onViewChange={onViewChange}
-
     >
       {children ?? (
         <ChartContainer title={chartTitle || title} chart={chart} footer={footer} />

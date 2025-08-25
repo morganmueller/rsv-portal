@@ -1,3 +1,15 @@
+/* ===== VirusFilterButton.css ===== */
+/* Container for the 3 virus chips */
+.virus-filter-group {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-lg);
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+
+/* Individual button */
 .filter-button {
   display: inline-flex;
   align-items: center;
@@ -6,7 +18,7 @@
   width: 140px;
   padding: 12px 24px;
   border-radius: 9999px;
-  background-color: #f3f4f6;
+  background-color: #e5e7eb;
   color: #1f2937;
   border: none;
   cursor: pointer;
@@ -16,6 +28,18 @@
   transition: background-color 0.2s ease;
   white-space: nowrap;
 }
+
+.filter-button:hover {
+  background-color: var(--gray-800);
+  color: #fff;
+}
+
+.filter-button.active {
+  background-color: var(--gray-900);
+  color: #fff;
+}
+
+/* Inside the button */
 .icon-label-wrapper {
   display: flex;
   align-items: center;
@@ -25,59 +49,43 @@
 .virus-label {
   display: inline-block;
 }
+
 .filter-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.filter-button:hover {
-  background-color: #e5e7eb;
-}
-
-.filter-button.active {
-  
-  background-color: #111827;
-  color: white;
-}
-
 .filter-icon {
-  
   width: 18px;
   height: 18px;
   display: inline-block;
   vertical-align: middle;
 }
 
-
+/* Mobile tweaks for the group + buttons */
 @media (max-width: 640px) {
+  .virus-filter-group {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 10px 0;
+    gap: 10px;
+    width: 100%;
+  }
+
   .filter-button {
     font-size: var(--font-size-xs);
-    flex-direction: row; 
-    justify-content: flex-start;
-    width: auto;
-    max-width: 100%; 
-    padding: 12px 24px;
-    gap: 12px;
-    text-align: left;
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 16px;
+    gap: 10px;
+    text-align: center;
+    border-radius: var(--radius-md);
+    height: 36px;
   }
 
   .filter-icon {
     width: 20px;
     height: 20px;
-  }
-}
-.virus-filter-group {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-sm);
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 640px) {
-  .virus-filter-group {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

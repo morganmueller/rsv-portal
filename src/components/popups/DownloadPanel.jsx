@@ -15,6 +15,7 @@ const DownloadPanel = ({ onConfirm, previewData = [], columnLabels = {}, descrip
           onClick={onConfirm}
           aria-label="Download CSV"
           title="Download CSV"
+          disabled={!onConfirm}
         >
           Download CSV
         </button>

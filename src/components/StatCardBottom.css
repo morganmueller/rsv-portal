@@ -156,8 +156,8 @@
 }
 
 .trend-nochange {
-  color: #64748b;
-  background: #f3f4f6;
+  color:  #6B6B6B ;
+  background: var(--gray-200);
   font-weight: 700;
   border-radius: 4px;
   padding: 0 6px;

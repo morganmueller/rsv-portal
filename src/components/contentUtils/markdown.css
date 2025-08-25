@@ -47,10 +47,20 @@
 }
 
 /* Links */
+
+.markdown-body a[style] {
+  color: var(--blue-primary) !important;
+}
 .markdown-body a {
-  color: #2563eb; /* Tailwind blue-600 */
+  color: var(--blue-primary) !important;
+  text-decoration: underline !important;
+}
+.markdown-body a:hover,
+.markdown-body a:focus {
+  color:  #2736659a;
   text-decoration: underline;
 }
+
 
 /* Blockquotes */
 .markdown-body blockquote {

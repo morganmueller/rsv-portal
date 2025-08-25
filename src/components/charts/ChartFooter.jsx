@@ -20,8 +20,9 @@ const ChartFooter = ({ dataSource, latestDate, footnote }) => {
   return (
     <div
       style={{
+        fontWeight: typography.weightBold,
         fontSize: typography.fontSizeBase,
-        color: colors.gray500,
+        color: colors.footnoteGray,
         marginTop: spacing.sm,
       }}
     >
