@@ -5,6 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
+    <meta name="google" content="notranslate" />
   </head>
   <body>
     <div id="root"></div>
@@ -12,14 +13,83 @@
     <!-- Google Translate mount point (kept hidden) -->
     <div id="google_translate_element" style="position:absolute; left:-9999px; top:-9999px;"></div>
 
+    <!-- Prefer the user's browser language on first load; preserve manual choice per session -->
+    <script>
+      (function setGoogleTranslateFromBrowserLang() {
+        // If user already chose a language this session, don't override it
+        if (sessionStorage.getItem("gt_userPicked") === "1") {
+          // Clean any lingering hash like #googtrans(en|ar)
+          if (location.hash.indexOf("googtrans") > -1) {
+            history.replaceState(null, "", location.pathname + location.search);
+          }
+          return;
+        }
+
+        // Supported languages in widget (must match includedLanguages below)
+        const supported = ["en", "es", "zh-CN", "ru", "ar", "bn"];
+
+        // Detect browser language, normalize (e.g., "en-US" -> "en")
+        const raw = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
+        let lang = raw.toLowerCase();
+
+        // Map supported codes
+        // - handle plain "zh" to "zh-CN"
+        // - handle language-region pairs like "es-mx" -> "es"
+        if (lang.startsWith("zh")) {
+          lang = "zh-CN";
+        } else {
+          lang = lang.split("-")[0]; // "es-mx" -> "es"
+        }
+
+        let targetLang = "en";
+        if (supported.includes(lang)) targetLang = lang;
+
+        const pair = `/en/${targetLang}`;
+        const expires = "expires=Thu, 01 Jan 2099 00:00:00 GMT";
+        document.cookie = `googtrans=${pair}; path=/; ${expires}`;
+        try {
+          const parts = location.hostname.split(".");
+          if (parts.length > 1) {
+            const root = "." + parts.slice(-2).join(".");
+            document.cookie = `googtrans=${pair}; path=/; domain=${root}; ${expires}`;
+          }
+        } catch {}
+
+        if (location.hash.indexOf("googtrans") > -1) {
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+
+        window.setSiteLanguage = function setSiteLanguage(toCode) {
+          const next = `/en/${toCode}`;
+          document.cookie = `googtrans=${next}; path=/; ${expires}`;
+          try {
+            const parts = location.hostname.split(".");
+            if (parts.length > 1) {
+              const root = "." + parts.slice(-2).join(".");
+              document.cookie = `googtrans=${next}; path=/; domain=${root}; ${expires}`;
+            }
+          } catch {}
+          sessionStorage.setItem("gt_userPicked", "1");
+          if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+            googleTranslateElementInit();
+          }
+        };
+
+        window.addEventListener("hashchange", function () {
+          if (location.hash.indexOf("googtrans") > -1) {
+            sessionStorage.setItem("gt_userPicked", "1");
+          }
+        });
+      })();
+    </script>
+
     <script>
       // Called by the Google script when ready
       function googleTranslateElementInit() {
         new google.translate.TranslateElement(
           {
-            pageLanguage: 'en',
-            // Pick only the languages you actually support in your UI
-            includedLanguages: 'en,es,zh-CN,ru,ar,bn',
+            pageLanguage: 'en',                      // source language of your site
+            includedLanguages: 'en,es,zh-CN,ru,ar,bn', // must match 'supported' above
             autoDisplay: false,
           },
           'google_translate_element'
