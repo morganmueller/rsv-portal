@@ -73,8 +73,8 @@ const edPageConfig = {
           colorField: "metric",
           tooltipFields: ["date", "value"],
           columnLabels: {
-            date: "Week",
-            value: "Number of {view}",
+            date: "Date",
+            value: "Emergency department {view}",
           },
         },
       },
@@ -110,8 +110,8 @@ const edPageConfig = {
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           columnLabels: {
-            date: "Week",
-            value: "Number of {view}",
+            date: "Date",
+            value: "Emergency department {view}",
             submetric: "Age Group",
           },
         },
@@ -148,8 +148,8 @@ const edPageConfig = {
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           columnLabels: {
-            date: "Week",
-            value: "Number of {view}",
+            date: "Date",
+            value: "Emergency Department {view}",
             submetric: "Borough",
           },
         },

@@ -272,3 +272,40 @@ export function getLatestWeek(data){
   : null;
   return formattedDate
 }
+
+export function isFirstWeekFromData(data = []) {
+  if (!Array.isArray(data) || data.length === 0) return "N/A";
+  
+  const lastRow = data.at(-1);
+  const dateStr = lastRow?.week || lastRow?.date;
+  if (!dateStr) return "N/A";
+
+  const rowDate = new Date(dateStr);
+  if (isNaN(rowDate)) return "N/A";
+
+  const currentYear = new Date().getFullYear()
+
+  // Start at September 1
+  const septemberFirst = new Date(currentYear, 8, 1); // Month index 8 = September
+
+  // Find the first Sunday in September
+  const dayOfWeek = septemberFirst.getDay(); // 0 = Sunday, 6 = Saturday
+  const daysToSunday = (7 - dayOfWeek) % 7; // how many days to get to Sunday
+  const firstSunday = new Date(currentYear, 8, 1 + daysToSunday);
+
+  // First complete week = Sunday through Saturday
+  const firstWeekStart = firstSunday;
+  const firstWeekEnd = new Date(firstSunday);
+  firstWeekEnd.setDate(firstWeekStart.getDate() + 6);
+
+  // Ensure it's still fully in September
+  if (firstWeekEnd.getMonth() !== 8) {
+    return false; // No full week in September this year
+  }
+
+  // Check if rowDate falls in that range
+  const inFirstWeek =
+    rowDate >= firstWeekStart && rowDate <= firstWeekEnd;
+
+  return inFirstWeek;
+}

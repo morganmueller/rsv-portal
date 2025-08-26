@@ -76,7 +76,7 @@ const overviewConfig = {
           color: "orangePrimary",
           columnLabels: {
             date: "Date",
-            value: "Number of {view}",
+            value: "Emergency department {view}",
             series: "submetric",
           }
 

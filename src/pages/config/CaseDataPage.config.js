@@ -46,11 +46,12 @@ const caseDataPageConfig = {
         xField: "dayOfSeason",
         yField: "value",
         colorField: "season",
-        tooltipFields: ["date", "value"],
+        tooltipFields: ["date", "season", "value"],
         defaultDisplay: "Number", 
         columnLabels: {
-          date: "Week",
-          value: "Number of Cases",
+          date: "Date",
+          season: "Season",
+          value: "Confirmed cases",
         }
       }
       }
@@ -91,9 +92,9 @@ const caseDataPageConfig = {
             range: ["#4F32B3", "#9CA3AF"],
           },
           columnLabels: {
-            date: "Week",
-            value: "Number of Cases",
-            submtric: "Test Type",
+            date: "Date",
+            value: "Cases",
+            submetric: "Test Type",
           }
         }
       },
@@ -134,9 +135,9 @@ const caseDataPageConfig = {
           range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
         },
         columnLabels: {
-          date: "Week",
-          value: "Number of Cases",
-          submtric: "Subtype"
+          date: "Date",
+          value: "Confirmed cases",
+          submetric: "Subtype"
         }
       }
       }
@@ -171,9 +172,9 @@ const caseDataPageConfig = {
           defaultDisplay: "Number", 
           customColor: '#4F32B3',
           columnLabels: {
-            date: "Week",
-            value: "Number of Cases",
-            submtric: "Age Group"
+            date: "Date",
+            value: "Confirmed cases",
+            submetric: "Age Group"
           }
 
         }
@@ -207,9 +208,9 @@ const caseDataPageConfig = {
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number",
           columnLabels: {
-            date: "Week",
-            value: "Number of Cases",
-            submtric: "Borough"
+            date: "Date",
+            value: "Confirmed cases",
+            submetric: "Borough"
           } 
 
         }
@@ -245,9 +246,9 @@ const caseDataPageConfig = {
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 
           columnLabels: {
-            date: "Week",
-            value: "Number of Cases",
-            submtric: "Race & Ethnicity"
+            date: "Date",
+            value: "Confirmed cases",
+            submetric: "Race & Ethnicity"
           }
 
         }
