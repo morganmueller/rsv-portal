@@ -47,6 +47,7 @@ const covidDeathPageConfig = {
           colorField: "season",
           tooltipFields: ["date", "season", "value"],
           defaultDisplay: "Number", 
+          isPercent: false,  
           columnLabels: {
             date: "Date",
             season: "Season",

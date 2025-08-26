@@ -47,7 +47,8 @@ const caseDataPageConfig = {
         yField: "value",
         colorField: "season",
         tooltipFields: ["date", "season", "value"],
-        defaultDisplay: "Number", 
+        defaultDisplay: "Number",
+        isPercent: false,   
         columnLabels: {
           date: "Date",
           season: "Season",
