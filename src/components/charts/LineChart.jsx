@@ -32,7 +32,7 @@ const LineChart = ({
   virus,
   color,
   metricName = "Category",
-  isPercent,
+  isPercent = true, 
   seasonal,
   dataSource = "NYC Health Department Syndromic Surveillance",
   footnote,
@@ -91,39 +91,48 @@ const LineChart = ({
         scale: { padding: 10 },
       };
 
-      const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map(
-        (field) => {
-          const sample = filteredData.find((d) => d[field] != null)?.[field];
-          if (field === yField && filteredData.some((d) => d.valueRaw)) {
-            return { field: "valueRaw", title: columnLabels.value || "Reported", type: "nominal" }; // show raw strings
-          }
-          if (field === xField) {
+       // Build the calculate expression for the tooltip display based on isPercent
+      const valueDisplayCalc = isPercent
+      ? "datum.valueRaw != null ? (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')"
+      : "datum.valueRaw != null ? '' + datum.valueRaw : (isValid(datum.value) ? format(datum.value, ',.0f') : 'N/A')";
+
+
+      const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map((field) => {
+        if (field === yField) {
+          // If your data sometimes carries a preformatted string in valueRaw, you can keep this branch.
+          if (filteredData.some((d) => d.valueRaw != null)) {
             return {
-              field,
-              type: "temporal",
-              format: "%b, %d, %Y",
-              title: columnLabels[field] || "Date"
+              field: "valueDisplay",
+              title: columnLabels.value || "Reported",
+              type: "nominal"
             };
           }
-          // Handle date field specifically for seasonal charts
-          if (field === "date") {
-            return {
-              field,
-              type: "temporal",
-              format: "%b, %d, %Y",
-              title: columnLabels[field] || "Date"
-            };
-          }
+          // Otherwise use the calculated string with one decimal + '%'
           return {
-            field,
-            type:
-              typeof sample === "number"
-                ? "quantitative"
-                : "nominal",
-            title: columnLabels[field],
+            field: "valueDisplay",
+            title: columnLabels.value || "Reported",
+            type: "nominal"
           };
         }
-      );
+      
+        if (field === xField || field === "date") {
+          return {
+            field,
+            type: "temporal",
+            format: "%b, %d, %Y",
+            title: columnLabels[field] || "Date"
+          };
+        }
+      
+        const sample = filteredData.find((d) => d[field] != null)?.[field];
+        return {
+          field,
+          type: typeof sample === "number" ? "quantitative" : "nominal",
+          title: columnLabels[field]
+        };
+      });
+      
+      
       
 
   const specTemplate = {
@@ -195,12 +204,10 @@ const LineChart = ({
         as: "season"
       },
       {
-        calculate:
-          "datum.valueRaw != null ? " +
-          "  (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
-          "  : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
+        calculate: valueDisplayCalc,
         as: "valueDisplay"
       }
+      
       
     ],
     layer: [
@@ -235,7 +242,7 @@ const LineChart = ({
             axis: {
               title: null,
               tickCount: 4,
-              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {}),
+              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {})
             },
           },
           color: colorField

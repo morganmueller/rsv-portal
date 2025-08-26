@@ -166,7 +166,7 @@
   /* Right-hand text (info) just under the title */
   .stat-right-text {
     order: 2;
-    font-size: 14px;
+    font-size: 16px;
     max-width: 100%;
     margin-left: 0;
     text-align: left;
@@ -185,7 +185,7 @@
 
   /* Reduce % change text size for fit */
   .stat-change-number {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   /* Hide big % value if not wanted on tablet */
@@ -197,7 +197,7 @@
   .trend-increasing,
   .trend-decreasing,
   .trend-nochange {
-    font-size: 11px;
+    font-size: 14px;
     padding: 0 5px;
   }
 }
@@ -219,7 +219,7 @@
   /* Right-hand text (info) just under the title */
   .stat-right-text {
     order: 2;
-    font-size: 14px;
+    font-size: 16px;
     max-width: 100%;
     margin-left: 0;
     text-align: center;
@@ -239,7 +239,7 @@
 
   /* Reduce % change text size for fit */
   .stat-change-number {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   /* Hide big % value if not wanted on tablet */
@@ -251,7 +251,7 @@
   .trend-increasing,
   .trend-decreasing,
   .trend-nochange {
-    font-size: 11px;
+    font-size: 14px;
     padding: 0 5px;
   }
   .stat-arrow {
@@ -286,7 +286,7 @@
   /* 4) Info text next */
   .stat-right-text {
     order: 2;
-    font-size: 12px;
+    font-size: 14px;
     max-width: 100%;
     margin-left: 0;
     text-align: left;
@@ -311,12 +311,12 @@
   /* 6) % change last */
   .stat-change-number {
     order: 4;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   /* 7) Smaller header text & icons */
   .statcard-title {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .stat-card-icon {
@@ -328,7 +328,7 @@
   .trend-increasing,
   .trend-decreasing,
   .trend-nochange {
-    font-size: 10px;
+    font-size: 14px;
     padding: 0 4px;
   }
 

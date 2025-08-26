@@ -67,21 +67,22 @@
 @media (max-width: 640px) {
   .virus-filter-group {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;   /* center the buttons */
+    overflow-x: visible;
+    gap: 8px;
     margin: 10px 0;
-    gap: 10px;
     width: 100%;
   }
 
+  .virus-filter-group .filter-button {
+    border-radius: var(--radius-md) !important;
+  }
   .filter-button {
-    font-size: var(--font-size-xs);
-    width: 100%;
-    max-width: 100%;
-    padding: 10px 16px;
-    gap: 10px;
-    text-align: center;
-    border-radius: var(--radius-md);
-    height: 36px;
+    width: 80%;            /* 80% of container width */
+    max-width: 80%;
+    font-size: var(--font-size-sm);
+    height: 40px;
+    border-radius: var(--radius-md); /* same as data-type buttons */
   }
 
   .filter-icon {
