@@ -100,13 +100,14 @@ const DownloadPreviewTable = ({ data = [], columnLabels = {}, maxRows = 100, pag
 
       {totalPages > 1 && (
         <div className="pagination-controls">
-          <button disabled={currentPage === 0} onClick={() => setPage((p) => p - 1)}>
+          <button className="pagination-btn" disabled={currentPage === 0} onClick={() => setPage((p) => p - 1)}>
             ← Prev
           </button>
           <span>
             Page {currentPage + 1} of {totalPages}
           </span>
           <button
+            className="pagination-btn"
             disabled={currentPage + 1 >= totalPages}
             onClick={() => setPage((p) => p + 1)}
           >

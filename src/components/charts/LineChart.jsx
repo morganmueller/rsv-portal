@@ -36,7 +36,8 @@ const LineChart = ({
   seasonal,
   dataSource = "NYC Health Department Syndromic Surveillance",
   footnote,
-  colorMap
+  colorMap,
+  columnLabels = {}
 }) => {
   const legendLabelMap = {
   "ARI visits": "Respiratory illness visits",
@@ -94,16 +95,32 @@ const LineChart = ({
         (field) => {
           const sample = filteredData.find((d) => d[field] != null)?.[field];
           if (field === yField && filteredData.some((d) => d.valueRaw)) {
-            return { field: "valueRaw", title: "Reported", type: "nominal" }; // show raw strings
+            return { field: "valueRaw", title: columnLabels.value || "Reported", type: "nominal" }; // show raw strings
+          }
+          if (field === xField) {
+            return {
+              field,
+              type: "temporal",
+              format: "%b, %d, %Y",
+              title: columnLabels[field] || "Date"
+            };
+          }
+          // Handle date field specifically for seasonal charts
+          if (field === "date") {
+            return {
+              field,
+              type: "temporal",
+              format: "%b, %d, %Y",
+              title: columnLabels[field] || "Date"
+            };
           }
           return {
             field,
             type:
-              field === xField
-                ? "temporal"
-                : typeof sample === "number"
+              typeof sample === "number"
                 ? "quantitative"
                 : "nominal",
+            title: columnLabels[field],
           };
         }
       );
@@ -176,7 +193,15 @@ const LineChart = ({
       {
         calculate: "toString(datum.startYear) + '-' + substring(toString(datum.startYear + 1), 2)",
         as: "season"
+      },
+      {
+        calculate:
+          "datum.valueRaw != null ? " +
+          "  (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
+          "  : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
+        as: "valueDisplay"
       }
+      
     ],
     layer: [
       ...(colorField || seasonal

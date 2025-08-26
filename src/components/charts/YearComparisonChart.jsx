@@ -28,6 +28,7 @@ const YearComparisonChart = ({
   customColorScale,
   dataSource,
   footnote,
+  columnLabels = {}
 }) => {
   const normalizedDisplay =
     typeof display === "string" ? display.trim().toLowerCase() : null;
@@ -86,9 +87,9 @@ const YearComparisonChart = ({
         order: { field: "stackOrder", type: "quantitative", sort: "ascending" },
       }),
       tooltip: [
-        { field: "date", type: "temporal", format: "%d %b %Y" },
-        ...(colorField ? [{ field: colorField, type: "nominal", title: legendTitle }] : []),
-        { field: "value", type: "quantitative", title: "Value" },
+        { field: "date", type: "temporal", format: "%b, %d, %Y", title: columnLabels.date || "Date" },
+        ...(colorField ? [{ field: colorField, type: "nominal", title: columnLabels[colorField] || legendTitle }] : []),
+        { field: "value", type: "quantitative", title: columnLabels.value || "Value" },
         // Optional: also show raw if you like
         // { field: "valueRaw", title: "Reported" },
       ],
@@ -116,7 +117,7 @@ const YearComparisonChart = ({
           x: { field: xField, type: "temporal" },
           y: { field: "rollingAvg", type: "quantitative", title: "3-Week Avg" },
           tooltip: [
-            { field: xField, type: "temporal", format: "%d %b %Y" },
+            { field: xField, type: "temporal", format: "%b, %d, %Y", title: columnLabels[xField] || "Date" },
             { field: "rollingAvg", type: "quantitative", title: "3-Week Avg" },
           ],
         },

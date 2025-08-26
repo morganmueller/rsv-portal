@@ -29,7 +29,8 @@ import {
   capitalizeFirstHtml,
   getTrendInfo,
   getLatestWeekFromData,
-  getLatestWeek
+  getLatestWeek,
+  isFirstWeekFromData
 } from "../../utils/trendUtils";
 
 import { loadConfigWithData } from "../../utils/loadConfigWithData";
@@ -537,6 +538,7 @@ const ConfigDrivenPage = ({ config }) => {
                 : "trend-neutral";
 
             const latestWeek = getLatestWeekFromData(groupFilteredData);
+            const isFirstWeek = isFirstWeekFromData(groupFilteredData)
 
             const groupLabelText =
               normalizedGroup && normalizedGroup !== normalizedLabel
@@ -563,6 +565,7 @@ const ConfigDrivenPage = ({ config }) => {
             const rawSubtitleTemplate = resolveText(section.subtitle);
 
             const computedSubtitle = (
+              isFirstWeek ? null :
               <TrendSubtitle
                 template={rawSubtitleTemplate}
                 variables={fullVars}

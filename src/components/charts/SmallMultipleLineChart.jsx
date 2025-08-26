@@ -31,7 +31,8 @@ const SmallMultipleLineChart = ({
   monthly,
   dataSource,
   footnote,
-  sharedY = false
+  sharedY = false,
+  columnLabels = {}
 }) => {
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
@@ -153,8 +154,8 @@ const SmallMultipleLineChart = ({
 
   const valueTooltipField =
     filtered.some((d) => d.valueRaw != null)
-      ? { field: "valueRaw", title: "Reported" }
-      : { field: "value", title: "Reported" };
+      ? { field: "valueRaw", title: columnLabels.value || "Reported" }
+      : { field: "value", title: columnLabels.value || "Reported" };
 
   specTemplate.vconcat = groups.map((group) => ({
     title: {
@@ -179,8 +180,8 @@ const SmallMultipleLineChart = ({
         encoding: {
           color: { value: selectedColor },
           tooltip: [
-            { field: "date", type: "temporal", format: "%d %b %Y" },
-            { field: colorField, type: "nominal", title: "Group" },
+            { field: "date", type: "temporal", format: "%b, %d, %Y", title: "Date" },
+            { field: colorField, type: "nominal", title: columnLabels[colorField] || "Group" },
             valueTooltipField
           ]
         }
@@ -190,8 +191,8 @@ const SmallMultipleLineChart = ({
         encoding: {
           color: { value: selectedColor },
           tooltip: [
-            { field: "date", type: "temporal", format: "%d %b %Y" },
-            { field: colorField, type: "nominal", title: "Group" },
+            { field: "date", type: "temporal", format: "%b, %d, %Y", title: "Date" },
+            { field: colorField, type: "nominal", title: columnLabels[colorField] || "Group" },
             valueTooltipField
           ]
         }
