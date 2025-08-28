@@ -279,7 +279,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
               cursor:"pointer", textAlign:"left", boxShadow:"0 1px 2px rgba(0,0,0,0.06)"
             }}
           >
-            <div style={{ fontSize:13, fontWeight:600, color:"#374151", padding:"0 2px" }}>
+            <div style={{ fontSize:13, fontWeight:600, color:"var(--chart-title-color)", padding:"0 2px" }}>
               {seriesLabels[series]}
             </div>
             <div style={{ width:"100%" }}>
@@ -293,7 +293,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
                 rendererMode="svg"
               />
             </div>
-            <div style={{ fontSize:12, color:"#6b7280", padding:"0 2px 4px 2px" }}>
+            <div style={{ fontSize:12, color:"var(--chart-subtitle-color)", padding:"0 2px 4px 2px" }}>
               Tap/click to enlarge
             </div>
           </button>
