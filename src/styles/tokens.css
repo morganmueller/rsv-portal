@@ -30,6 +30,7 @@
   --gray-900: #1F2937;
   --gray-transparent: rgba(0, 0, 0, 0);
   --footnote-gray: #687482;
+  --body-text: var(--gray-800);
 
   /* Colors - Brand */
   --blue-primary: #1E40AF;
@@ -135,6 +136,21 @@
     --overview-title-font: var(--font-heading);
     --overview-column-gap: var(--spacing-3xl);
 
+        /* Trend chips */
+      --chip-inc-text: #d97706;
+      --chip-inc-bg: #fff7ed;
+
+      --chip-dec-text: #16a34a;
+      --chip-dec-bg: #f0fdf4;
+
+      --chip-neutral-text: #6B6B6B;
+      --chip-neutral-bg: var(--gray-100);
+
+        /* Info box */
+      --info-bg: #f9fafb;
+      --info-title: #1f2937;
+      --info-text: #4b5563;
+      --info-shadow: 0px 1px 3px rgba(0,0,0,0.05);
     /* Data Explorer */
 
     --explorer-bg: var(--white);
@@ -197,7 +213,24 @@
 --trend-title-font: var(--font-heading);
 --trend-arrow-size: 18px;
 
+--vgtt-bg: #ffffff;
+--vgtt-fg: #111827;
+--vgtt-border: #E5E7EB;
+--vgtt-shadow: 0 10px 30px rgba(0,0,0,.08);
+
+
+--img-on-light-filter: none;
+--img-on-light-shadow: none;
+--img-filter: none; /* light */
+
 }
+
+
+
+
+
+
+
 
 [data-theme="dark"] {
   /* Base Colors */
@@ -219,7 +252,7 @@
   --inverse-primary: #34618d;
 
   --blue-primary: #93c5fd;
-  --blue-secondary: #8A8FAC;
+  --blue-secondary: #8a8fac4f;
   --blue-accent: #B182A7;
 
   --purple-primary: #c084fc;
@@ -262,15 +295,15 @@
 
   /* Header */
   --header-bg: linear-gradient(90deg, var(--blue-secondary), var(--blue-accent));
-  --header-title-color: var(--white);
+  --header-title-color: var(--gray-800);
   --header-subtitle-color: var(--gray-300);
   --header-button-border: var(--white);
   --header-button-text: var(--white);
   --header-button-active-bg: var(--white);
   --header-button-active-text: var(--blue-primary);
 
-  --modal-bg: var(--gray-100); 
-  --modal-text: var(--gray-400);
+  --modal-bg: var(--gray-300); 
+  --modal-text: var(--gray-800);
   --modal-title-color: var(--gray-200);
   --modal-close: var(--gray-400);
   --modal-close-hover: var(--gray-100);
@@ -314,12 +347,12 @@
 
   /* Chart Container*/
   --chart-bg: var(--gray-100);
-  --chart-title-color: var(--gray-200);
-  --chart-subtitle-color: var(--gray-400);
+  --chart-title-color: var(--gray-800);
+  --chart-subtitle-color: var(--gray-600);
 
   --content-bg: var(--gray-100);
-  --content-title-color: var(--gray-200);
-  --content-subtitle-color: var(--gray-400);
+  --content-title-color: #F9FAFB;      
+  --content-subtitle-color: #E5E7EB;
 
   --trend-up-color: var(--red-accent);
   --trend-down-color: var(--green-accent);
@@ -335,5 +368,37 @@
 --trend-date-color: var(--gray-400);
 --trend-status-color: var(--gray-300);
 
+--footer-bg: var(--blue-secondary);
+--footer-text: var(--gray-700);
+--header-bg:var(--blue-secondary)
+--card-bg: var(--gray-100);
+--chart-bg: var(--gray-100);
+--content-bg: var(--gray-100);
 
+--trend-up-color: var(--red-accent);
+--trend-down-color: var(--green-accent);
+ /* Trend chips */
+ --chip-inc-text: #f59e0b;      /* a bit brighter on dark */
+ --chip-inc-bg: rgba(245, 158, 11, 0.12);
+
+ --chip-dec-text: #34d399;
+ --chip-dec-bg: rgba(16, 185, 129, 0.12);
+
+ --chip-neutral-text: var(--gray-400);
+ --chip-neutral-bg: var(--gray-200);
+
+ /* Info box */
+ --info-bg: var(--gray-100);
+ --info-title: var(--gray-200);
+ --info-text: var(--gray-400);
+ --info-shadow: 0px 1px 3px rgba(255,255,255,0.06);
+
+ --vgtt-bg: #0B0F14;
+ --vgtt-fg: #E5E7EB;
+ --vgtt-border: #334155;
+ --vgtt-shadow: 0 10px 30px rgba(0,0,0,.4);
+
+
+ --img-filter: invert(1) brightness(1.1) contrast(1.05);
+                     
 }

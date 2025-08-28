@@ -123,6 +123,7 @@ const overviewConfig = {
       id: "overview-info-grid",
       dataSourceKey: "emergencyDeptData",
       renderAs: "custom",
+      wrapInChart: false,
       component: "OverviewGrid",
       background: "transparent"
 
