@@ -275,7 +275,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
             aria-label={`Open large ${seriesLabels[series]} chart`}
             style={{
               display:"flex", flexDirection:"column", gap:6, padding:"8px 8px 4px 8px",
-        background:"#fff",
+        background:"var(--chart-bg)",
               cursor:"pointer", textAlign:"left", boxShadow:"0 1px 2px rgba(0,0,0,0.06)"
             }}
           >

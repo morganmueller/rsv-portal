@@ -43,6 +43,7 @@
   color: var(--footer-link);
   text-decoration: none;
   font-weight: 700; /* always bold */
+  
 }
 
 .footer-col a:hover {
@@ -67,6 +68,7 @@
   height: auto;
   margin-bottom: var(--spacing-sm);
   filter: var(--footer-logo-filter);
+  
 
 }
 
@@ -76,6 +78,8 @@
   fill: var(--footer-link);
   transition: fill 0.2s ease;
   vertical-align: middle;
+  filter: var(--img-filter);
+
 }
 
 .footer-accessibility-icon:hover {
@@ -176,6 +180,7 @@
     max-width: 120px;
     width: 100%;
     margin-bottom: var(--spacing-sm);
+    
   }
 
   .footer-copy {

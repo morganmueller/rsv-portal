@@ -1,5 +1,4 @@
 
-/* OverviewGrid.css */
 /* .overview-grid-section {
   background-color: var(--white);
   border-radius: var(--radius-lg);
@@ -14,10 +13,11 @@
   width: 100%;
   max-width: 1280px;      
   margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+  padding: var(--spacing-md)  var(--spacing-lg);
   box-sizing: border-box;
   box-shadow: var(--shadow-md);
   border-radius: var(--radius-lg);
+  background-color: var(--white);
 }
 
 
@@ -48,7 +48,7 @@
   flex: 0 1 320px;
   max-width: 360px;
   min-width: 260px;
-  background-color: var(--white);
+  background-color:  var(--content-bg);
   padding: var(--spacing-lg) var(--spacing-xl);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
@@ -70,7 +70,9 @@
   width: 16px;
   height: 16px;
   opacity: 0.85;
-  flex-shrink: 0;             
+  flex-shrink: 0;      
+  filter: var(--img-filter);
+       
 }
 
 

@@ -5,12 +5,12 @@
     --portal-section-bg: #F3F4F6;     /* gray-100 */
     --portal-section-border: #E5E7EB; /* gray-200 */
     --portal-section-fg: #1F2937;     /* gray-800 */
-  }
+  }d
   
   .seasonal-bullet {
     line-height: 1.35;
     margin: 0.5rem 0;
-    color: var(--portal-section-fg, #1F2937);
+    color: var(--modal-text);
     font-size: var(--font-size-md, var(--font-size-lg));
 }
   

@@ -43,6 +43,9 @@
 
 /* ===== Intro / Overview ===== */
 
+.markdown-paragraph-title {
+  color: var(--content-title-color);
+}
 .intro-section h2 {
   font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
   margin: var(--spacing-lg) 0 var(--spacing-md);
@@ -80,7 +83,7 @@
 .info-card {
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--gray-50);
+  background-color:  var(--content-bg);
   padding: var(--spacing-lg) var(--spacing-xl);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
@@ -236,4 +239,26 @@
   .info-card-description {
     margin-bottom: var(--spacing-md); /* ensure spacing before card bottom */
   }
+}
+
+
+[data-theme="dark"] .markdown-body {
+  color: #E5E7EB;
+}
+[data-theme="dark"] .markdown-body h1,
+[data-theme="dark"] .markdown-body h2,
+[data-theme="dark"] .markdown-body h3 {
+  color: #F9FAFB;
+}
+[data-theme="dark"] .markdown-body a {
+  color: #93C5FD;
+}
+[data-theme="dark"] .markdown-body blockquote {
+  background: #1f2937;
+  border-left-color: #374151;
+  color: #D1D5DB;
+}
+[data-theme="dark"] .markdown-body code {
+  background-color: #374151;
+  color: #F9FAFB;
 }

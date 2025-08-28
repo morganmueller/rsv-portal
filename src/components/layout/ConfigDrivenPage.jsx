@@ -365,6 +365,18 @@ const ConfigDrivenPage = ({ config }) => {
                   ? getText(section.subtitle)
                   : section.subtitle || "";
 
+                  const wrapInChart = section.wrapInChart !== false; // default true
+                  
+                  const componentNode = (
+                    <CustomComponent
+                      {...(Array.isArray(filteredData) ? { data: filteredData } : { data: filteredData })}
+                      view={view}
+                      onViewChange={setView}
+                      {...mergedProps}
+                    />
+                  );
+                
+
               return (
                 <ContentContainer
                   key={key}
@@ -445,6 +457,7 @@ const ConfigDrivenPage = ({ config }) => {
                   
                   
                 >
+                {wrapInChart ? (
                   <ChartContainer
                     title={resolveText(section.title, textVars)}
                     chart={
@@ -474,7 +487,10 @@ const ConfigDrivenPage = ({ config }) => {
                       : {})}
                     stackSidebarAbove={!!section.sidebarAboveChart}
                     footer={section.chart.footer}
-                  />
+                  /> ): (
+                    componentNode
+                  )}
+
                 </ContentContainer>
               );
             }

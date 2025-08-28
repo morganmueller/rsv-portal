@@ -90,11 +90,14 @@ h3.content-title {
 .info-icon {
   height: 20px;
   margin-left: var(--spacing-sm);
+  filter: var(--img-filter);
+
 }
 
 .download-icon {
   height: 16px;
   margin-left: var(--spacing-md);
+  filter: var(--img-filter);
 }
 
 @keyframes fadeUp {

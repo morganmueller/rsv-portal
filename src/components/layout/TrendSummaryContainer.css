@@ -1,5 +1,5 @@
 .trend-summary-container {
-  background-color: var(--trend-summary-bg, var(--white));
+  background-color:  var(--white);
   width: 100%;
   max-width: 1280px;
   padding: var(--trend-summary-padding, var(--spacing-md)) var(--spacing-lg);

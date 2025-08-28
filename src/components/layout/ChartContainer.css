@@ -20,7 +20,7 @@ main {
 }
 
 .chart-container {
-  background-color: var(--chart-bg, var(--white));
+  /* background-color: var(--chart-bg, var(--white)); */
   border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-xl);
   width: 100%;

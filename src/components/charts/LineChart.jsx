@@ -57,6 +57,10 @@ const LineChart = ({
     "ARI": ari,
   };
 
+  const chartBg = getComputedStyle(document.documentElement).getPropertyValue("--chart-bg").trim();
+const chartLabelColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-subtitle-color").trim();
+const chartTitleColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-title-color").trim();
+
   const defaultColor = colors.gray600;
   const selectedColor =
     tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
@@ -149,12 +153,13 @@ const LineChart = ({
       subtitleFontSize: 13
     },
     config: {
-      background: colors.white,
+      background: chartBg || colors.white,
+
       axis: {
         labelFont: typography.body,
         titleFont: typography.heading,
-        labelColor: colors.gray700,
-        titleColor: colors.gray800,
+        labelColor: chartLabelColor || colors.gray700,
+        titleColor: chartTitleColor || colors.gray800,
         labelFontSize: 12,
       },
       axisX: {

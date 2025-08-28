@@ -44,6 +44,8 @@
 .info-card-icon {
   height: 30px;
   flex-shrink: 0;
+  filter: var(--img-filter);
+
 }
 
 .info-card-external-icon {
@@ -54,6 +56,8 @@
   height: 16px;
   opacity: 0.85;
   flex-shrink: 0;
+  filter: var(--img-filter);
+
 }
 
 .info-card-title {
