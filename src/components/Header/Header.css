@@ -87,8 +87,8 @@ html, body, #root {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
+/*   margin-top: var(--spacing-lg);*/
+  padding: var(--spacing-md) var(--spacing-lg); 
   width: 100%;
   max-width: 1280px;
   margin-inline: auto;
