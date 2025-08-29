@@ -225,6 +225,17 @@ body {
   border: 0 !important;
 }
 
+@media (max-width: 768px) {
+  .slider .icon {
+    transform: translate(-1%, +53%);
+  }
+
+  .switch input:checked + .slider .icon {
+    transform: translate(22px, +53%);    /* same X delta, keep Y centering */
+  }
+
+}
+
 /* ====== Mobile ====== */
 @media (max-width: 640px) {
 

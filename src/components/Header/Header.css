@@ -87,8 +87,8 @@ html, body, #root {
   display: flex;
   justify-content: space-between;
   align-items: center;
-/*   margin-top: var(--spacing-lg);*/
-  padding: var(--spacing-md) var(--spacing-lg); 
+  /* margin-top: var(--spacing-lg); */
+  padding: var(--spacing-md) var(--spacing-lg);
   width: 100%;
   max-width: 1280px;
   margin-inline: auto;
@@ -172,24 +172,42 @@ html, body, #root {
 /* -----------------------------------------------------
    2) At ~880px, begin wrapping rows to avoid overlap
    ----------------------------------------------------- */
-@media (max-width: 880px) {
-  .header-buttons-wrapper {
-    flex-wrap: wrap;            /* allow second row */
-    row-gap: var(--spacing-sm);
+   @media (max-width: 880px) {
+    .header-buttons-wrapper {
+      display: flex;
+      flex-wrap: wrap;             /* allow second row */
+      column-gap: var(--spacing-sm);
+      row-gap: var(--spacing-sm);
+      align-items: flex-start;
+    }
+  
+    /* Left cluster grows/shrinks; right stays as small as it can */
+    .left-buttons  {
+      flex: 1 1 auto;              /* take remaining space on row 1 */
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: flex-start;
+      padding-left: 0;
+    
+    }
+  
+    .right-buttons {
+      flex: 0 0 auto;               /* keep natural width */
+      margin-right: auto;  
+      min-width: 40px;                 /* allow its content to shrink/wrap */
+
+      display: flex;
+      justify-content: flex-start;
+      gap: var(--spacing-xs);
+    }
+  
+    .outline-button {
+      padding: 0 12px;
+    }
+  
+
   }
-
-  /* keep Home/Data (and virus group) on row 1, Info on row 2 */
-  .left-buttons  { flex: 1 1 100%; order: 1; justify-content: center; padding-left: 0; }
-  .right-buttons { flex: 0 1 100%; order: 1; justify-content: center; }
-
-
-
-  .outline-button {
-    min-width: 0;      /* let them shrink as needed */
-    padding: 0 12px;
-  }
-}
-
+  
 /* -----------------------------------------------------
    3) Below 768px, center everything and keep grid logic
    ----------------------------------------------------- */
