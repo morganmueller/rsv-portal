@@ -97,15 +97,15 @@
 }
 
 .trend-up {
-  color: var(--red-primary);
+  color: var(--trend-up-color, var(--red-primary));
 }
 
 .trend-down {
-  color: var(--green-muted);
+  color: var(--trend-down-color, var(--green-muted));
 }
 
 .trend-neutral {
-  color: var(--gray-500);
+  color: var(--trend-neutral-color, var(--gray-600));
 }
 
 /* Responsive */

@@ -43,7 +43,7 @@
   --green-primary: #065F46;
   --green-accent: #139D72;
   --green-muted: #059669;
-
+  --green-trend: #057A55;
   --orange-text: #91401A;
   --orange-primary: #FF6600;
   --orange-accent: #B36C31;
@@ -188,10 +188,10 @@
   --content-subtitle-size: var(--font-size-md);
   
   --trend-up-color: var(--red-primary);
-  --trend-down-color: var(--green-muted);
+  --trend-down-color: var(--green-trend);
   --trend-neutral-color: var(--gray-800);
   --trend-bg: var(--gray-300);
-  --trend-highlight-color: var(--gray-700);
+  --trend-highlight-color: var(--gray-800);
 
 /* About Page*/
   --about-padding: var(--spacing-2xl);
@@ -261,7 +261,7 @@
   --green-primary: #34d399;
   --green-accent: #10b981;
   --green-muted: #059669;
-
+  
   --orange-primary: #fb923c;
   --orange-accent: #f97316;
   --orange-muted: #fdba74;
