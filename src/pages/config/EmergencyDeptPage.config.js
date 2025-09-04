@@ -18,29 +18,7 @@ const edPageConfig = {
     lastUpdated: "05/01/2025",
     showTrendArrow: false,
     showSecondaryTitle: false,
-    bullets: [
-      {
-        id: "flu-peds-deaths",
-        renderAs: "custom",
-        component: "SeasonalBullet",
-        // This drives which hydrated slice the component receives as `dataSource`
-        dataSourceKey: "deathData",
-        componentProps: {
-          dataPath: "/data/deathData.csv",
-          diseaseLabel: "Pediatric influenza deaths",
-          season: { start: { month: 10, day: 1 }, end: { month: 5, day: 31 } },
-          // ✅ must match CSV exactly
-          filters: { metric: "Pediatric influenza deaths", submetric: "Weekly" },
-          weeklyField: "value",
-          seasonalSubmetric: "Seasonal total",
-          dateField: "date",
-          showWhen: ({ virus, dataType }) =>
-            virus === "Influenza" && dataType === "ed",
-          as: "p",
-          className: "seasonal-bullet",
-        },
-      },
-    ],
+    
   },
 
   sections: [
