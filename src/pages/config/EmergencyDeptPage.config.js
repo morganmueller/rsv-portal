@@ -44,7 +44,7 @@ const edPageConfig = {
           seasonal: null,
           // title:
           //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
-          getMetricNames: ({ virus, view }) => [`${virus} ${view}`, `ARI ${view}`],
+          getMetricNames: ({ virus, view }) => [`${virus} ${view}`],
           submetric: "Overall",
           xField: "date",
           yField: "value",
