@@ -79,9 +79,11 @@ const StatCard = ({ title, visitPercent, visitChange, infoText }) => {
             <div className="stat-trend-row">
               <TrendChip rawChange={visitChange} />
             </div>
+            {getTrendDirection(visitChange) !== "same" && (
             <span className="stat-change-number">
               {Math.abs(normalizedChange)}%
             </span>
+            )}
           </div>
         )}
 

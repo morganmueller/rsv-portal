@@ -5,7 +5,7 @@
     --portal-section-fg: #1F2937;
   }
   .data-summary-markdown {
-    color: var(--text-body, var(--gray-800));
+    color: var(--text-body, var(--gray-700));
 }
   /* Base chip */
   .data-summary-markdown .chip {

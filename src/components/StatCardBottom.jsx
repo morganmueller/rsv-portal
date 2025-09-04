@@ -72,9 +72,12 @@ const StatCardBottom = ({
             {normalizedChange !== null && (
               <>
                 <TrendChip rawChange={visitChange} />
+                {getTrendDirection(visitChange) !== "same" && (
+
                 <span className="stat-percent-change">
                   {Math.abs(normalizedChange)}%
                 </span>
+                )}
               </>
             )}
           </div>

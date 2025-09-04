@@ -39,7 +39,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--spacing-lg);
+  /* margin-bottom: var(--spacing-lg); */
 }
 
 .chart-title {
@@ -113,6 +113,7 @@ main {
 .chart-body {
   flex: 1 1 auto;               /* <- no width:0 here */
   min-width: 0;                 /* allow shrink inside flex */
+
 }
 
 .chart-vega {

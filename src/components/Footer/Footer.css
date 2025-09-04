@@ -139,7 +139,7 @@
 
 
 /* === Medium Screens === */
-@media (max-width: 1024px) and (min-width: 769px) {
+@media (max-width: 1023px) and (min-width: 769px) {
   .footer {
     padding: var(--spacing-lg) var(--spacing-xl);
   }

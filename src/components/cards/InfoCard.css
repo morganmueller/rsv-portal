@@ -47,6 +47,11 @@
   filter: var(--img-filter);
 
 }
+.info-card-icon[src*="covid-"],
+.info-card-icon[src*="flu-"],
+.info-card-icon[src*="rsv-"] {
+  filter: none !important;
+}
 
 .info-card-external-icon {
   display: flex;

@@ -15,6 +15,30 @@ function getISOWeek(date) {
   return 1 + Math.round(diff / (7 * 24 * 60 * 60 * 1000));
 }
 
+const useMedia = (query) => {
+  const get = () =>
+    typeof window !== "undefined" &&
+    typeof window.matchMedia !== "undefined" &&
+    window.matchMedia(query).matches;
+
+  const [matches, setMatches] = React.useState(get);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") return;
+    const mql = window.matchMedia(query);
+    const onChange = (e) => setMatches(e.matches);
+    if (mql.addEventListener) mql.addEventListener("change", onChange);
+    else mql.addListener(onChange);
+    setMatches(mql.matches);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+};
+
 const YearComparisonChart = ({
   data,
   xField = "date",
@@ -54,6 +78,9 @@ const YearComparisonChart = ({
       display: normalizedRowDisplay || "unknown",
     };
   });
+
+  const isMobile = useMedia("(max-width: 770px)");
+  const legendColumns = isMobile ? 2 : undefined;
 
   const filtered = parsed.filter((d) => {
     const isMatch = !metricName || d.metric === metricName;
@@ -158,6 +185,10 @@ const YearComparisonChart = ({
         symbolStrokeWidth: 5,
         orient: "bottom",
         labelFontSize: 16,
+        direction: "horizontal",
+        columns: legendColumns,     
+        columnPadding: 30,          
+        labelLimit: isMobile ? 160 : 300
       },
       bar: {
         binSpacing: 0,

@@ -38,8 +38,8 @@
 
 .info-modal-close {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 1px;
+  right: 1px;
   background: transparent;
   border: none;
   font-size: 24px;

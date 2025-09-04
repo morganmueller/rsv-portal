@@ -14,6 +14,31 @@ function getISOWeek(date) {
   return 1 + Math.round(diff / (7 * 24 * 60 * 60 * 1000));
 }
 
+const useMedia = (query) => {
+  const get = () =>
+    typeof window !== "undefined" &&
+    typeof window.matchMedia !== "undefined" &&
+    window.matchMedia(query).matches;
+
+  const [matches, setMatches] = React.useState(get);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") return;
+    const mql = window.matchMedia(query);
+    const onChange = (e) => setMatches(e.matches);
+    if (mql.addEventListener) mql.addEventListener("change", onChange);
+    else mql.addListener(onChange);
+    setMatches(mql.matches);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+};
+
+
 const SmallMultipleBarChart = ({
   data,
   xField = "date",
@@ -35,6 +60,8 @@ const SmallMultipleBarChart = ({
     const rawDisplay =
       typeof d.display === "string" ? d.display.trim() : "";
     const normalizedRowDisplay = rawDisplay.toLowerCase();
+
+    
 
     return {
       ...d,

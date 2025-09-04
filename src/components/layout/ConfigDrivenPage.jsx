@@ -115,34 +115,59 @@ const ConfigDrivenPage = ({ config }) => {
     setVirus = () => {},
   } = pageState;
 
+  // --- SUMMARY FIXES (resolve per dataType) ----------------------
+  const resolvedSummary =
+    summary && (summary.ed || summary.lab || summary.death)
+      ? (summary[dataType] || summary.default || {})
+      : (summary || {});
+
+  const resolvedSummaryMarkdownPath =
+    typeof resolvedSummary.markdownPath === "object"
+      ? resolvedSummary.markdownPath[dataType] || resolvedSummary.markdownPath.default
+      : resolvedSummary.markdownPath;
+  // --------------------------------------------------------------
+
   const [hydratedConfig, setHydratedConfig] = useState(null);
-  const [markdownContent, setMarkdownContent] = useState("");
   const [groupSelections, setGroupSelections] = useState({});
 
   const updateGroup = (key, val) => {
     setGroupSelections((prev) => ({ ...prev, [key]: val }));
   };
 
-  const summaryRef = useRef(null);
-  const [showPill, setShowPill] = useState(false);
 
+  
+
+  const [showPill, setShowPill] = useState(false);
+  const controlsRef = useRef(null);
+
+  
+  // Find the nearest scrollable ancestor; fall back to window
+  const getScrollParent = (node) => {
+    if (!node) return window;
+    const regex = /(auto|scroll|overlay)/;
+    let el = node.parentElement;
+    while (el) {
+      const cs = getComputedStyle(el);
+      if (regex.test(cs.overflowY) || regex.test(cs.overflow)) return el;
+      el = el.parentElement;
+    }
+    return window;
+  };
+  
   useEffect(() => {
-    const checkAndObserve = () => {
-      const el = summaryRef.current;
-      if (!el) {
-        requestAnimationFrame(checkAndObserve);
-        return;
-      }
-      const observer = new IntersectionObserver(
-        ([entry]) => setShowPill(!entry.isIntersecting),
-        { threshold: 0.05 }
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    };
-    const cleanup = checkAndObserve();
-    return typeof cleanup === "function" ? cleanup : undefined;
-  }, []);
+    if (!controlsRef.current) return;
+  
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowPill(!entry.isIntersecting),
+      { root: null, threshold: 0 }
+    );
+  
+    observer.observe(controlsRef.current);
+    return () => observer.disconnect();
+  }, [activeVirus, view, dataType]);
+  
+  
+  
 
   useEffect(() => {
     if (config.data) {
@@ -162,14 +187,7 @@ const ConfigDrivenPage = ({ config }) => {
       .catch(console.error);
   }, [config, activeVirus, view, dataType]);
 
-  useEffect(() => {
-    if (summary?.markdownPath) {
-      fetch(summary.markdownPath)
-        .then((res) => res.text())
-        .then(setMarkdownContent)
-        .catch((err) => console.error("Failed to load markdown:", err));
-    }
-  }, [summary?.markdownPath]);
+  // (Removed: old summary markdown prefetch that referenced summary.markdownPath)
 
   if (!hydratedConfig) return <div className="loading"></div>;
   const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
@@ -192,77 +210,77 @@ const ConfigDrivenPage = ({ config }) => {
     typeof subtitleKey === "object" ? subtitleKey[dataType] : subtitleKey;
 
   return (
-    <HydratedDataContext.Provider value={{ data }}>      
-    <DataPageLayout
+    <HydratedDataContext.Provider value={{ data }}>
+      <DataPageLayout
         title={resolveText(resolvedTitleKey, pageTextVars)}
         subtitle={resolveText(resolvedSubtitleKey, pageTextVars)}
         topControls={
           config.showTopControls === false ? null : (
-            <TopControls
-              controls={controls}
-              activeVirus={activeVirus}
-              onVirusChange={setVirus}
-              dataType={dataType}
-              onDataTypeChange={setDataType}
-              view={view}
-              onViewChange={setView}
-            />
+            <div ref={controlsRef}>
+              <TopControls
+                controls={controls}
+                activeVirus={activeVirus}
+                onVirusChange={setVirus}
+                dataType={dataType}
+                onDataTypeChange={setDataType}
+                view={view}
+                onViewChange={setView}
+              />
+            </div>
           )
         }
       >
-        {summary?.markdownPath && (
+        {resolvedSummaryMarkdownPath && (
           <TrendSummaryContainer
-            ref={summaryRef}
-            sectionTitle={resolveText(summary.titleKey || summary.title)}
+            key={`summary-${activeVirus}-${view}-${dataType}`}
+            sectionTitle={resolveText(resolvedSummary.titleKey || resolvedSummary.title)}
             date={latestDate}
-            markdownPath={summary.markdownPath}
+            markdownPath={resolvedSummaryMarkdownPath}
             showTitle
-            animateOnScroll={summary.animateOnScroll !== false}
+            animateOnScroll={resolvedSummary.animateOnScroll !== false}
             virus={activeVirus}
             view={view}
             virusLowercase={virusLowercaseDisplay[activeVirus]}
             virusLabelArticle={virusDisplayLabelsArticle[activeVirus]}
-            {...(summary.showTrendArrow ? { trendDirection: "up" } : {})}
+            {...(resolvedSummary.showTrendArrow ? { trendDirection: "up" } : {})}
+            variables={{
+              ...pageTextVars,
+              latestDate,
+            }}
           >
-       {Array.isArray(summary?.bullets) &&
-  activeVirus === "Influenza" && // ← only show for Influenza
-  summary.bullets.map((b) => {
-    // Use the component registry (customComponents) just like DynamicParagraph
-    if (b.renderAs === "custom" && b.component && customComponents[b.component]) {
-      const Cmp = customComponents[b.component];
-      const slice = b.dataSourceKey ? data?.[b.dataSourceKey] : undefined;
-
-      // For SeasonalBullet we pass options via config, from componentProps
-      const cfg = { id: b.id, ...(b.componentProps || {}) };
-
-      return (
-        <Cmp
-          key={b.id}
-          config={cfg}
-          dataSource={slice}                         // ← single data slice for this bullet
-          pageState={{ virus: activeVirus, dataType }} // ensures showWhen can work too
-          as={b.componentProps?.as}
-          className={b.componentProps?.className}
-        />
-      );
-    }
-
-    // Fallback: direct SeasonalBullet config (if you ever keep legacy bullets)
-    const slice =
-      b.dataSourceKey && data?.[b.dataSourceKey] ? data[b.dataSourceKey] : undefined;
-
-    return (
-      <SeasonalBullet
-        key={b.id}
-        config={b}
-        dataSource={slice}
-        pageState={{ virus: activeVirus, dataType }}
-      />
-    );
-  })}
-
+            {Array.isArray(resolvedSummary?.bullets) &&
+              activeVirus === "Influenza" &&
+              resolvedSummary.bullets.map((b) => {
+                if (b.renderAs === "custom" && b.component && customComponents[b.component]) {
+                  const Cmp = customComponents[b.component];
+                  const slice = b.dataSourceKey ? data?.[b.dataSourceKey] : undefined;
+                  const cfg = { id: b.id, ...(b.componentProps || {}) };
+                  return (
+                    <Cmp
+                      key={b.id}
+                      config={cfg}
+                      dataSource={slice}
+                      pageState={{ virus: activeVirus, dataType }}
+                      as={b.componentProps?.as}
+                      className={b.componentProps?.className}
+                    />
+                  );
+                }
+                const slice =
+                  b.dataSourceKey && data?.[b.dataSourceKey] ? data[b.dataSourceKey] : undefined;
+                return (
+                  <SeasonalBullet
+                    key={b.id}
+                    config={b}
+                    dataSource={slice}
+                    pageState={{ virus: activeVirus, dataType }}
+                  />
+                );
+              })}
           </TrendSummaryContainer>
+
         )}
+        {/* -------------------------------------------------------------------------- */}
 
         {hydratedSections
           .filter((section) => {
@@ -365,17 +383,16 @@ const ConfigDrivenPage = ({ config }) => {
                   ? getText(section.subtitle)
                   : section.subtitle || "";
 
-                  const wrapInChart = section.wrapInChart !== false; // default true
-                  
-                  const componentNode = (
-                    <CustomComponent
-                      {...(Array.isArray(filteredData) ? { data: filteredData } : { data: filteredData })}
-                      view={view}
-                      onViewChange={setView}
-                      {...mergedProps}
-                    />
-                  );
-                
+              const wrapInChart = section.wrapInChart !== false; // default true
+
+              const componentNode = (
+                <CustomComponent
+                  {...(Array.isArray(filteredData) ? { data: filteredData } : { data: filteredData })}
+                  view={view}
+                  onViewChange={setView}
+                  {...mergedProps}
+                />
+              );
 
               return (
                 <ContentContainer
@@ -418,14 +435,14 @@ const ConfigDrivenPage = ({ config }) => {
                               .replace("Influenza", "Flu"),
                           }))
                         );
-                  
+
                     // Build a sensible name:
                     // - for the combined-virus overview, use "ARI" as the virus label
                     // - include view only for ED data
                     const virusForFile = section.id === "combined-virus" ? "ARI" : activeVirus;
                     const metricForFile = dataType === "ed" ? view : undefined;
                     const categoryForFile = section.id || "section";
-                  
+
                     const fileName =
                       section.chart?.props?.downloadFileName ||
                       buildDownloadName({
@@ -435,13 +452,13 @@ const ConfigDrivenPage = ({ config }) => {
                         date: latestDate,
                         ext: "csv",
                       });
-                  
+
                     // If we have rendered rows, download them.
                     if (exportRows && exportRows.length) {
                       downloadCSV(exportRows, fileName);
                       return;
                     }
-                  
+
                     // Fallback: if this custom section points to a static CSV, download that.
                     const rawPath = section.componentProps?.dataPath || section.chart?.props?.dataPath;
                     if (rawPath) {
@@ -454,43 +471,41 @@ const ConfigDrivenPage = ({ config }) => {
                       document.body.removeChild(a);
                     }
                   }}
-                  
-                  
                 >
-                {wrapInChart ? (
-                  <ChartContainer
-                    title={resolveText(section.title, textVars)}
-                    chart={
-                      <CustomComponent
-                        {...(Array.isArray(filteredData)
-                          ? { data: filteredData }
-                          : { data: filteredData })}
-                        view={view}
-                        onViewChange={setView}
-                        {...mergedProps}
-                      />
-                    }
-                    {...(section.showSidebarToggle
-                      ? {
-                          sidebar: (
-                            <ToggleControls
-                              data={
-                                Array.isArray(filteredData)
-                                  ? filteredData
-                                  : Object.values(filteredData || {}).flat()
-                              }
-                              view={view}
-                              onToggle={setView}
-                            />
-                          ),
-                        }
-                      : {})}
-                    stackSidebarAbove={!!section.sidebarAboveChart}
-                    footer={section.chart.footer}
-                  /> ): (
+                  {wrapInChart ? (
+                    <ChartContainer
+                      title={resolveText(section.title, textVars)}
+                      chart={
+                        <CustomComponent
+                          {...(Array.isArray(filteredData)
+                            ? { data: filteredData }
+                            : { data: filteredData })}
+                          view={view}
+                          onViewChange={setView}
+                          {...mergedProps}
+                        />
+                      }
+                      {...(section.showSidebarToggle
+                        ? {
+                            sidebar: (
+                              <ToggleControls
+                                data={
+                                  Array.isArray(filteredData)
+                                    ? filteredData
+                                    : Object.values(filteredData || {}).flat()
+                                }
+                                view={view}
+                                onToggle={setView}
+                              />
+                            ),
+                          }
+                        : {})}
+                      stackSidebarAbove={!!section.sidebarAboveChart}
+                      footer={section.chart.footer}
+                    />
+                  ) : (
                     componentNode
                   )}
-
                 </ContentContainer>
               );
             }
@@ -727,7 +742,7 @@ const ConfigDrivenPage = ({ config }) => {
           })}
       </DataPageLayout>
 
-      {config.showPillToggle !== false && showPill && (
+      {config.showPillToggle !== false && (
         <FloatingTogglePill
           className={showPill ? "visible" : ""}
           activeVirus={activeVirus}

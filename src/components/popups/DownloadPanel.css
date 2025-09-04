@@ -8,14 +8,13 @@
   .download-panel-text {
     margin: 0 0 8px 0;
     font-size: 14px;
-    color: #374151;
+    color: var(--gray-800);
   }
   
-  /* compact button */
   .download-btn {
     display: inline-block;
-    background-color: #2563eb;
-    color: #fff;
+    background-color: var(--blue-primary);
+    color: var(--gray-200);
     font-size: 14px;
     padding: 6px 12px; /* shorter */
     border-radius: 6px;
@@ -25,6 +24,6 @@
   }
   
   .download-btn:hover {
-    background-color: #1d4ed8;
+    background-color: var(--blue-secondary);
   }
   

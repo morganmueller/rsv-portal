@@ -62,22 +62,23 @@
     margin-bottom: var(--spacing-md);
   }
   
-.data-subtitle a {
-  color: var(--blue-primary);
-  text-decoration: underline;
-  font-weight: 600; 
-}
-
-.data-subtitle a:hover,
-.data-subtitle a:focus {
-  color:  #273665f3 !important;
-  text-decoration-thickness: 2px;    
-  text-underline-offset: 3px;        
-}
-
-.data-subtitle a:active {
-  color: var(--blue-light, #3b82f6) !important;
-}
+  .data-subtitle a {
+    color: var(--blue-primary);
+    text-decoration: underline;
+    font-weight: 600; 
+  }
+  
+  .data-subtitle a:hover,
+  .data-subtitle a:focus {
+    color: #273665f3 !important;
+    text-decoration-thickness: 2px;    
+    text-underline-offset: 3px;        
+  }
+  
+  .data-subtitle a:active {
+    color: var(--blue-light, #3b82f6) !important;
+  }
+  
   /* Highlight any dynamic placeholders (virus/view/date/etc.) */
   .dynamic-text {
     font-weight: 700;
@@ -144,21 +145,36 @@
     margin: var(--spacing-md) 0;
   }
   
+  /* NEW: the anonymous div that wraps .top-controls-wrapper should span full width */
+  .data-controls-row > * {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  
   /* Inner grouping used by TopControls */
   .top-controls-wrapper {
-    display: flex;                  /* ensure row on desktop */
-    justify-content: space-between;
+    display: flex;
+    justify-content: flex-start;   /* left align by default */
     align-items: center;
     gap: var(--spacing-lg);
     width: 100%;
+    flex-wrap: nowrap;
   }
   
   /* Left/right sub-wrappers */
-  .data-type-toggle-wrapper,
+  .data-type-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    min-width: 0;                 /* allow shrink to avoid forced wrapping */
+    margin-right: 0;              /* stays left */
+  }
+  
+  /* Right side: push visits/hospitalizations to the far right */
   .view-toggle-wrapper {
     display: flex;
     align-items: center;
-    min-width: 0;                   /* allow shrink to avoid forced wrapping */
+    margin-left: auto;            /* pushes this group fully right */
+    min-width: 0;
   }
   
   /* ===== Data-type buttons group (ED / Cases / Deaths) ===== */
@@ -168,7 +184,7 @@
     align-items: center;
     flex-wrap: nowrap;
     white-space: nowrap;
-    overflow-x: auto;               /* long labels won’t push to new line */
+    overflow-x: auto;             /* long labels won’t push to new line */
     -webkit-overflow-scrolling: touch;
     min-width: 0;
   }
@@ -215,6 +231,8 @@
     .data-controls-row {
       flex-wrap: nowrap;            /* keep top controls in one line on desktop */
     }
+
+    
   }
   
   /* ===== Mobile stacking ===== */
@@ -259,6 +277,15 @@
     .data-type-toggle-group .view-toggle {
       width: 100%;
     }
+
+    .view-toggle-wrapper {
+      flex-direction: row;
+      justify-content: stretch;
+
+      margin-left: 0;
+      align-items: center;
+
+    }
   
     /* Visits/Hospitalizations: single row beneath */
     .view-toggle-group {
@@ -266,6 +293,7 @@
       width: 100%;
       gap: 8px;
       justify-content: stretch;
+      align-items: center;
     }
     .view-toggle-group .view-toggle {
       flex: 50;                      /* two equal-width buttons */

@@ -118,6 +118,51 @@
     outline-offset: 2px;
   }
 }
+/* Tablet layout: two-up cards from 781px–1119px */
+@media (min-width: 781px) and (max-width: 1119px) {
+  .overview-grid-container {
+    /* a bit tighter padding on tablet */
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .overview-grid {
+    /* keep flex, just aim for two-up and center the row */
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .grid-card {
+    /* two per row */
+    flex: 1 1 calc(50% - var(--spacing-lg));
+    max-width: calc(50% - var(--spacing-lg));
+    min-width: 300px; /* prevents overly narrow cards on small tablets */
+    padding: var(--spacing-lg) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: 0;
+  }
+
+  .grid-card h3 {
+    font-size: clamp(18px, 2.1vw, 20px);
+    padding-bottom: 12px;
+  }
+
+  .grid-card p {
+    font-size: clamp(14px, 1.8vw, 16px);
+    line-height: 1.45;
+  }
+
+  /* keep mobile-only caret off tablet */
+  .grid-card::after {
+    content: none;
+  }
+
+  .grid-card::before {
+    height: 3px;
+    opacity: 0.14;
+  }
+}
+
 
 @media (max-width: 780px) {
   .overview-grid {

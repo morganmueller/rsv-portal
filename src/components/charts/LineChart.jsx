@@ -6,6 +6,33 @@ import ChartFooter from "./ChartFooter";
 const { covid, flu, rsv , ari} = tokens.colorScales;
 const { colors, typography } = tokens;
 
+
+const useMedia = (query) => {
+  const get = () =>
+    typeof window !== "undefined" &&
+    typeof window.matchMedia !== "undefined" &&
+    window.matchMedia(query).matches;
+
+  const [matches, setMatches] = React.useState(get);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") return;
+    const mql = window.matchMedia(query);
+    const onChange = (e) => setMatches(e.matches);
+    if (mql.addEventListener) mql.addEventListener("change", onChange);
+    else mql.addListener(onChange);
+    setMatches(mql.matches);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+
+  return matches;
+};
+
+
+
 const getXAxisFormat = (data, xField) => {
   if (!data || data.length < 2) return "%b %d";
   const first = new Date(data[0][xField]);
@@ -57,9 +84,11 @@ const LineChart = ({
     "ARI": ari,
   };
 
+  const isMobile = useMedia("(max-width: 590px)");
+  const legendColumns = isMobile ? 2 : undefined;
   const chartBg = getComputedStyle(document.documentElement).getPropertyValue("--chart-bg").trim();
-const chartLabelColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-subtitle-color").trim();
-const chartTitleColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-title-color").trim();
+  const chartLabelColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-subtitle-color").trim();
+  const chartTitleColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-title-color").trim();
 
   const defaultColor = colors.gray600;
   const selectedColor =
@@ -186,6 +215,10 @@ const chartTitleColor = getComputedStyle(document.documentElement).getPropertyVa
         orient: "bottom",
         title: metricName,
         labelFontSize: 16,
+        direction: "horizontal",
+        columns: legendColumns,     
+        columnPadding: 10,          
+        labelLimit: isMobile ? 160 : 300
       },
       view: {
         stroke: "transparent",

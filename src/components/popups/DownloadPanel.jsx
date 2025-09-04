@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import DownloadPreviewTable from "../tables/DownloadPreviewTable";
-import "./DownloadPanel.css";
+import "../popups/DownloadPanel.css";
 
 const DownloadPanel = ({ onConfirm, previewData = [], columnLabels = {}, description }) => {
   const hasPreview = Array.isArray(previewData) && previewData.length > 0;

@@ -2,7 +2,7 @@
 
 
 body {
-  color: var(--text-body, var(--gray-800));
+  color: var(--text-body, var(--gray-700));
 }
 
 .content-container {
@@ -181,21 +181,6 @@ h3.content-title {
   box-shadow: none;
 }
 
-.download-btn {
-  display: inline-block;
-  background-color: #2563eb;
-  color: #fff;
-  font-size: 14px;
-  padding: 6px 12px; /* shorter */
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.download-btn:hover {
-  background-color: #1d4ed8;
-}
 
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
