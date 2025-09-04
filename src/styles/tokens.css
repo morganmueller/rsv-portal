@@ -183,14 +183,14 @@
 
   --content-bg: var(--white);
   --content-title-color: var(--gray-900);
-  --content-subtitle-color: var(--gray-600);
+  --content-subtitle-color: var(--gray-700);
   --content-title-size: var(--font-size-lg);
   --content-subtitle-size: var(--font-size-md);
   
   --trend-up-color: var(--red-primary);
   --trend-down-color: var(--green-muted);
-  --trend-neutral-color: var(--gray-600);
-  --trend-bg: var(--gray-200);
+  --trend-neutral-color: var(--gray-800);
+  --trend-bg: var(--gray-300);
   --trend-highlight-color: var(--gray-700);
 
 /* About Page*/
@@ -305,7 +305,7 @@
   --modal-bg: var(--gray-300); 
   --modal-text: var(--gray-800);
   --modal-title-color: var(--gray-200);
-  --modal-close: var(--gray-400);
+  --modal-close: var(--gray-600);
   --modal-close-hover: var(--gray-100);
 
   --top-bar-bg: var(--inverse-primary);

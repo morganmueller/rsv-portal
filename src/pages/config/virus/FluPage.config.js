@@ -26,7 +26,8 @@ const fluPageConfig = {
   defaultView: edPageConfig.defaultView,
 
   summary: {
-    ...edPageConfig.summary,
+    ed:    { ...edPageConfig.summary },
+    lab:   { ...caseDataPageConfig.summary },
   },
 
   sections: [

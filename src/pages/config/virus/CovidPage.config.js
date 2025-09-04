@@ -30,7 +30,9 @@ const covidPageConfig = {
   defaultView: edPageConfig.defaultView,
 
   summary: {
-    ...edPageConfig.summary,
+    ed:    { ...edPageConfig.summary },
+    lab:   { ...caseDataPageConfig.summary },
+    death: { ...covidDeathPageConfig.summary },
   },
 
   sections: [
