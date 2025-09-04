@@ -32,7 +32,7 @@
       "charts": {
         "monthlyARIChart": {
           "title": "{viewLabel} {viewLabelPreposition} the Emergency Department that have a Respiratory Illness Diagnosis",
-          "subtitle": "<p>These data show trends of people who received a respiratory illness diagnosis in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness would not be included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
+          "subtitle": "<p>These data show trends of people who received a <strong>respiratory illness diagnosis</strong> in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness would not be included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
         }
       },
       "statCards": {
