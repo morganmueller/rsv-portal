@@ -227,7 +227,7 @@
   }
   
   /* ===== Desktop constraints (prevent wrap) ===== */
-  @media (min-width: 993px) {
+  @media (min-width: 820px) {
     .data-controls-row {
       flex-wrap: nowrap;            /* keep top controls in one line on desktop */
     }
@@ -236,13 +236,21 @@
   }
   
   /* ===== Mobile stacking ===== */
-  @media (max-width: 992px) {
+  @media (max-width: 819px ){
+    
+    .data-controls-wrapper {
+      display: flex;
+
+      align-items: stretch;
+      justify-content: center;
+    }
     .data-controls-row {
       flex-direction: column;       /* stack groups vertically */
       align-items: stretch;
       gap: var(--spacing-md);
     }
-    .data-controls-row > * {
+    .data-controls-row, .view-toggle-wrapper > * {
+
       width: 100%;
     }
   
@@ -264,6 +272,7 @@
     .top-controls-wrapper {
       flex-direction: column;       /* put groups on separate lines */
       align-items: stretch;
+      justify-content: center;
       gap: var(--spacing-md);
     }
   
@@ -278,12 +287,9 @@
       width: 100%;
     }
 
-    .view-toggle-wrapper {
-      flex-direction: row;
-      justify-content: stretch;
-
+    .view-toggle-wrapper { 
+      width: 100%;
       margin-left: 0;
-      align-items: center;
 
     }
   
@@ -291,6 +297,7 @@
     .view-toggle-group {
       flex-direction: row;
       width: 100%;
+      max-width: 100%;
       gap: 8px;
       justify-content: stretch;
       align-items: center;
