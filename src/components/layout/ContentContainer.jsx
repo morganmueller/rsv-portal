@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
-import DownloadPanel from "../popups/DownloadPanel"; // ✅ correct path
+import DownloadPanel from "../popups/DownloadPanel"; 
 import "./ContentContainer.css";
 
 const resolveText = (input, vars = {}) => {
@@ -14,9 +14,21 @@ const resolveText = (input, vars = {}) => {
         : String(raw);
 
     if (key === "trend") {
-      val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
-      const direction = vars.trendDirection || "neutral";
-      return `<span class="trend-text trend-${direction} bg-highlight">${val}</span>`;
+      // Clean null/undefined noise
+     val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
+     // If trend includes any form of zero percent, remove it
+     // matches: 0%, +0%, -0%, 0.0%, 0.00%
+     const zeroPct = /(^|\s)[+-]?0(?:\.0+)?%/gi;
+     const hadOnlyZero =
+       val.trim().match(/^[+-]?0(?:\.0+)?%$/i) || val.trim() === "0" || val.trim() === "";
+     // Strip any embedded "0%"
+     val = val.replace(zeroPct, "").replace(/\s+/g, " ").trim();
+     // If it was only zero, standardize to "not changed"
+     if (hadOnlyZero || val === "" || /^not\s*changed\s*$/i.test(val)) {
+       val = "not changed";
+     }
+     const direction = vars.trendDirection || "neutral";
+     return `<span class="trend-text trend-${direction} bg-highlight">${val}</span>`;
     }
 
     val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
