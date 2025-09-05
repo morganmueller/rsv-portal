@@ -33,10 +33,17 @@ body {
 /* Generic highlight for dynamic placeholders (virus/view/date/etc.) */
 .dynamic-text {
   font-weight: 700;
-  background-color: var(--gray-200);
-  color: var(--trend-highlight-color, var(--gray-800));
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
+  gap: .35rem;
+  margin: .15rem .1rem;
+  padding: .2rem .3rem;
+  border-radius: 10px;
+  border: 1px solid var(--chip-border, var(--portal-section-border));
+  background: var(--chip-bg, var(--portal-section-bg));
+  color: var(--trend-highlight-color, var(--portal-section-fg));
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: nowrap;
+
 }
 
 
@@ -120,9 +127,16 @@ h3.content-title {
 .trend-down,
 .trend-neutral,
 .bg-highlight {
-  background-color: var(--trend-bg, var(--gray-200));
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
+  gap: .35rem;
+  margin: .15rem .1rem;
+  padding: .2rem .3rem;
+  border-radius: 10px;
+  border: 1px solid var(--chip-border, var(--portal-section-border));
+  background: var(--chip-bg, var(--portal-section-bg));
+  color: var(--trend-highlight-color, var(--portal-section-fg));
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: nowrap;
   font-weight: 700;
 }
 
@@ -238,6 +252,15 @@ h3.content-title {
     margin-bottom: 10px;
 
   }
+
+  trend-up,
+.trend-down,
+.trend-neutral,
+.bg-highlight {
+  
+  line-height: 2.5;
+
+}
 }
 
 

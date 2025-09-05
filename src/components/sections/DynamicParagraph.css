@@ -17,7 +17,7 @@
     border-radius: 10px;
     border: 1px solid var(--chip-border, var(--portal-section-border));
     background: var(--chip-bg, var(--portal-section-bg));
-    color: var(--chip-fg, var(--portal-section-fg));
+    color: var(--trend-highlight-color, var(--portal-section-fg));
     line-height: 1.5;
     font-weight: 600;
     white-space: nowrap;
@@ -41,3 +41,11 @@
     --chip-fg: var(--portal-section-fg);
   }
   
+
+
+
+  @media (max-width: 768px) {
+    .data-summary-markdown {
+        font-size: var(--font-size-sm);
+    }
+}

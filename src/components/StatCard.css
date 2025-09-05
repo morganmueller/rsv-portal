@@ -92,17 +92,20 @@
 .ari-card-body { align-items: center; }
 
 /* Trend chips (tokenized for dark mode) */
-.trend-increasing,
+trend-increasing,
 .trend-decreasing,
 .trend-nochange {
+  gap: .35rem;
+  margin: .15rem .1rem;
+  padding: .2rem .3rem;
+  border-radius: 10px;
+  border: 1px solid var(--chip-border, var(--portal-section-border));
+  background: var(--chip-bg, var(--portal-section-bg));
+  color: var(--trend-highlight-color, var(--portal-section-fg));
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: nowrap;
   font-weight: 700;
-  border-radius: var(--radius-sm);
-  padding: 0 6px;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  background: var(--trend-bg);
 }
 .trend-increasing { color: var(--trend-up-color); }
 .trend-decreasing { color: var(--trend-down-color); }

@@ -57,6 +57,17 @@ const YearComparisonChart = ({
   const normalizedDisplay =
     typeof display === "string" ? display.trim().toLowerCase() : null;
 
+  // Use palette arrays (ramps), not single primaries
+  const palettesByMetric = {
+    "COVID-19": tokens.colorScales.covid,
+    Influenza: tokens.colorScales.flu,
+    RSV: tokens.colorScales.rsv,
+    ARI: tokens.colorScales.ari,
+  };
+  const defaultRange = Array.isArray(palettesByMetric?.[metricName])
+    ? palettesByMetric[metricName]
+    : tokens.colorScales.covid;
+
   const parsed = (Array.isArray(data) ? data : []).map((d) => {
     const dateObj = new Date(d.date);
     const year = dateObj.getFullYear();
@@ -71,8 +82,8 @@ const YearComparisonChart = ({
       date: dateObj,
       year,
       isoWeek: `${year}-W${String(week).padStart(2, "0")}`,
-      valueRaw: d[yField],               // for tooltip only
-      value: valueNum,                   // numeric for plotting
+      valueRaw: d[yField], // tooltip
+      value: valueNum,     // plot
       metric: d.metric ?? metricName,
       [colorField]: d[colorField] ?? "Unknown",
       display: normalizedRowDisplay || "unknown",
@@ -88,14 +99,28 @@ const YearComparisonChart = ({
     return isMatch && isDisplayMatch;
   });
 
+  // Recommended: lock a stable domain so colors don't shuffle if a category is missing
+  // Adjust this array to the exact set/order used in your data
+  const fixedDomain = [
+    "Flu B",
+    "Confirmed",
+    "Flu A H3",
+    "Probable",
+    "Flu A H1",
+    "Flu A not subtyped",
+    "Unknown",
+  ];
+  const colorDomain = fixedDomain.filter((k) =>
+    filtered.some((d) => d[colorField] === k)
+  );
+
   const baseBarLayer = {
     mark: { type: "bar", opacity: 0.9, stroke: null },
     encoding: {
       x: {
         field: xField,
         type: "temporal",
-        axis: { title: null, format: "%b %d", tickCount: 12, labelAngle: 0 }
-        // no scale.padding for temporal; bar thickness via continuousBandSize
+        axis: { title: null, format: "%b %d", tickCount: 12, labelAngle: 0 },
       },
       y: {
         field: "value",
@@ -108,17 +133,20 @@ const YearComparisonChart = ({
           field: colorField,
           type: "nominal",
           legend: { title: legendTitle },
-          ...(customColorScale ? { scale: customColorScale } : {}),
+          // prefer caller's scale; else enforce our palette
+          scale: customColorScale
+            ? customColorScale
+            : { domain: colorDomain.length ? colorDomain : undefined, range: defaultRange },
         },
         // Stable stack order using numeric stackOrder we compute in transform
         order: { field: "stackOrder", type: "quantitative", sort: "ascending" },
       }),
       tooltip: [
         { field: "date", type: "temporal", format: "%b, %d, %Y", title: columnLabels.date || "Date" },
-        ...(colorField ? [{ field: colorField, type: "nominal", title: columnLabels[colorField] || legendTitle }] : []),
+        ...(colorField
+          ? [{ field: colorField, type: "nominal", title: columnLabels[colorField] || legendTitle }]
+          : []),
         { field: "value", type: "quantitative", title: columnLabels.value || "Value" },
-        // Optional: also show raw if you like
-        // { field: "valueRaw", title: "Reported" },
       ],
     },
   };
@@ -126,11 +154,10 @@ const YearComparisonChart = ({
   const rollingAvgLayer = showRollingAvg
     ? {
         transform: [
-          // Sum across categories per date for a total stacked height
           { aggregate: [{ op: "sum", field: "value", as: "totalValue" }], groupby: [xField] },
           {
             window: [{ op: "mean", field: "totalValue", as: "rollingAvg" }],
-            frame: [-1, 1], // centered 3-period window
+            frame: [-1, 1],
             sort: [{ field: xField, order: "ascending" }],
           },
         ],
@@ -152,8 +179,8 @@ const YearComparisonChart = ({
     : null;
 
   const specTemplate = {
-    width: "container",                          // wrapper will set numeric width
-    autosize: { type: "fit", contains: "padding" }, // harmless; wrapper strips fit/resize
+    width: "container",
+    autosize: { type: "fit", contains: "padding" },
     title: {
       text: title,
       subtitlePadding: 10,
@@ -186,17 +213,16 @@ const YearComparisonChart = ({
         orient: "bottom",
         labelFontSize: 16,
         direction: "horizontal",
-        columns: legendColumns,     
-        columnPadding: 30,          
-        labelLimit: isMobile ? 160 : 300
+        columns: legendColumns,
+        columnPadding: 30,
+        labelLimit: isMobile ? 160 : 300,
       },
       bar: {
         binSpacing: 0,
         stroke: null,
-        continuousBandSize: 20, // ensures visible bar width for temporal x
+        continuousBandSize: 20,
       },
     },
-    // Use colorField consistently for stack ordering
     transform: [
       {
         calculate: `
