@@ -123,9 +123,9 @@ h3.content-title {
   font-weight: 600;
 }
 
-.trend-up,
+/* .trend-up,
 .trend-down,
-.trend-neutral,
+.trend-neutral, */
 .bg-highlight {
   gap: .35rem;
   margin: .15rem .1rem;

@@ -22,7 +22,9 @@
 }
 
 .view-toggle:hover {
-  background-color: var(--gray-300);
+  background-color: var(--gray-800);
+  color: var(--white);
+
 }
 
 .view-toggle.active {
