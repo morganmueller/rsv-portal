@@ -377,6 +377,7 @@
 
 --trend-up-color: var(--red-accent);
 --trend-down-color: var(--green-accent);
+
  /* Trend chips */
  --chip-inc-text: #f59e0b;      /* a bit brighter on dark */
  --chip-inc-bg: rgba(245, 158, 11, 0.12);
@@ -386,6 +387,8 @@
 
  --chip-neutral-text: var(--gray-400);
  --chip-neutral-bg: var(--gray-200);
+
+ --chip-section-border: #E5E7EB;
 
  /* Info box */
  --info-bg: var(--gray-100);

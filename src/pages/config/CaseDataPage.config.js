@@ -112,7 +112,7 @@ const caseDataPageConfig = {
           showRollingAvg: false,
           customColorScale: {
             domain: ["Confirmed", "Probable"],
-            range: ["#4F32B3", "#9CA3AF"],
+            range: ["#08519C", "#9CA3AF"],
           },
           columnLabels: {
             date: "Date",

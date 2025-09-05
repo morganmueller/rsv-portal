@@ -69,13 +69,27 @@ const shadows = {
 
 const colorScales = {
   covid: [
-    "#3B0F70", "#4F32B3", "#386CB0", "#2B83BA", "#66C2A5"
+    "#08306B", // dark blue
+    "#08519C", // strong blue
+    "#2171B5", // medium blue
+    "#4292C6", // lighter blue
+    "#6BAED6"  // pale blue
   ],
+  
   flu: [
-    "#3F007D", "#6A51A3", "#807DBA", "#9E9AC8", "#BCBDDC"
+    "#4A1486", // deep purple
+    "#6A51A3", // mid purple
+    "#807DBA", // softer purple
+    "#9E9AC8", // lavender
+    "#BCBDDC"  // pale violet
   ],
+  
   rsv: [
-    "#00441B", "#1B7837", "#41AB5D", "#78C679", "#C2E699"
+    "#00441B", // deep green
+    "#1B7837", // strong green
+    "#41AB5D", // medium green
+    "#78C679", // light green
+    "#C2E699"  // pale green
   ],
   ari: ["#FF6600"]
 };

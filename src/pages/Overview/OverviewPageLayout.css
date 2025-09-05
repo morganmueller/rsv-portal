@@ -108,6 +108,8 @@
   color: var(--trend-neutral-color, var(--gray-600));
 }
 
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .overview-section-wrapper,
