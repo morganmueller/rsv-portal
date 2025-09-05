@@ -10,7 +10,7 @@
   flex: 1;
   text-align: center;
   border: none;
-  background-color: var(--gray-200);
+  background-color: var(--gray-300);
   color: var(--gray-900);
   border-radius: var(--radius-md);
   padding: var(--spacing-sm) var(--spacing-lg);
