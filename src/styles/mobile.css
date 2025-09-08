@@ -14,15 +14,15 @@
     }
   
     /* Typography */
-    .stat-card-title,
+    /* .stat-card-title,
     .trend-title,
     .trend-date,
     .trend-status,
     .content-title,
     .data-title,
     .data-subtitle {
-      font-size: 16px;
-    }
+      font-size: var(--font-size-md);
+    } */
   
     .stat-percent {
       font-size: 22px;
