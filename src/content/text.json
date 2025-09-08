@@ -75,15 +75,15 @@
       },
       "charts": {
         "seasonalEdVisits": {
-          "title": "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis",
+          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
+          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by <span class='bg-highlight'>Age Group</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         },
         "percentEdVisitsByGeo": {
-          "title": "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
+          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by <span class='bg-highlight'>Borough</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         }
 

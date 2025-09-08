@@ -10,7 +10,7 @@ const TrendChip = ({ rawChange }) => {
   if (dir === "same") {
     return (
       <span className="trend-nochange">
-        <span className="stat-arrow" style={{ color: "#64748b" }}>→</span>
+        <span className="stat-arrow">→</span>
         No change
       </span>
     );
@@ -18,14 +18,14 @@ const TrendChip = ({ rawChange }) => {
   if (dir === "up") {
     return (
       <span className="trend-increasing">
-        <span className="stat-arrow" style={{ color: "#d97706" }}>▲</span>
+        <span className="stat-arrow">▲</span>
         Increasing
       </span>
     );
   }
   return (
     <span className="trend-decreasing">
-      <span className="stat-arrow" style={{ color: "#16a34a" }}>▼</span>
+      <span className="stat-arrow">▼</span>
       Decreasing
     </span>
   );
