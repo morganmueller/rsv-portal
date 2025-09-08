@@ -79,11 +79,11 @@
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by <span class='bg-highlight'>Age Group</span>",
+          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         },
         "percentEdVisitsByGeo": {
-          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by <span class='bg-highlight'>Borough</span>",
+          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         }
 
