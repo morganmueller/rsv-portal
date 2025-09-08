@@ -198,6 +198,10 @@ h3.content-title {
 
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
+
+  .dynamic-text {
+    line-height: 2.5;
+  }
   .content-container {
     padding: var(--spacing-lg); 
   }
@@ -232,6 +236,7 @@ h3.content-title {
   }
 
   .content-title {
+    font-size: var(--font-size-md);
     width: 100%;
     text-align: left;
     margin-bottom: var(--spacing-xs);

@@ -105,7 +105,7 @@ html, body, #root {
 }
 
 .left-buttons { justify-content: flex-start; padding-left: var(--spacing-lg); }
-.right-buttons { justify-content: flex-end; }
+.right-buttons { justify-content: flex-end;padding-right: var(--spacing-lg); padding-left: var(--spacing-lg); }
 
 /* Keep virus group inline when it replaces Data on desktop */
 .virus-inline-slot { display: inline-flex; align-items: center; }
@@ -187,7 +187,7 @@ html, body, #root {
       gap: var(--spacing-md);
       justify-content: flex-start;
       padding-left: 0;
-    
+      padding-left: var(--spacing-lg);
     }
   
     .right-buttons {
@@ -224,20 +224,21 @@ html, body, #root {
 
   /* Stack header content; remove left padding to avoid overflow */
   .header-container {
-    flex-direction: column;          /* FIX */
-    align-items: center;             /* FIX */
-    text-align: center;
-    padding-right: 0;                /* FIX */
-    margin-right: 0;                 /* FIX */
+    flex-direction: column;         
+    /* align-items: center;              */
+    text-align: left;
+    padding-right: 0;
+    padding-left: 35px;               
+    margin-right: 0;                 
   }
-  .header-content { padding-left: 0; } /* FIX */
+  .header-content { padding-left: 0; } 
 
   /* Image wrapper: no right padding, center, allow shrink */
   .header-image-wrapper {
-    display: flex;                   /* ensure visible if used on mobile */
-    justify-content: center;         /* FIX */
-    padding-right: 0;                /* FIX */
-    max-width: 100%;                 /* FIX */
+    display: flex;                   
+    justify-content: center;         
+    padding-right: 0;                
+    max-width: 100%;                
   }
   .header-image {
     width: 100%;
@@ -245,8 +246,9 @@ html, body, #root {
   }
 
   .header-section { padding: var(--spacing-lg) 0; }
+
   .header-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-mobile-header);
     line-height: 1.4;
     margin-bottom: var(--spacing-xs);
   }

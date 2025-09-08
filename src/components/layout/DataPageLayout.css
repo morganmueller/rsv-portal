@@ -59,7 +59,7 @@
     font-size: clamp(14px, 2vw, var(--font-size-md));
     font-weight: 400;
     line-height: 1.5;
-    margin-bottom: var(--spacing-md);
+    /* margin-bottom: var(--spacing-md); */
   }
   
   .data-subtitle a {
@@ -255,7 +255,7 @@
     }
   
     .data-title {
-      font-size: 28px;
+      font-size: var(--font-size-md);
       text-align: left;
     }
   
