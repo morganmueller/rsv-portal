@@ -28,7 +28,6 @@ const caseDataPageConfig = {
           dataPath: "/data/deathData.csv",
           diseaseLabel: "Pediatric influenza deaths",
           season: { start: { month: 10, day: 1 }, end: { month: 5, day: 31 } },
-          // ✅ must match CSV exactly
           filters: { metric: "Pediatric influenza deaths", submetric: "Weekly" },
           weeklyField: "value",
           seasonalSubmetric: "Seasonal total",
@@ -62,7 +61,7 @@ const caseDataPageConfig = {
         dataSourceKey: "seasonalCaseTrends",
         dataSource: null,
         seasonal: true,
-        title: "Counts of {virusLowercase} laboratory-reported cases by season",
+        // title: "Counts of {virusLowercase} laboratory-reported cases by season",
         metricName: "{virus} cases",
         submetric: "Total", // explicitly set for non-grouped
         xField: "dayOfSeason",
@@ -101,7 +100,7 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByType",
           dataSource: null,
           metricName: "{virus} cases by test type",
-          title: "Counts of {virusLowercase} laboratory-reported cases by test type",
+          // title: "Counts of {virusLowercase} laboratory-reported cases by test type",
           groupField: "submetric",
           field: "isoWeek",
           yField: "value",
