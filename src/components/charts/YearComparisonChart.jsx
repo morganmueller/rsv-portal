@@ -47,7 +47,7 @@ const YearComparisonChart = ({
   metricName,
   title,
   display,
-  legendTitle = "Category",
+  legendTitle,
   showRollingAvg = false,
   customColorScale,
   dataSource,
@@ -132,8 +132,7 @@ const YearComparisonChart = ({
         color: {
           field: colorField,
           type: "nominal",
-          legend: { title: legendTitle },
-          // prefer caller's scale; else enforce our palette
+          legend: { title: null }, 
           scale: customColorScale
             ? customColorScale
             : { domain: colorDomain.length ? colorDomain : undefined, range: defaultRange },

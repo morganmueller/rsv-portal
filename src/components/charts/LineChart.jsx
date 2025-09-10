@@ -57,6 +57,8 @@ const LineChart = ({
   colorField,
   tooltipFields,
   virus,
+  legend,
+  legendTitle,
   color,
   metricName = "Category",
   isPercent = true, 
@@ -289,13 +291,19 @@ const LineChart = ({
                 type: "nominal",
                 scale: { range: (virusColorRangeMap[virus] && (colorField === "metric")) ? [virusColorRangeMap[virus][2], virusColorMap["ARI"]]: virusColorRangeMap[virus]  },
                 sort: ["0-4", "5-17", "18-64", "65+"],
-                legend: {
-                  labelExpr: "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
-                  labelLimit: 300,
-                  clipHeight: 30
-                }
-              }
-            : { value: selectedColor },
+                legend:
+                legend === null
+                  ? null // 🚫 hide legend completely
+                  : {
+                      // keep your custom labelExpr etc.
+                      labelExpr: "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
+                      labelLimit: 300,
+                      clipHeight: 30,
+                      // explicitly no title unless you pass one
+                      title: legendTitle ?? null,
+                    }
+            }
+          : { value: selectedColor },
           tooltip: sharedTooltip,
         },
       },

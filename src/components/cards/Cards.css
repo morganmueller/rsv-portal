@@ -1,0 +1,79 @@
+.info-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    max-width: 300px;
+    flex: 1 1 250px;
+  }
+  
+  .info-card {
+    display: flex;                /* enable vertical layout */
+    flex-direction: column;
+    height: 80%;                 /* fill the cell */
+    background-color: var(--gray-100);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  
+  .info-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  /* === Row for left icon + title and right external icon === */
+  .info-card-row {
+    width: 100%;;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  /* Left cluster: main icon + title */
+  .info-card-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0; /* prevent overflow */
+  }
+  
+  .info-card-icon {
+    height: 30px;
+    flex-shrink: 0;
+    filter: var(--img-filter);
+  
+  }
+  .info-card-icon[src*="covid-"],
+  .info-card-icon[src*="flu-"],
+  .info-card-icon[src*="rsv-"] {
+    filter: none !important;
+  }
+  
+  .info-card-external-icon {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    width: 16px;
+    height: 16px;
+    opacity: 0.85;
+    flex-shrink: 0;
+    filter: var(--img-filter);
+  
+  }
+  
+  .info-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--gray-900);
+  }
+  
+  .info-card-description {
+    font-size: 0.95rem;
+    color: var(--gray-800);
+  }
+  

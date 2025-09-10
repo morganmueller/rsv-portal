@@ -1,31 +1,15 @@
-
-/* .overview-grid-section {
-  background-color: var(--white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  width: 100%;
-  padding: var(--spacing-xl) 0;
-  overflow: clip;
-  
-} */
-
 .overview-grid-container {
   width: 100%;
-  max-width: 1280px;      
+  max-width: 1280px;
   margin: 0 auto;
-  padding: var(--spacing-md)  var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
   box-sizing: border-box;
   box-shadow: var(--shadow-md);
   border-radius: var(--radius-lg);
   background-color: var(--white);
 }
 
-
-
 .overview-grid-title {
-  /* remove extra side margins so width lines up */
-  /* margin: 15px 0 0 0; */
-  /* keep the rest */
   text-align: left;
   font-size: var(--font-size-lg);
   font-family: var(--font-heading);
@@ -33,210 +17,56 @@
   font-weight: 700;
   letter-spacing: 0.01em;
 }
+
 .overview-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--spacing-xl);
   width: 100%;
-  /* background: transparent;  */
-  
+  align-items: stretch; /* equalize heights across the row */
 }
 
-/* Card shell */
-.grid-card {
+/* The link is the flex item; it owns sizing */
+.overview-grid .info-card-link {
+  display: flex;              /* makes the link wrap its card and match height */
+  text-decoration: none;
+  color: inherit;
+
   flex: 0 1 320px;
   max-width: 360px;
   min-width: 260px;
-  background-color:  var(--content-bg);
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+
+  height: auto;               /* never force % heights */
+}
+
+/* The card fills the link’s box */
+.overview-grid .info-card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-decoration: none;
-  transition: box-shadow 0.22s, transform 0.22s, background-color 0.22s;
-  margin-bottom: var(--spacing-lg);
-  border: 1.5px solid var(--gray-200);
-  position: relative;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
+  flex: 1 1 auto;             /* fill the link’s height */
+  height: auto;               /* natural height */
 }
 
-.external-icon {
-  position: static;          
-  width: 16px;
-  height: 16px;
-  opacity: 0.85;
-  flex-shrink: 0;      
-  filter: var(--img-filter);
-       
-}
-
-
-.grid-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 4px;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  background: var(--blue-primary);
-  opacity: 0.1;
-}
-
-.grid-card h3 {
-  font-size: var(--font-size-md);
-  font-family: var(--font-heading);
-  margin: 0 0 var(--spacing-2xs);
-  color: var(--blue-primary);
-  padding-bottom: 20px ;
-  line-height: 1.2;
-  display: flex;            
-  align-items: center;       
-  gap: 6px;                  
-}
-
-.grid-card p {
-  font-size: var(--font-size-sm);
-  font-family: var(--font-body);
-  color: var(--gray-800);
-  line-height: 1.5;
-  margin: var(--spacing-2xs) 0 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .grid-card:hover {
-    box-shadow: var(--shadow-lg, 0 6px 20px rgba(16, 40, 120, 0.12));
-    transform: translateY(-3px) scale(1.02);
-    border-color: var(--blue-primary);
-    background: var(--gray-100);
-  }
-  .grid-card:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--blue-primary) 60%, white);
-    outline-offset: 2px;
-  }
-}
-/* Tablet layout: two-up cards from 781px–1119px */
-@media (min-width: 781px) and (max-width: 1119px) {
+/* Tablet: two-up */
+@media (max-width: 1119px) {
   .overview-grid-container {
-    /* a bit tighter padding on tablet */
     padding: var(--spacing-md) var(--spacing-lg);
   }
-
   .overview-grid {
-    /* keep flex, just aim for two-up and center the row */
     justify-content: center;
     gap: var(--spacing-lg);
     padding: 0 var(--spacing-sm);
   }
-
-  .grid-card {
-    /* two per row */
+  .overview-grid .info-card-link {
     flex: 1 1 calc(50% - var(--spacing-lg));
     max-width: calc(50% - var(--spacing-lg));
-    min-width: 300px; /* prevents overly narrow cards on small tablets */
-    padding: var(--spacing-lg) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    margin-bottom: 0;
+    min-width: 300px;
   }
-
-  .grid-card h3 {
-    font-size: clamp(18px, 2.1vw, 20px);
-    padding-bottom: 12px;
-  }
-
-  .grid-card p {
-    font-size: clamp(14px, 1.8vw, 16px);
-    line-height: 1.45;
-  }
-
-  /* keep mobile-only caret off tablet */
-  .grid-card::after {
-    content: none;
-  }
-
-  .grid-card::before {
-    height: 3px;
-    opacity: 0.14;
-  }
-}
-
-
-@media (max-width: 780px) {
-  .overview-grid {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    align-items: center;             
-    padding: 15px var(--spacing-sm);
-    max-width: 720px;
-  }
-
-  
-
-  .grid-card {
-    width: 80%;
-    min-width: 0;
-    max-width: 100%;
-    max-height: 170px;
-    padding: var(--spacing-md) var(--spacing-md);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-sm);
-    box-shadow: var(--shadow-sm);      
-    transform: none;                   
-  }
-
-  .grid-card h3 {
-    font-size: clamp(16px, 4vw, 18px);
-    margin-bottom: 2px;
-    letter-spacing: 0.01em;
-  }
-
-  .grid-card p {
-    font-size: clamp(14px, 3.6vw, 15px);
-    line-height: 1.45;
-    margin-top: 4px;
-  }
-
-  .grid-card:active {
-    background: var(--gray-100);
-    border-color: var(--blue-primary);
-    box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.02);
-    transform: translateY(0);           /* keep stable */
-  }
-
-  .grid-card::after {
-    content: "›";
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 22px;
-    line-height: 1;
-    color: var(--gray-500);
-    opacity: 0.85;
-  }
-
-  .grid-card::before {
-    height: 3px;
-    opacity: 0.18;
-  }
-}
-
-@media (max-width: 400px) {
-  .overview-grid-title {
-    margin-left: var(--spacing-md);
-    margin-right: var(--spacing-md);
-    font-size: clamp(16px, 5vw, 18px);
-  }
-  .grid-card {
-    padding: 12px 14px;
-  }
+  .info-card-title { font-size: clamp(18px, 2.1vw, 20px); }
+  .info-card-description { font-size: clamp(14px, 1.8vw, 16px); line-height: 1.45; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grid-card {
-    transition: none;
-  }
+  .info-card { transition: none; }
 }

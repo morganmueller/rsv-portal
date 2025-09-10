@@ -1,6 +1,7 @@
 import React from "react";
-import overviewGridItems from "./OverviewGrid.config";
 import { getText } from "../../utils/contentUtils";
+import InfoCard from "../cards/InfoCard";
+import overviewGridItems from "./OverviewGrid.config";
 import "./OverviewGrid.css";
 
 const OverviewGrid = () => (
@@ -11,32 +12,20 @@ const OverviewGrid = () => (
       </div>
 
       <div className="overview-grid">
-        {overviewGridItems.map(({ labelKey, descriptionKey, link, showExternalIcon }, i) => {
-          const isExternal = link.startsWith("http");
-          const showIcon = isExternal && (showExternalIcon ?? true);
+        {overviewGridItems.map(({ labelKey, descriptionKey, link, icon, showExternalIcon }, i) => {
+          const isExternal = link?.startsWith("http");
+          const externalIcon =
+            isExternal && (showExternalIcon ?? true) ? "/assets/external-link-icon.png" : "";
 
           return (
-            <a
+            <InfoCard
               key={i}
-              className="grid-card"
-              href={link}
-              target={isExternal ? "_blank" : "_self"}
-              rel={isExternal ? "noopener noreferrer" : undefined}
-              aria-label={getText(labelKey)}
-            >
-              <h3 className="grid-card-title">
-                {getText(labelKey)}
-                {showIcon && (
-                  <img
-                    src="/assets/external-link-icon.png"
-                    alt=""
-                    className="external-icon"
-                    aria-hidden="true"
-                  />
-                )}
-              </h3>
-              <p>{getText(descriptionKey)}</p>
-            </a>
+              title={getText(labelKey)}
+              description={descriptionKey ? getText(descriptionKey) : ""} // optional
+              link={link}
+              icon={icon}
+              externalIcon={externalIcon}
+            />
           );
         })}
       </div>

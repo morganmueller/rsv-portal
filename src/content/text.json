@@ -7,17 +7,17 @@
   },
 
   "overviewBottomNav": {
-    "title": "Additional Links",
+    "title": "Additional Resources",
     "wastewater": {
-      "title": "COVID-19 Wastewater Surveillance",
+      "title": "NYS Wastewater Surveillance Data",
       "description": "View NYC COVID-19 wastewater surveillance through the New York State dashboard"
     },
     "nysSurveillance": {
-      "title": "Influenza Activity, Surveillance and Reports",
+      "title": "NYS Influenza Surveillance Reports",
       "description": "Explore additional State influenza reporting information"
     },
     "github": {
-      "title": "Explore our Github Repository",
+      "title": "Respiratory Illness GitHub Repository",
       "description": "Visit our Github repo to get code, file an issue, or download data"
     }
   },  
@@ -32,7 +32,7 @@
       "charts": {
         "monthlyARIChart": {
           "title": "{viewLabel} {viewLabelPreposition} the Emergency Department that have a Respiratory Illness Diagnosis",
-          "subtitle": "<p>These data show trends of people who received a <strong>respiratory illness diagnosis</strong> in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness would not be included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
+          "subtitle": "<p>These data show trends of people who received a <strong>respiratory illness diagnosis</strong> in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness are not included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
         }
       },
       "statCards": {

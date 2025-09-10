@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "./InfoCard.css"; 
+import "./Cards.css"; 
 
 const InfoCard = ({ title, icon, description, link, externalIcon }) => {
   const content = (

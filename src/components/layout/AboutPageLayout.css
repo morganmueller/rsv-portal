@@ -44,7 +44,7 @@
 /* ===== Intro / Overview ===== */
 
 .markdown-paragraph-title {
-  color: var(--content-title-color);
+  color: var(--gray-700);
 }
 .intro-section h2 {
   font-size: clamp(1.25rem, 1rem + 1.5vw, var(--font-size-2xl));
@@ -140,7 +140,7 @@
 .about-page .markdown-body {
   font-size: 16px;
   line-height: 1.5;
-  color: #374151;
+  color: var(--gray-700);
 }
 .about-page .markdown-body p { margin: 0 0 0.5rem; }
 .about-page .markdown-body h1,
@@ -225,15 +225,14 @@
     grid-template-columns: 1fr; /* single column */
     gap: var(--spacing-md);
     max-height: none !important;
-    justify-items: center;       /* ✅ center the cards horizontally */
+    justify-items: center;       
   }
 
   .info-card {
     margin: 0; /* avoid horizontal push */
     width: 100%;
-    max-width: 340px;            /* ✅ optional: keep cards from getting too wide */
+    max-width: 340px;           
     padding: var(--spacing-md) var(--spacing-lg) var(--spacing-2xl); 
-    /* ↑ more bottom padding than top/sides */
   }
 
   .info-card-description {

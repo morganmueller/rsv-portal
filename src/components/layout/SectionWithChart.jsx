@@ -1,60 +1,60 @@
-import React from "react";
-import ContentContainer from "./ContentContainer";
-import ChartContainer from "./ChartContainer";
+// SectionWithChart.jsx
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import ContentContainer from "./ContentContainer";       // ← use this
 
 const SectionWithChart = ({
   title,
   subtitle,
   subtitleVariables,
-  infoIcon,
-  downloadIcon,
-  modalTitle,
-  modalContent,
+  children,                // usually a <ChartContainer />
+  infoIcon = false,
+  downloadIcon = false,
   onDownloadClick,
-  chartTitle,
-  chart,
-  footer,
-  children,
-  animateOnScroll,
-
-  // preview props for the download modal
+  modalTitle = "More Info",
+  modalContent = null,
   previewData = [],
   columnLabels = {},
-  downloadDescription = "This will download a CSV of this chart’s currently visible data.",
-
-  // optional view toggle passthroughs for combined-virus, etc.
-  viewToggle,
-  view,
-  onViewChange,
+  downloadDescription,
+  animateOnScroll = true,
+  background = "white",
 }) => {
   return (
     <ContentContainer
       title={title}
       subtitle={subtitle}
       subtitleVariables={subtitleVariables}
-      titleVariables={subtitleVariables}
       infoIcon={infoIcon}
       downloadIcon={downloadIcon}
+      onDownloadClick={onDownloadClick}
       modalTitle={modalTitle}
       modalContent={modalContent}
-      onDownloadClick={onDownloadClick}
-      animateOnScroll={animateOnScroll}
-
-      // IMPORTANT: pass preview props using the names ContentContainer expects
       downloadPreviewData={previewData}
       downloadColumnLabels={columnLabels}
       downloadDescription={downloadDescription}
-
-      // (ContentContainer doesn’t use these two directly; harmless if ignored)
-      viewToggle={viewToggle}
-      view={view}
-      onViewChange={onViewChange}
+      animateOnScroll={animateOnScroll}
+      background={background}
     >
-      {children ?? (
-        <ChartContainer title={chartTitle || title} chart={chart} footer={footer} />
-      )}
+      {children}
     </ContentContainer>
   );
+};
+
+SectionWithChart.propTypes = {
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  subtitleVariables: PropTypes.object,
+  children: PropTypes.node.isRequired,
+  infoIcon: PropTypes.bool,
+  downloadIcon: PropTypes.bool,
+  onDownloadClick: PropTypes.func,
+  modalTitle: PropTypes.string,
+  modalContent: PropTypes.node,
+  previewData: PropTypes.array,
+  columnLabels: PropTypes.object,
+  downloadDescription: PropTypes.string,
+  animateOnScroll: PropTypes.bool,
+  background: PropTypes.oneOf(["white", "gray", "transparent"]),
 };
 
 export default SectionWithChart;

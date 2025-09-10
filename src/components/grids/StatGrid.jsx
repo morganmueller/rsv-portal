@@ -2,7 +2,11 @@ import React from "react";
 import StatCard from "../StatCard";
 import StatCardBottom from "../StatCardBottom";
 import "./StatGrid.css";
-import text from "../../content/text.json"; 
+import text from "../../content/text.json";
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const fmt = (d) =>
+  d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 const StatGrid = ({ data }) => {
   if (!data) return null;
@@ -24,17 +28,11 @@ const StatGrid = ({ data }) => {
     const prevAdmit = hospitalizationSeries.at?.(-2);
 
     const computeChange = (latest, prev) =>
-      (!latest || !prev) ? null : (latest.value - prev.value).toFixed(1);
+      !latest || !prev ? null : (latest.value - prev.value).toFixed(1);
 
     const formatValue = (d) => (d ? `${d.value.toFixed(1)}%` : "–");
-    const formatDate = (d) =>
-      d
-        ? `as of ${new Date(d.date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}`
-        : "–";
+    const formatAsOf = (d) =>
+      d ? `as of ${fmt(new Date(d.date))}` : "–";
 
     const statText = text?.overview?.statCards?.[key] || {};
     const title = statText.title || label;
@@ -43,33 +41,40 @@ const StatGrid = ({ data }) => {
     return {
       key,
       title,
-      infoText, 
+      infoText,
       visitPercent: formatValue(latestVisit),
       hospitalizationPercent: formatValue(latestAdmit),
       visitChange: computeChange(latestVisit, prevVisit),
       admitChange: computeChange(latestAdmit, prevAdmit),
-      visitDate: formatDate(latestVisit),
-      admitDate: formatDate(latestAdmit),
+      visitDate: formatAsOf(latestVisit),
+      admitDate: formatAsOf(latestAdmit),
     };
   });
 
-  const visitDateText = statCards[0]?.visitDate || "–";
-  const formattedDate = visitDateText
-    .split(" ")
-    .slice(2)
-    .join(" ")
-    .replace(/^([A-Za-z]{3}) 0?(\d), (\d{4})$/, "$1 $2, $3");
+  // Use ARI visits as the canonical "latest" date (same as before but robust)
+  const latestAri = (data["ARI visits"] || []).at?.(-1) || null;
+  const baseDate = latestAri ? new Date(latestAri.date) : null;
+
+  const formattedDate = baseDate ? fmt(baseDate) : "–";
+  const previousWeek = baseDate ? fmt(new Date(baseDate.getTime() - 7 * DAY_MS)) : "–";
+
+  const titleText = (text.overview.summaryBox.title || "")
+    .replace("{date}", formattedDate)
+    .replace("{previousWeek}", previousWeek);
+
+  const descriptionHtml = (text.overview.summaryBox.description || "")
+    .replaceAll("{date}", formattedDate)
+    .replaceAll("{previousWeek}", previousWeek);
 
   return (
     <div className="stat-grid">
-      <h3 className="stat-info-title">
-        {text.overview.summaryBox.title.replace("{date}", formattedDate)}
-      </h3>
+      <h3 className="stat-info-title">{titleText}</h3>
+
       <div className="stat-info-box">
         <div className="stat-card-container-left">
           <div
             className="stat-info-description"
-            dangerouslySetInnerHTML={{ __html: text.overview.summaryBox.description }}
+            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
           />
         </div>
 
@@ -85,7 +90,8 @@ const StatGrid = ({ data }) => {
           </div>
         </div>
       </div>
-      <div className="week-of">For week ending: {formattedDate}</div>
+
+      <div className="week-of">Compared to week of {previousWeek}</div>
     </div>
   );
 };

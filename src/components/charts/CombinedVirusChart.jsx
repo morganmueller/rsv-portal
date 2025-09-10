@@ -319,9 +319,9 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
               })}
               rendererMode="svg"
             />
-            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            {/* <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
               Press Esc or click outside to close.
-            </div>
+            </div> */}
           </div>
         )}
       </ChartModal>

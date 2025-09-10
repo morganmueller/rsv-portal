@@ -36,7 +36,7 @@ const FloatingTogglePill = ({
 
   const allDataTypeOptions = [
     { label: "Emergency Department Data", value: "ed" },
-    { label: "Lab-confirmed Cases", value: "lab" },
+    { label: "Lab-reported Cases", value: "lab" },
     { label: "COVID-19 Deaths", value: "death" }
   ];
 

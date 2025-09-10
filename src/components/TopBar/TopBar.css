@@ -90,10 +90,18 @@ html[data-theme="dark"] .language-select {
 }
 
 .switch input {
+  position: absolute;
   opacity: 0;
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
 }
+
 
 .slider {
   position: absolute;
@@ -120,6 +128,11 @@ html[data-theme="dark"] .language-select {
   transition: 0.3s;
 }
 
+.switch input:focus + .slider {
+  outline: 3px solid color-mix(in oklab, var(--blue-primary) 80%, white);
+  outline-offset: 2px;
+}
+
 .switch input:checked + .slider {
   background-color: var(--top-bar-slider-checked-bg, var(--blue-primary));
 }
@@ -128,6 +141,12 @@ html[data-theme="dark"] .language-select {
   transform: translateX(22px);
   background-color: var(--top-bar-slider-knob-checked, #302e2e);
 }
+
+.slider .icon:focus {
+  outline: 3px solid color-mix(in oklab, var(--blue-primary) 60%, white);
+
+}
+
 
 .slider .icon {
   position: absolute;

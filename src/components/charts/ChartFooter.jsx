@@ -4,10 +4,6 @@ import { tokens } from "../../styles/tokens";
 
 const { typography, colors, spacing } = tokens;
 
-/**
- * ChartFooter displays a latest date and an 
- * optional data source and footnote (both markdown-supported).
- */
 const ChartFooter = ({ dataSource, latestDate, footnote }) => {
   const formattedDate = latestDate
     ? new Date(latestDate).toLocaleDateString("en-US", {
@@ -23,41 +19,45 @@ const ChartFooter = ({ dataSource, latestDate, footnote }) => {
         fontWeight: typography.weightBold,
         fontSize: typography.fontSizeBase,
         color: colors.footnoteGray,
-        marginTop: spacing.sm,
       }}
     >
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "flex-start",
           flexWrap: "wrap",
           gap: spacing.sm,
+          width: "100%",
         }}
       >
-        {formattedDate && <span>Data as of: {formattedDate}</span>}
-        
-        {dataSource && (
-          <span>
-            <strong>Data Source:</strong>{" "}
-            <span
-              dangerouslySetInnerHTML={{
-                __html: marked.parseInline(dataSource),
-              }}
-            />
-          </span>
-        )}
-      </div>
-
-      {footnote && (
+        {/* Left side (footnote or empty) */}
         <div
           style={{
-            marginTop: spacing.xs,
+            flex: 1,
             fontSize: typography.fontSizeSmall,
-            color: colors.gray500,
+            color: colors.footnoteGray,
           }}
-          dangerouslySetInnerHTML={{ __html: marked.parseInline(footnote) }}
+          dangerouslySetInnerHTML={
+            footnote ? { __html: marked.parseInline(footnote) } : undefined
+          }
         />
-      )}
+
+        {/* Right side (always right-aligned) */}
+        <div style={{ whiteSpace: "nowrap" }}>
+          {formattedDate && <span>Data as of: {formattedDate}</span>}
+          {dataSource && (
+            <span style={{ marginLeft: spacing.sm }}>
+              <strong>Data Source:</strong>{" "}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: marked.parseInline(dataSource),
+                }}
+              />
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

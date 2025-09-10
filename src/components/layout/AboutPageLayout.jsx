@@ -66,79 +66,97 @@ const AboutPageLayout = ({ config }) => {
         
 
         {sections.map((section, idx) => {
-          const isOverview = section.renderAs === "overview";
-          const isHidden = section.renderAs === "hidden";
-          const key = section.id || idx;
-          if (isOverview || isHidden) return null;
+         // ...inside sections.map(...)
+const isOverview = section.renderAs === "overview";
+const isHidden = section.renderAs === "hidden";
+const key = section.id || `sec-${idx}`;
+if (isOverview || isHidden) return null;
 
-          // --- cards ---
-          if (section.renderAs === "cards") {
-            return (
-              <div className="about-row" >
-                <section key={key} className="about-surface card-section" aria-labelledby={`${key}-h`}>
-                  {/* Let the card section render its own internal title if provided */}
-                  <MarkdownCardSection
-                    title={resolveText(section.titleKey)}
-                    
-                    markdown={markdown}
-                    sectionTitle={section.markdownSection}
-                    sectionSubtitle={section.subtitle}
-                    cards={section.cards.map((card) => ({
-                      ...card,
-                      title: resolveText(card.titleKey),
-                    }))}
-                  />
-                </section>
-              </div>
-            );
-          }
+const headingText =
+  (section.groupTitleKey && resolveText(section.groupTitleKey)) ||
+  resolveText(section.titleKey) ||
+  ""; // fallback
+const headingId = `${key}-h`;
 
-          // --- paragraph ---
-          if (section.renderAs === "paragraph") {
-            return (
-              <div className="about-row" key={key}>
-                <section id={key} className="about-surface markdown-paragraph-section" aria-labelledby={`${key}-h`}>
-                  <div className="about-narrow">
-                    <MarkdownParagraphSection
-                      title={resolveText(section.titleKey)}
-                      markdown={markdown}
-                      sectionTitle={section.markdownSection}
-                    />
-                  </div>
-                </section>
-              </div>
-            );
-          }
+// a tiny visually-hidden style (avoid relying on a global .sr-only)
+const srOnlyStyle = {
+  position: "absolute",
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0,0,0,0)",
+  whiteSpace: "nowrap",
+  border: 0,
+};
 
-          // --- paragraph group ---
-          if (section.renderAs === "paragraph-group") {
-            const groupTitle = resolveText(section.groupTitleKey || section.titleKey);
-            const items = Array.isArray(section.items) ? section.items : [];
-            if (!items.length) return null;
+if (section.renderAs === "cards") {
+  return (
+    <div className="about-row" key={key}>
+      <section className="about-surface card-section" role="region" aria-labelledby={headingId}>
+        <h2 id={headingId} style={srOnlyStyle}>{headingText || "Section"}</h2>
 
-            return (
-              <div className="about-row" key={key}>
-                <section id={key} className="about-surface" aria-labelledby={`${key}-h`}>
-                  <div className="about-narrow">
-                    {groupTitle && (
-                      <h2 className="markdown-group-title" id={`${key}-h`}>
-                        {groupTitle}
-                      </h2>
-                    )}
+        <MarkdownCardSection
+          title={resolveText(section.titleKey)}
+          markdown={markdown}
+          sectionTitle={section.markdownSection}
+          sectionSubtitle={section.subtitle}
+          cards={(section.cards || []).map((card) => ({
+            ...card,
+            title: resolveText(card.titleKey),
+          }))}
+        />
+      </section>
+    </div>
+  );
+}
 
-                    {items.map((item, itemIdx) => (
-                      <MarkdownParagraphSection
-                        key={`${key}-${item.id || itemIdx}`}
-                        title={resolveText(item.titleKey)}
-                        markdown={markdown}
-                        sectionTitle={item.markdownSection}
-                      />
-                    ))}
-                  </div>
-                </section>
-              </div>
-            );
-          }
+if (section.renderAs === "paragraph") {
+  return (
+    <div className="about-row" key={key}>
+      <section id={key} className="about-surface markdown-paragraph-section" role="region" aria-labelledby={headingId}>
+        <h2 id={headingId} style={srOnlyStyle}>{headingText || "Section"}</h2>
+
+        <div className="about-narrow">
+          <MarkdownParagraphSection
+            title={resolveText(section.titleKey)}
+            markdown={markdown}
+            sectionTitle={section.markdownSection}
+          />
+        </div>
+      </section>
+    </div>
+  );
+}
+
+if (section.renderAs === "paragraph-group") {
+  const groupTitle = resolveText(section.groupTitleKey || section.titleKey);
+  const items = Array.isArray(section.items) ? section.items : [];
+  if (!items.length) return null;
+
+  return (
+    <div className="about-row" key={key}>
+      <section id={key} className="about-surface" role="region" aria-labelledby={headingId}>
+        <div className="about-narrow">
+          {groupTitle && (
+            <h2 className="markdown-group-title" id={headingId}>
+              {groupTitle}
+            </h2>
+          )}
+          {items.map((item, itemIdx) => (
+            <MarkdownParagraphSection
+              key={`${key}-${item.id || itemIdx}`}
+              title={resolveText(item.titleKey)}
+              markdown={markdown}
+              sectionTitle={item.markdownSection}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
 
           return null;
         })}

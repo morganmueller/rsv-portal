@@ -40,7 +40,8 @@
   font-size: var(--content-title-size, var(--font-size-lg));
   font-weight: 700;
   color: var(--gray-900);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+
 }
 
 .stat-grid .stat-card-container-left .stat-info-description p {

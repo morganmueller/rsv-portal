@@ -104,25 +104,35 @@ const ContentContainer = ({
               <h3 className="content-title">{renderedTitle}</h3>
             )}
 
-            <div className="content-title-icons">
-              {infoIcon && (
-                <img
-                  src="/assets/info-icon.png"
-                  alt="More info"
-                  className="icon info-icon"
-                  onClick={() => setIsModalOpen(true)}
-                />
-              )}
-              {downloadIcon && (
-                <img
-                  src="/assets/download-data-icon.png"
-                  alt="Download CSV"
-                  className="icon download-icon"
-                  onClick={() => setIsDownloadModalOpen(true)}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </div>
+          <div className="content-title-icons">
+            {infoIcon && (
+              <button
+                type="button"
+                className="icon-button info-icon"
+                aria-label="More info about this section"
+                aria-haspopup="dialog"
+                aria-expanded={isModalOpen}
+                aria-controls="info-modal"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <img src="/assets/info-icon.png" alt="" aria-hidden="true" />
+              </button>
+            )}
+
+            {downloadIcon && (
+              <button
+                type="button"
+                className="icon-button download-icon"
+                aria-label="Download data as CSV"
+                aria-haspopup="dialog"
+                aria-expanded={isDownloadModalOpen}
+                aria-controls="download-modal"
+                onClick={() => setIsDownloadModalOpen(true)}
+              >
+                <img src="/assets/download-data-icon.png" alt="" aria-hidden="true" />
+              </button>
+            )}
+          </div>
           </div>
 
           {renderedSubtitle &&
@@ -142,6 +152,7 @@ const ContentContainer = ({
       {/* Info Modal */}
       {infoIcon && modalContent && (
         <InfoModal
+          id="info-modal"
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           title={modalTitle}
@@ -152,6 +163,7 @@ const ContentContainer = ({
       {/* Download Modal */}
       {downloadIcon && (
         <InfoModal
+          id="download-modal"
           isOpen={isDownloadModalOpen}
           onClose={() => setIsDownloadModalOpen(false)}
           title="Download Data"
