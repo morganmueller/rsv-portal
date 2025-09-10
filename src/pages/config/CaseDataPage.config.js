@@ -104,10 +104,10 @@ const caseDataPageConfig = {
           groupField: "submetric",
           field: "isoWeek",
           yField: "value",
-          colorField: "submetric",
+          // colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number", 
-          legendTitle: "Type",
+          // legendTitle: "Type",
           showRollingAvg: false,
           customColorScale: {
             domain: ["Confirmed", "Probable"],
@@ -116,7 +116,7 @@ const caseDataPageConfig = {
           columnLabels: {
             date: "Date",
             value: "Cases",
-            submetric: "Test Type",
+            // submetric: "Test Type",
           }
         }
       },
@@ -150,7 +150,7 @@ const caseDataPageConfig = {
         colorField: "submetric",
         tooltipFields: ["date", "value"],
         defaultDisplay: "Number", 
-        legendTitle: "Subtype",
+        // legendTitle: "Subtype",
         showRollingAvg: false, 
         customColorScale: {
           domain: ["Influenza A not subtyped", "Influenza A H1", "Influenza A H3", "Influenza B" ],
@@ -183,6 +183,7 @@ const caseDataPageConfig = {
         props: {
           dataSourceKey: "casesByAge",
           dataSource: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one age range.",
           seasonal: null,
           metricName: "{virus} cases by age group",
           groupField: "submetric",
@@ -221,6 +222,7 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByBorough",
           dataSource: null,
           seasonal: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one borough.",
           metricName: "{virus} cases by borough",
           groupField: "submetric",
           xField: "date",
@@ -259,6 +261,7 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByRE",
           dataSource: null,
           seasonal: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one race & ethnicity.",
           metricName: "{virus} cases by race and ethnicity",
           groupField: "submetric",
           xField: "date",

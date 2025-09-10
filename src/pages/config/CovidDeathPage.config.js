@@ -76,6 +76,7 @@ const covidDeathPageConfig = {
           dataSource: null,
           // title: "Counts of {virus} deaths by age group",
           seasonal: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one age range.",
           metricName: "{virus} deaths by age group",
           groupedAges: true,
           monthly: true,
@@ -115,6 +116,7 @@ const covidDeathPageConfig = {
           dataSource: null,
           // title: "Counts of {virus} deaths by borough",
           seasonal: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one borough.",
           metricName: "{virus} deaths by borough",
           groupField: "submetric", // explicitly set for non-grouped
           xField: "date",
@@ -152,6 +154,7 @@ const covidDeathPageConfig = {
           dataSource: null, 
           // title: "Counts of {virus} deaths by race and ethnicity",
           seasonal: null,
+          footnote: "Y-axis scales are different to clearly show trends for any one race & ethnicity.",
           metricName: "{virus} deaths by race and ethnicity",
           groupField: "submetric", 
           xField: "date",

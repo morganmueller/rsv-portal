@@ -42,6 +42,7 @@ const edPageConfig = {
           dataSource: null,
           footnote: null,
           seasonal: null,
+          legend: null,
           // title:
           //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
           getMetricNames: ({ virus, view }) => [`${virus} ${view}`],

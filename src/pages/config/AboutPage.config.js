@@ -26,8 +26,6 @@ const aboutPageConfig = {
       cards: aboutCards["provider-info"],
     },
 
-
-    // NEW: group header before the data paragraphs
     {
       id: "data-group",
       renderAs: "paragraph-group",
@@ -68,24 +66,20 @@ const aboutPageConfig = {
           titleKey: "Health inequities",
           markdownSection: "Health inequities",
         },
-        
+        {
+          id: "seasonality",
+          titleKey: "Respiratory Virus Seasonality",
+          markdownSection: "Respiratory Virus Seasonality",
+        },
+        {
+          id: "transparency",
+          titleKey: "Data Transparency",
+          markdownSection: "Data Transparency",
+        },
       ],
     },
 
 
-    // Paragraphs (unchanged)
-    {
-      id: "seasonality",
-      titleKey: "Respiratory Virus Seasonality",
-      renderAs: "paragraph",
-      markdownSection: "Respiratory Virus Seasonality",
-    },
-    {
-      id: "transparency",
-      titleKey: "Data Transparency",
-      renderAs: "paragraph",
-      markdownSection: "Data Transparency",
-    },
     {
       id: "prevention-info",
       titleKey: "Additional Resources",
