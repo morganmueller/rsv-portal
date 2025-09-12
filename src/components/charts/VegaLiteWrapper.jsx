@@ -108,7 +108,7 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode 
         <VegaLite
           key={embedKey}
           spec={finalSpec}
-          actions={false}
+          actions={true}
           renderer={rendererMode}
           tooltip={tooltip}
           onError={onError}

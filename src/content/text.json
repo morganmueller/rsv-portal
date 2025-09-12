@@ -2,7 +2,7 @@
    "nav": {
     "home": "Home",
     "data": "Data",
-    "info": "Info",
+    "about": "About",
     "externalTool": "Health Tool"
   },
 
@@ -166,7 +166,7 @@
         },
         "sections": {
           "learn": { "title": "Learn about Respiratory Illnesses" },
-          "aboutTracker": { "title": "About the Tracker" },
+          "aboutTracker": { "title": "About the Site" },
           "prevention": { "title": "Prevention and Vaccination Information" },
           "providers": { "title": "Information for Providers" },
           "seasonality": { "title": "Respiratory Virus Seasonality" },

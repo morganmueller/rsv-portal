@@ -13,7 +13,7 @@ const Header = () => {
 
   let activeButton = "home";
   if (path.startsWith("/data")) activeButton = "data";
-  else if (path.startsWith("/info")) activeButton = "info";
+  else if (path.startsWith("/about")) activeButton = "about";
 
   return (
     <>

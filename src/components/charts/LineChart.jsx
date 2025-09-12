@@ -6,7 +6,6 @@ import ChartFooter from "./ChartFooter";
 const { covid, flu, rsv , ari} = tokens.colorScales;
 const { colors, typography } = tokens;
 
-
 const useMedia = (query) => {
   const get = () =>
     typeof window !== "undefined" &&
@@ -31,14 +30,11 @@ const useMedia = (query) => {
   return matches;
 };
 
-
-
 const getXAxisFormat = (data, xField) => {
   if (!data || data.length < 2) return "%b %d";
   const first = new Date(data[0][xField]);
   const second = new Date(data[1][xField]);
   const delta = Math.abs(second - first);
-
   const oneDay = 86400000;
   const oneWeek = oneDay * 7;
   const oneMonth = oneDay * 28;
@@ -65,13 +61,8 @@ const LineChart = ({
   seasonal,
   dataSource = "NYC Health Department Syndromic Surveillance",
   footnote,
-  colorMap,
   columnLabels = {}
 }) => {
-  const legendLabelMap = {
-  "ARI visits": "Respiratory illness visits",
-  "ARI hospitalizations": "Respiratory illness hospitalizations",
-};
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
     "Influenza": colors.purplePrimary,
@@ -126,49 +117,61 @@ const LineChart = ({
         scale: { padding: 10 },
       };
 
-       // Build the calculate expression for the tooltip display based on isPercent
-      const valueDisplayCalc = isPercent
-      ? "datum.valueRaw != null ? (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')"
-      : "datum.valueRaw != null ? '' + datum.valueRaw : (isValid(datum.value) ? format(datum.value, ',.0f') : 'N/A')";
+  // Tooltip display string
+  const valueDisplayCalc = isPercent
+    ? "datum.valueRaw != null ? (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')"
+    : "datum.valueRaw != null ? '' + datum.valueRaw : (isValid(datum.value) ? format(datum.value, ',.0f') : 'N/A')";
 
+  const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map((field) => {
+    if (field === yField) {
+      return { field: "valueDisplay", title: columnLabels.value || "Reported", type: "nominal" };
+    }
+    if (field === xField || field === "date") {
+      return { field, type: "temporal", format: "%b, %d, %Y", title: columnLabels[field] || "Date" };
+    }
+    const sample = filteredData.find((d) => d[field] != null)?.[field];
+    return { field, type: typeof sample === "number" ? "quantitative" : "nominal", title: columnLabels[field] };
+  });
 
-      const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map((field) => {
-        if (field === yField) {
-          // If your data sometimes carries a preformatted string in valueRaw, you can keep this branch.
-          if (filteredData.some((d) => d.valueRaw != null)) {
-            return {
-              field: "valueDisplay",
-              title: columnLabels.value || "Reported",
-              type: "nominal"
-            };
-          }
-          // Otherwise use the calculated string with one decimal + '%'
-          return {
-            field: "valueDisplay",
-            title: columnLabels.value || "Reported",
-            type: "nominal"
-          };
-        }
-      
-        if (field === xField || field === "date") {
-          return {
-            field,
-            type: "temporal",
-            format: "%b, %d, %Y",
-            title: columnLabels[field] || "Date"
-          };
-        }
-      
-        const sample = filteredData.find((d) => d[field] != null)?.[field];
-        return {
-          field,
-          type: typeof sample === "number" ? "quantitative" : "nominal",
-          title: columnLabels[field]
-        };
-      });
-      
-      
-      
+  // Colors
+  const lineColorEncoding = colorField
+    ? {
+        field: "{colorField}",
+        type: "nominal",
+        scale: {
+          range:
+            (virusColorRangeMap[virus] && (colorField === "metric"))
+              ? [virusColorRangeMap[virus][2], virusColorMap["ARI"]]
+              : virusColorRangeMap[virus]
+        },
+        sort: ["0-4", "5-17", "18-64", "65+"],
+        legend:
+          legend === null
+            ? null
+            : {
+                labelExpr:
+                  "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
+                labelLimit: 300,
+                clipHeight: 30,
+                title: legendTitle ?? null,
+              }
+      }
+    : { value: selectedColor };
+
+  const pointColorEncoding = colorField
+    ? { field: "{colorField}", type: "nominal" }
+    : { value: selectedColor };
+
+  // Only dim others when a selection exists; otherwise keep all fully opaque.
+  const lineOpacityEncoding = colorField
+    ? {
+        condition: [
+          { param: "series", value: 1 },                                // hovered series
+          { test: "!length(data('series_store'))", value: 1 }           // no selection -> keep all full
+        ],
+        value: 0.2                                                      // otherwise dim others
+      }
+    : { value: 1 };
 
   const specTemplate = {
     width: "container",
@@ -185,7 +188,6 @@ const LineChart = ({
     },
     config: {
       background: chartBg || colors.white,
-
       axis: {
         labelFont: typography.body,
         titleFont: typography.heading,
@@ -193,20 +195,8 @@ const LineChart = ({
         titleColor: chartTitleColor || colors.gray800,
         labelFontSize: 12,
       },
-      axisX: {
-        ticks: true,
-        domain: true,
-        domainColor: "lightgray",
-        grid: false,
-      },
-      axisY: {
-        domain: false,
-        ticks: false,
-        tickCount: 3,
-        orient: "left",
-        zindex: 0,
-        gridDash: [2],
-      },
+      axisX: { ticks: true, domain: true, domainColor: "lightgray", grid: false },
+      axisY: { domain: false, ticks: false, tickCount: 3, orient: "left", zindex: 0, gridDash: [2] },
       legend: {
         labelFont: typography.body,
         titleFont: typography.heading,
@@ -218,14 +208,13 @@ const LineChart = ({
         title: metricName,
         labelFontSize: 16,
         direction: "horizontal",
-        columns: legendColumns,     
-        columnPadding: 10,          
+        columns: legendColumns,
+        columnPadding: 10,
         labelLimit: isMobile ? 160 : 300
       },
-      view: {
-        stroke: "transparent",
-      },
+      view: { stroke: "transparent" },
     },
+
     transform: [
       { calculate: "year(datum.date)", as: "year" },
       { calculate: "month(datum.date)", as: "month" },
@@ -243,84 +232,75 @@ const LineChart = ({
         calculate: "toString(datum.startYear) + '-' + substring(toString(datum.startYear + 1), 2)",
         as: "season"
       },
-      {
-        calculate: valueDisplayCalc,
-        as: "valueDisplay"
-      }
-      
-      
+      { calculate: valueDisplayCalc, as: "valueDisplay" }
     ],
+
     layer: [
+      // single-series area fill
       ...(colorField || seasonal
         ? []
-        : [
-            {
-              mark: {
-                type: "area",
-                interpolate: "linear",
-                opacity: 0.15,
-                color: selectedColor,
-              },
-              encoding: {
-                x: xEncoding,
-                y: { field: "{yField}", type: "quantitative" },
-              },
-            },
-          ]),
+        : [{
+            mark: { type: "area", interpolate: "linear", opacity: 0.15, color: selectedColor },
+            encoding: { x: xEncoding, y: { field: "{yField}", type: "quantitative" } },
+          }]),
+
+      // main line(s) (no tooltip or points here)
       {
-        mark: {
-          type: "line",
-          interpolate: "linear",
-          strokeWidth: 3,
-          point: { filled: true, size: 40 },
-        },
+        mark: { type: "line", interpolate: "linear", strokeWidth: 3, point: false },
         encoding: {
           x: xEncoding,
           y: {
             field: "{yField}",
             type: "quantitative",
-            axis: {
-              title: null,
-              tickCount: 4,
-              ...(isPercent ? { labelExpr: "datum.value + '%'" } : {})
-            },
+            axis: { title: null, tickCount: 4, ...(isPercent ? { labelExpr: "datum.value + '%'" } : {}) },
           },
-          color: colorField
-            ? {
-                field: "{colorField}",
-                type: "nominal",
-                scale: { range: (virusColorRangeMap[virus] && (colorField === "metric")) ? [virusColorRangeMap[virus][2], virusColorMap["ARI"]]: virusColorRangeMap[virus]  },
-                sort: ["0-4", "5-17", "18-64", "65+"],
-                legend:
-                legend === null
-                  ? null // 🚫 hide legend completely
-                  : {
-                      // keep your custom labelExpr etc.
-                      labelExpr: "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
-                      labelLimit: 300,
-                      clipHeight: 30,
-                      // explicitly no title unless you pass one
-                      title: legendTitle ?? null,
-                    }
-            }
-          : { value: selectedColor },
-          tooltip: sharedTooltip,
+          color: lineColorEncoding,
+          opacity: lineOpacityEncoding,
         },
       },
+
+      // visible points (no tooltip) — defines the `series` selection
       {
-        mark: {
-          type: "point",
-          opacity: 0,
-          size: 100,
-        },
+        params: colorField ? [{
+          name: "series",
+          select: {
+            type: "point",
+            fields: ["{colorField}"],
+            on: "pointermove",
+            clear: "pointerout"
+          }
+        }] : [],
+        mark: { type: "point", filled: true, size: 40, strokeWidth: 1.5 },
         encoding: {
           x: xEncoding,
           y: { field: "{yField}", type: "quantitative" },
-          tooltip: sharedTooltip,
-        },
+          color: pointColorEncoding
+        }
       },
+
+      // invisible "hit" points (big target) — own the tooltip + precise point selection
+      {
+        params: [{
+          name: "pt",
+          select: {
+            type: "point",
+            fields: colorField ? ["{colorField}", "{xField}"] : ["{xField}"],
+            on: "pointermove",
+            clear: "pointerout"
+          }
+        }],
+        mark: { type: "point", opacity: 0, size: 140 }, // large hit area
+        encoding: {
+          x: xEncoding,
+          y: { field: "{yField}", type: "quantitative" },
+          // Keep same color field so the hit matches the series
+          ...(colorField ? { color: { field: "{colorField}", type: "nominal" } } : {}),
+          tooltip: sharedTooltip
+        }
+      }
     ],
   };
+
   console.log('Rendering chart with data:', data);
 
   return (
@@ -329,6 +309,7 @@ const LineChart = ({
         data={filteredData}
         specTemplate={specTemplate}
         dynamicFields={{ xField, yField, colorField }}
+        rendererMode="svg" // avoids canvas/CSS transform drift
       />
       <ChartFooter
         dataSource={dataSource}

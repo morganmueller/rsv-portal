@@ -29,7 +29,7 @@ const HeaderButtons = ({
         {/* Left group: Home + Data (or Virus buttons when Data active) */}
         <div className="left-buttons">
           {headerButtons
-            .filter((btn) => btn.id !== "info" && !btn.hidden)
+            .filter((btn) => btn.id !== "about" && !btn.hidden)
             .map(({ id, labelKey, path, external }) => {
               const isActive = activeButton === id;
 
@@ -74,10 +74,10 @@ const HeaderButtons = ({
             })}
         </div>
 
-        {/* Right group: Info */}
+        {/* Right group: about page */}
         <div className="right-buttons">
           {headerButtons
-            .filter((btn) => btn.id === "info")
+            .filter((btn) => btn.id === "about")
             .map(({ id, labelKey, path }) => {
               const isActive = activeButton === id;
               return (

@@ -11,9 +11,9 @@ const headerButtons = [
       path: "/data/covid-19",
     },
     {
-      id: "info",
-      labelKey: "nav.info",
-      path: "/info",
+      id: "about",
+      labelKey: "nav.about",
+      path: "/about",
     }
   ];
   

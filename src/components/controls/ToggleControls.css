@@ -8,7 +8,7 @@
 
 
 .icon-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 5px auto -webkit-focus-ring-color;
   outline-offset: 2px;
   border-radius: 6px;
 }
