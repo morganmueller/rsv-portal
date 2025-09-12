@@ -15,7 +15,7 @@ const colors = {
   grayTransparent: "rgba(0, 0, 0, 0)",
 
   // Main / Accent
-  bluePrimary: "#1E40AF",
+  bluePrimary: "#3c62de",
   blueSecondary: "#2563EB",
   blueAccent: "#0075FF",
   purplePrimary: "#5B21B6",
@@ -32,10 +32,12 @@ const colors = {
   redMuted: "#F87171",
   
   // Semantic backgrounds
-  bgLightBlue: "#EFF6FF",
+  bgLightBlue:   "#E3F0FF",
+bgLightPurple: "#F8EAFE",
+  // bgLightBlue: "#EFF6FF",
   bgLightGreen: "#ECFDF5",
   bgLightOrange: "#F4C4A5",
-  bgLightPurple: "#F5F3FF",
+  // bgLightPurple: "#F5F3FF",
   bgMutedPink: "#F4C4A5",
   bgMutedPurple: "#F5F3FF",
   bgMutedGray: "#ADAEBC",
