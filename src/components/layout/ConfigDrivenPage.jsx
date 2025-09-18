@@ -9,6 +9,8 @@ import ChartContainer from "./ChartContainer";
 import ContentContainer from "./ContentContainer";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 import { downloadCSV, buildDownloadName } from "../../utils/downloadUtils"; // ← add buildDownloadName
+import { toSourceVirus, coerceRowVirus, coerceRowView } from "../../utils/virusMap";
+
 import FloatingTogglePill from "../controls/FloatingTogglePill";
 import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
@@ -57,7 +59,7 @@ const viewDisplayLabels = {
 
 const virusLowercaseDisplay = {
   "COVID-19": "COVID-19",
-  Influenza: "influenza",
+  Flu: "Flu",
   RSV: "RSV",
 };
 
@@ -68,7 +70,7 @@ const viewDisplayLabelsPreposition = {
 
 const virusDisplayLabelsArticle = {
   "COVID-19": "a",
-  Influenza: "an",
+  Flu: "a",
   RSV: "an",
 };
 
@@ -81,6 +83,9 @@ const groupDisplayNames = {
   "All Ages": "all Age Groups",
   "All Boroughs": "All Boroughs",
 };
+
+const displayVirus = (v) => (v === "Influenza" ? "Flu" : v);
+
 
 const resolveText = (input, variables = {}) => {
   const raw =
@@ -249,7 +254,7 @@ const ConfigDrivenPage = ({ config }) => {
             }}
           >
             {Array.isArray(resolvedSummary?.bullets) &&
-              activeVirus === "Influenza" &&
+              activeVirus === "Flu" &&
               resolvedSummary.bullets.map((b) => {
                 if (b.renderAs === "custom" && b.component && customComponents[b.component]) {
                   const Cmp = customComponents[b.component];
@@ -283,16 +288,18 @@ const ConfigDrivenPage = ({ config }) => {
         {/* -------------------------------------------------------------------------- */}
 
         {hydratedSections
+        
           .filter((section) => {
             const allowed = section.showIfVirus;
             const allowedDataType = section.dataType;
             const matchesDataType =
               !allowedDataType || allowedDataType === dataType;
-            const matchesVirus =
-              !allowed ||
-              (Array.isArray(allowed)
-                ? allowed.includes(activeVirus)
-                : allowed === activeVirus);
+            
+              const matchesVirus =
+               !allowed ||
+               (Array.isArray(allowed)
+               ? allowed.some((v) => displayVirus(v) === activeVirus)
+               : displayVirus(allowed) === activeVirus);
 
             return matchesDataType && matchesVirus;
           })
@@ -544,10 +551,18 @@ const ConfigDrivenPage = ({ config }) => {
                 ? flattenedData
                 : flattenedData.filter((d) => d[groupField] === activeGroup);
 
-            const virusFilteredData =
-              groupFilteredData?.filter?.((row) => {
-                const series = row.series || row.metric || row.virus || "";
-                return series.includes(`${activeVirus} ${view}`);
+              const sourceVirusForFilter = toSourceVirus(activeVirus);
+              
+              const virusFilteredData =
+                groupFilteredData?.filter?.((row) => {
+                // normalize both sides to SOURCE labels ('Influenza', 'COVID-19', 'RSV')
+               const vRaw = coerceRowVirus(row);
+               const v = vRaw ? toSourceVirus(vRaw) : null;
+               const vw = coerceRowView(row);
+               if (v && vw) return v === sourceVirusForFilter && vw === view;
+               // fallback to legacy substring behavior if needed
+               const series = String(row.series || row.metric || row.virus || "");
+               return series.includes(`${sourceVirusForFilter} ${view}`);
               }) ?? [];
 
             const trendKey = section.chart?.props?.yField || view;
@@ -619,7 +634,7 @@ const ConfigDrivenPage = ({ config }) => {
               data: groupFilteredData,
               virus: activeVirus,
               view,
-              colorMap: tokens.colorScales?.[activeVirus],
+              colorMap: tokens.colorScales?.[(activeVirus || "").toLowerCase()],
               tooltip: true,
             };
 

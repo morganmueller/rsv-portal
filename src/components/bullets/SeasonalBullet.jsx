@@ -159,7 +159,7 @@ export default function SeasonalBullet({
     <As className={className} data-bullet-id={id}>
       {info.inSeasonFlag ? (
         <>
-          There were <WkVal /> {diseaseLabel || "deaths"} reported this week.
+          {/* There were <WkVal /> {diseaseLabel || "deaths"} reported this week. */}
           <span className="sb-divider" />
           As of <DateChip />, <StVal /> {diseaseLabel || "deaths"} have been reported during the <SeasonChip /> season.
         </>

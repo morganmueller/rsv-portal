@@ -1,83 +1,170 @@
-import React, { useMemo, useRef, useEffect, useState } from "react";
+// src/components/charts/CombinedVirusChart.jsx
+import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import TrendSubtitle from "../controls/TrendSubtitle";
 import { getTrendFromTimeSeries, formatDate } from "../../utils/trendUtils";
 import { tokens } from "../../styles/tokens";
 import ChartFooter from "./ChartFooter";
-import ChartModal from "../popups/ChartModal"; // 
+import ChartModal from "../popups/ChartModal";
 import VegaLiteWrapper from "./VegaLiteWrapper";
+import { toDisplayVirus, coerceRowVirus } from "../../utils/virusMap";
 
-const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, columnLabels = {}  }) => {
+/** Robust date coercion: supports date, week, end_date, etc. */
+function coerceDate(row) {
+  const d =
+    row?.date ??
+    row?.week ??
+    row?.Week ??
+    row?.week_end ??
+    row?.weekEnd ??
+    row?.week_ending ??
+    row?.weekEnding ??
+    row?.end_date ??
+    row?.endDate ??
+    row?.timestamp ??
+    null;
+  if (!d) return null;
+  const dt = new Date(d);
+  return Number.isNaN(dt.valueOf()) ? null : dt;
+}
+
+/** Parse numbers safely (handles %, strings, blanks). */
+function coerceNumber(raw) {
+  if (raw === null || raw === undefined || raw === "") return null;
+  const s = typeof raw === "string" ? raw.trim().replace(/%+$/, "") : raw;
+  const n = typeof s === "number" ? s : parseFloat(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Normalize any row into one of: "ARI", "COVID", "Flu", "RSV". */
+function toSeriesLabel(row) {
+  const src = coerceRowVirus(row); // "Influenza", "COVID-19", "RSV", "ARI", or undefined
+  let display = src ? toDisplayVirus(src) : null; // Influenza->Flu (case-insensitive), others preserved
+  if (!display) {
+    const base = String(row.series || "").replace(/\s+(visits|hospitalizations)$/i, "");
+    if (/covid/i.test(base)) display = "COVID";
+    else if (/influenza/i.test(base)) display = "Flu";
+    else if (/rsv/i.test(base)) display = "RSV";
+    else if (/ari/i.test(base)) display = "ARI";
+    else display = base;
+  }
+  if (/^COVID-?19$/i.test(display)) display = "COVID";
+  return display;
+}
+
+const CombinedVirusChart = ({
+  data = {},
+  view = "visits",
+  footnote,
+  title,
+  columnLabels = {},
+}) => {
   if (!data || (!Array.isArray(data) && typeof data !== "object")) return null;
 
-  // --- trend bits for ARI subtitle
-  const ariSeries = data["ARI visits"] || data["ARI hospitalizations"] || [];
-  const trend = getTrendFromTimeSeries(ariSeries, "value");
-  const latestWeek = ariSeries?.at?.(-1)?.date;
+  // Pick ARI series matching the current view.
+  const ariKey = useMemo(() => {
+    if (Array.isArray(data)) return null;
+    const keys = Object.keys(data || {});
+    const needle = view === "hospitalizations" ? "hospitalizations" : "visits";
+    return keys.find((k) => /\bARI\b/i.test(k) && k.toLowerCase().includes(needle)) || null;
+  }, [data, view]);
 
+  const ariSeries = Array.isArray(data) ? [] : (ariKey ? data[ariKey] || [] : []);
+
+  // Trend + subtitle (safe if series is empty)
+  const latestRow = ariSeries?.at?.(-1) ?? {};
+  const latestWeek =
+    coerceDate(latestRow) ??
+    latestRow?.date ??
+    latestRow?.week ??
+    latestRow?.end_date ??
+    latestRow?.endDate ??
+    null;
+
+  const trend = getTrendFromTimeSeries(ariSeries, "value");
   const trendClass =
     trend?.direction === "up" ? "trend-up" :
     trend?.direction === "down" ? "trend-down" : "trend-neutral";
 
   const fullVars = {
-    date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
+    date: latestWeek ? `<span class="bg-highlight">${formatDate(latestWeek)}</span>` : "N/A",
     trend: trend ? `<span class="${trendClass}">${trend.label} ${trend.value}</span>` : "not changed",
   };
 
   const rawSubtitleTemplate =
-    `<span class="bg-highlight">${(view === "hospitalizations" ? "Hospitalizations" : "Visits")}</span>` +
-    " for the week of {date} have {trend} since the previous week";
+    `<span class="bg-highlight">${view === "hospitalizations" ? "Hospitalizations" : "Visits"}</span> ` +
+    "for the week of {date} have {trend} since the previous week";
 
   const resolvedTitle = title?.replace("{view}", view);
   const subtitle = <TrendSubtitle template={rawSubtitleTemplate} variables={fullVars} />;
 
-  // normalize data once
+  // Flatten & normalize. Critical bits:
+  //  - coerceDate() picks up `week` for Flu rows
+  //  - toSeriesLabel() maps Influenza→Flu (case-insensitive), COVID-19→COVID
+  //  - coerceNumber() handles percent strings
   const flattened = useMemo(() => {
     const rows = Array.isArray(data)
       ? data
       : Object.entries(data).flatMap(([seriesName, arr]) =>
           (arr || []).map((row) => ({ ...row, series: seriesName }))
         );
-    return rows.map((row) => ({
-      ...row,
-      date: new Date(row.date),
-      value: Number.isNaN(+row.value) ? null : +row.value,
-      valueRaw: row.value,
-      series: (row.series || "")
-        .replace(" visits", "")
-        .replace(" hospitalizations", "")
-        .replace("COVID-19", "COVID")
-        .replace("Influenza", "Flu"),
-    }));
+
+    return rows
+      .map((row) => {
+        const d = coerceDate(row);
+        const s = toSeriesLabel(row);
+        const raw = row.value;
+        const num = coerceNumber(raw);
+        return {
+          ...row,
+          date: d,
+          value: num,
+          valueRaw: raw,
+          // unify series labels to exactly: "ARI", "COVID", "Flu", or "RSV"
+          series: s,
+        };
+      })
+      // Avoid null/invalid dates (Vega temporal domain NaN)
+      .filter((r) => r.date instanceof Date && !Number.isNaN(r.date.valueOf()));
   }, [data]);
 
-  const ARI_COLOR = tokens.colors?.orangePrimary ?? "#FF6600";
+  const ARI_COLOR = tokens?.colors?.orangePrimary ?? "#FF6600";
   const seriesDomain = ["COVID", "Flu", "RSV"];
   const miniSeries = ["COVID", "Flu", "RSV"];
   const seriesRange = [
-    tokens.colorScales.covid[1],
-    tokens.colorScales.flu[0],
-    tokens.colorScales.rsv[0],
+    tokens?.colorScales?.covid?.[1] ?? "#0A84FF",
+    tokens?.colorScales?.flu?.[0] ?? "#F43F5E",
+    tokens?.colorScales?.rsv?.[0] ?? "#10B981",
   ];
 
   const valueTooltipField = {
     field: "valueDisplay",
     type: "nominal",
-    title: columnLabels.value || "Emergency Department visits",
+    title:
+      columnLabels.value ||
+      (view === "hospitalizations"
+        ? "Emergency Department hospitalizations"
+        : "Emergency Department visits"),
   };
 
-  // ---------- COMMON Y DOMAIN for bottom charts ----------
+  // Shared Y domain for the three minis so scales align
   const miniYDomain = useMemo(() => {
     const vals = flattened
-      .filter(d => miniSeries.includes(d.series) && typeof d.value === "number" && Number.isFinite(d.value))
-      .map(d => d.value);
+      .filter(
+        (d) =>
+          miniSeries.includes(d.series) &&
+          typeof d.value === "number" &&
+          Number.isFinite(d.value)
+      )
+      .map((d) => d.value);
     if (vals.length === 0) return undefined;
-    // lock to nice rounded bounds (optional)
     const min = Math.min(...vals);
     const max = Math.max(...vals);
-    // pad a bit so lines don't hug the top/bottom
     const pad = (max - min) * 0.05 || 1;
-    return [Math.max(0, Math.floor((min - pad) * 10) / 10), Math.ceil((max + pad) * 10) / 10];
+    return [
+      Math.max(0, Math.floor((min - pad) * 10) / 10),
+      Math.ceil((max + pad) * 10) / 10,
+    ];
   }, [flattened]);
 
   /** ---------- Main ARI chart ---------- */
@@ -96,13 +183,12 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
       axisX: { ticks: true, domain: true, domainColor: "lightgray", grid: false },
       axisY: {
         domain: false, ticks: false, tickCount: 3, orient: "left", gridDash: [2],
-        format: ".1f", labelExpr: "datum.label + '%'"
+        format: ".1f", labelExpr: "datum.label + '%'",
       },
       view: { stroke: "transparent" },
     },
     title: {
       text: resolvedTitle,
-      //subtitle: subtitle ? undefined : null,
       subtitlePadding: 10,
       fontWeight: "normal",
       anchor: "start",
@@ -112,25 +198,13 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
       subtitleFontSize: 13,
     },
     transform: [
-      { calculate: "year(datum.date)", as: "year" },
-      { calculate: "month(datum.date)", as: "month" },
-      { calculate: "dayofyear(datum.date)", as: "day" },
-      { calculate: "month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1", as: "startYear" },
-      {
-        calculate:
-          "(datetime(year(datum.date), month(datum.date), date(datum.date))" +
-          " - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1))" +
-          " / (1000 * 60 * 60 * 24) + 1",
-        as: "dayOfSeason",
-      },
       {
         calculate:
           "datum.valueRaw != null ? " +
-          "  (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
-          "  : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
-        as: "valueDisplay"
+          "(test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
+          ": (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
+        as: "valueDisplay",
       },
-      
       { filter: "datum.series === 'ARI'" },
     ],
     layer: [
@@ -156,7 +230,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
           x: { field: "date", type: "temporal" },
           y: { field: "value", type: "quantitative" },
           color: { value: ARI_COLOR },
-          tooltip: [{ field: "date", type: "temporal", format: "%d %b %Y",title: "Date" }, valueTooltipField],
+          tooltip: [{ field: "date", type: "temporal", format: "%d %b %Y", title: "Date" }, valueTooltipField],
         },
       },
     ],
@@ -177,10 +251,10 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
       {
         calculate:
           "datum.valueRaw != null ? " +
-          "  (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
-          "  : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
-        as: "valueDisplay"
-      }
+          "(test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') " +
+          ": (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
+        as: "valueDisplay",
+      },
     ],
     layer: [
       {
@@ -226,10 +300,7 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
         mark: { type: "point", size: 300, opacity: 0.001 },
         encoding: {
           x: { field: "date", type: "temporal" },
-          y: {
-            field: "value", type: "quantitative",
-            scale: yDomain ? { domain: yDomain } : undefined
-          },
+          y: { field: "value", type: "quantitative", scale: yDomain ? { domain: yDomain } : undefined },
           color: {
             field: "series", type: "nominal",
             scale: { domain: seriesDomain, range: seriesRange }, legend: null,
@@ -251,22 +322,21 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
 
   const seriesLabels = {
     COVID: view === "hospitalizations" ? "COVID-19 Hospitalizations" : "COVID-19 Visits",
-    Flu: view === "hospitalizations" ? "Influenza Hospitalizations" : "Influenza Visits",
+    Flu: view === "hospitalizations" ? "Flu Hospitalizations" : "Flu Visits",
     RSV: view === "hospitalizations" ? "RSV Hospitalizations" : "RSV Visits",
   };
 
   return (
     <div className="combined-virus-chart">
-
       {/* ARI overview */}
       <VegaLiteWrapper data={flattened} specTemplate={ariTopSpec} rendererMode="svg" />
 
       {/* Three mini charts with shared y-scale; y-axis only on leftmost */}
       <div
         className="mini-series-row"
-        style={{ display:"grid", gridTemplateColumns:"repeat(3, minmax(0, 1fr))", gap:"12px", marginTop:"12px" }}
+        style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "12px", marginTop: "12px" }}
       >
-        {miniSeries.map((series, idx) => (
+        {["COVID", "Flu", "RSV"].map((series, idx) => (
           <button
             key={series}
             type="button"
@@ -274,26 +344,31 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
             onClick={() => openModal(series)}
             aria-label={`Open large ${seriesLabels[series]} chart`}
             style={{
-              display:"flex", flexDirection:"column", gap:6, padding:"8px 8px 4px 8px",
-        background:"var(--chart-bg)",
-              cursor:"pointer", textAlign:"left", boxShadow:"0 1px 2px rgba(0,0,0,0.06)"
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+              padding: "8px 8px 4px 8px",
+              background: "var(--chart-bg)",
+              cursor: "pointer",
+              textAlign: "left",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
             }}
           >
-            <div style={{ fontSize:13, fontWeight:600, color:"var(--chart-title-color)", padding:"0 2px" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--chart-title-color)", padding: "0 2px" }}>
               {seriesLabels[series]}
             </div>
-            <div style={{ width:"100%" }}>
+            <div style={{ width: "100%" }}>
               <VegaLiteWrapper
                 data={flattened}
                 specTemplate={buildSeriesSpec(series, {
                   tall: false,
-                  showYAxis: idx === 0,       // only on the leftmost mini
-                  yDomain: miniYDomain        // shared y-domain
+                  showYAxis: idx === 0, // only on the leftmost mini
+                  yDomain: miniYDomain, // shared y-domain
                 })}
                 rendererMode="svg"
               />
             </div>
-            <div style={{ fontSize:12, color:"var(--chart-subtitle-color)", padding:"0 2px 4px 2px" }}>
+            <div style={{ fontSize: 12, color: "var(--chart-subtitle-color)", padding: "0 2px 4px 2px" }}>
               Tap/click to enlarge
             </div>
           </button>
@@ -303,25 +378,14 @@ const CombinedVirusChart = ({ data = {}, view = "visits", footnote, title, colum
       <ChartFooter latestDate={latestWeek ? formatDate(latestWeek) : "N/A"} footnote={footnote} />
 
       {/* Modal for enlarged chart (uses same domain for consistency) */}
-      <ChartModal
-        title={modalSeries ? seriesLabels[modalSeries] : ""}
-        isOpen={!!modalSeries}
-        onClose={closeModal}
-      >
+      <ChartModal title={modalSeries ? seriesLabels[modalSeries] : ""} isOpen={!!modalSeries} onClose={closeModal}>
         {modalSeries && (
           <div style={{ padding: "8px 4px 4px 4px" }}>
             <VegaLiteWrapper
               data={flattened}
-              specTemplate={buildSeriesSpec(modalSeries, {
-                tall: true,
-                showYAxis: true,
-                yDomain: miniYDomain
-              })}
+              specTemplate={buildSeriesSpec(modalSeries, { tall: true, showYAxis: true, yDomain: miniYDomain })}
               rendererMode="svg"
             />
-            {/* <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-              Press Esc or click outside to close.
-            </div> */}
           </div>
         )}
       </ChartModal>
@@ -334,6 +398,7 @@ CombinedVirusChart.propTypes = {
   view: PropTypes.string,
   footnote: PropTypes.string,
   title: PropTypes.string,
+  columnLabels: PropTypes.object,
 };
 
 export default CombinedVirusChart;

@@ -13,8 +13,8 @@
       "description": "View NYC COVID-19 wastewater surveillance through the New York State dashboard"
     },
     "nysSurveillance": {
-      "title": "NYS Influenza Surveillance Reports",
-      "description": "Explore additional State influenza reporting information"
+      "title": "NYS Flu Surveillance Reports",
+      "description": "Explore additional State Flu reporting information"
     },
     "github": {
       "title": "Respiratory Illness GitHub Repository",
@@ -25,32 +25,32 @@
 
     "overview": {
       "title": "Respiratory Illnesses in New York City",
-      "subtitle": "<p>This webpage summarizes trends and highlights three respiratory viruses that can impact all New Yorkers — <a href='https://www.nyc.gov/site/doh/covid/covid-19-main.page' target='_blank' rel='noopener noreferrer'>COVID-19</a>, <a href='https://www.nyc.gov/site/doh/health/health-topics/flu-seasonal.page' target='_blank' rel='noopener noreferrer'>influenza</a>, and <a href='https://www.nyc.gov/site/doh/health/health-topics/respiratory-syncytial-virus.page' target='_blank'  rel='noopener noreferrer'>RSV (respiratory syncytial virus)</a>.</p><p>This page is updated every Thursday with data through the previous Saturday. All data are preliminary and may change as more information is received. The NYC Health Department uses information from a variety of sources to capture a comprehensive picture of respiratory illness activity citywide.</p>",
+      "subtitle": "<p>This webpage summarizes trends and highlights three respiratory viruses that can impact all New Yorkers — <a href='https://www.nyc.gov/site/doh/covid/covid-19-main.page' target='_blank' rel='noopener noreferrer'>COVID-19</a>, <a href='https://www.nyc.gov/site/doh/health/health-topics/flu-seasonal.page' target='_blank' rel='noopener noreferrer'>Flu (influenza)</a>, and <a href='https://www.nyc.gov/site/doh/health/health-topics/respiratory-syncytial-virus.page' target='_blank'  rel='noopener noreferrer'>RSV (respiratory syncytial virus)</a>.</p><p>This page is <span class='dynamic-label'>updated every Thursday</span> with data through the previous Saturday. <span class='dynamic-label'>All data are preliminary</span> and may change as more information is received. The NYC Health Department uses information from a variety of sources to capture a comprehensive picture of respiratory illness activity citywide.</p>",
       "indicators": {
         "title": "Emergency Department Trends"
       },
       "charts": {
         "monthlyARIChart": {
-          "title": "{viewLabel} {viewLabelPreposition} the Emergency Department that have a Respiratory Illness Diagnosis",
-          "subtitle": "<p>These data show trends of people who received a <strong>respiratory illness diagnosis</strong> in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness are not included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
+          "title": "<span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have a <span class='ari-label'>Respiratory Illness</span> <span class='dynamic-label'>Diagnosis</span>",
+          "subtitle": "<p>These data show trends of people who received a respiratory illness diagnosis in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness are not included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
         }
       },
       "statCards": {
         "ari": { 
           "title": "Overall Respiratory Illness",
-          "infoText": "COVID-19, influenza, RSV, and other diagnoses" 
+          "infoText": "COVID-19, Flu, RSV, and other diagnoses" 
         },
         "covid": { "title": "COVID-19" },
-        "flu": { "title": "Influenza" },
+        "flu": { "title": "Flu" },
         "rsv": { "title": "RSV" }
       },
       "summaryBox": {
-        "title": "Emergency Department Trends for the Week Ending {date}",
-        "description": "<p>Here you can find recent trends in emergency department visits related to respiratory illnesses in NYC. Emergency department data provide a more immediate way to see when more people are seeking care for respiratory illness.</p><p>The NYC Health Department examines visits to the emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
+        "title": "<span class='dynamic-label'>Emergency Department</span> Trends for the Week Ending <span class='dynamic-label'>{date}</span>",
+        "description": "<p>Here you can find recent trends in emergency department visits related to respiratory illnesses in NYC. Emergency department data can provide a timely view of changes in respiratory virus spread and care-seeking.</p><p>The NYC Health Department examines visits to the emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
       },
 
       "otherResp": {
-        "title": "Respiratory Panel Results",
+        "title": "<span class='dynamic-label'>Respiratory Panel Results</span>",
         "intro": "The NYC Health Department receives data from selected NYC laboratories that test for an expanded panel of circulating respiratory viruses, including those that are not required to be reported to the NYC Health Department.",
         "sentence": "For the week of {date}, the percent of positive test results for other respiratory viruses were: {list}.",
         "labels": {
@@ -67,7 +67,7 @@
   
   "emergencyDeptPage": {
       "mainTitle": "{virus} Emergency Department {viewLabel} in NYC",
-      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Influenza and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",
+      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Flu and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",
    
 
       "summarySection": {
@@ -75,15 +75,15 @@
       },
       "charts": {
         "seasonalEdVisits": {
-          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis",
+          "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'>Diagnosis</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week"
         },
         "percentEdVisitsByAge": {
-          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
+          "title": "<span class='dynamic-label'>Percent</span>  of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'>Diagnosis</span> by <span class='virus-label'>Age Group</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         },
         "percentEdVisitsByGeo": {
-          "title": "Percent of {viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
+          "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'><span class='dynamic-label'>Diagnosis</span> by <span class='virus-label'>Borough</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         }
 
@@ -91,7 +91,7 @@
     },
     "caseDataPage": {
       "mainTitle": "{virus} Laboratory-Reported Cases in NYC",
-      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Influenza and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",   
+      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Flu and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",   
 
       "summarySection": {
         "summaryTitle": "Case Data Summary"
@@ -99,28 +99,28 @@
 
       "charts": {
         "seasonalComparison": {
-          "title": "{virus} Laboratory-Reported Cases by Season",
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Season</span>",
           "subtitle": "Cases for the week ending {date} have {trend} since the previous week"
           
         },
         "reportsByTestType": {
-          "title": "{virus} Laboratory-Reported Cases by Test Type",
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Test Type</span>",
           "subtitle": "Cases for the week ending {date} have {trend} since the previous week"
         },
         "reportsBySubtype": {
-          "title": "{virus} Laboratory-Reported Cases by Subtype ",
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Subtype</span>",
           "subtitle": "Cases for the week ending {date} have {trend} since the previous week"
         },
         "reportsByAge": {
-          "title": "{virus} Laboratory-Reported Cases by Age Group ",
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Age Group</span>",
           "subtitle": "Cases for the week ending {date} have {trend} since the previous week"
         },
         "reportsByBorough": {
-          "title": "{virus} Laboratory-Reported Cases by Borough ",
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Borough</span>",
           "subtitle": "Cases for the week ending {date} have {trend} since the previous week"
         },
         "reportsByRE": {
-          "title": "{virus} Laboratory-Reported Cases by Race and Ethnicity"
+          "title": "{virus} <span class='dynamic-label'>Laboratory-Reported Cases</span> by <span class='virus-label'>Race and Ethnicity"
         }
         
 
@@ -128,7 +128,7 @@
     },
     "covidDeathPage": {
       "mainTitle": "COVID-19 Deaths in NYC",
-      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Influenza and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",
+      "mainSubtitle": "Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. Flu and RSV are seasonal and most prevalent during the fall and winter months. To date, COVID-19 has generally increased during the fall and winter months as well as other times during the year, including the summer.",
    
 
       "summarySection": {
@@ -137,20 +137,20 @@
 
       "charts": {
         "seasonalComparison": {
-          "title": "{virus} Deaths by Season",
+          "title": "{virus} <span class='dynamic-label'>Deaths</span> by <span class='virus-label'>Season</span>",
           "subtitle": "Deaths for the week ending {date} have {trend} since the previous week"
           
         },
         "deathsByAge": {
-          "title": "{virus} Deaths by Age Group",
+          "title": "{virus} <span class='dynamic-label'>Deaths</span> by <span class='virus-label'>Age Group</span>",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         },
         "deathsByBorough": {
-          "title": "{virus} Deaths by Borough",
+          "title": "{virus} <span class='dynamic-label'>Deaths</span> by <span class='virus-label'>Borough</span>",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         },
         "deathsByRE": {
-          "title": "{virus} Deaths by Race and Ethnicity",
+          "title": "{virus} <span class='dynamic-label'>Deaths</span> by <span class='virus-label'>Race and Ethnicity</span>",
           "subtitle": "Emergency department visits for {virus} are {trend} this week than the same week last season"
         }
         

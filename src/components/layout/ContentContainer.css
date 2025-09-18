@@ -52,6 +52,11 @@ body {
   border-radius: 6px;
 }
 
+.ari-label {
+  color: #FF6600;
+  font-weight: 700;
+}
+.virus-label { font-weight: 700; }
 
 
 /* Generic highlight for dynamic placeholders (virus/view/date/etc.) */
@@ -80,8 +85,21 @@ body {
 
 h3.content-title {
   font-family: inherit ;
-  font-weight: 400;
+  font-weight: 400 !important;
 }
+
+.content-title .dynamic-text,
+.content-title .virus-label,
+.content-title .trend-text {
+  font-weight: 700;               /* same weight as your current titles */
+}
+
+.dynamic-text,
+.bg-highlight {
+  font-weight: 700;               /* ensure dynamic chips look emphasized */
+}
+.trend-text { font-weight: 600; } /* outside titles it stays 600 */
+
 
 .content-subtitle {
   font-size: var(--content-subtitle-size, var(--font-size-md));
@@ -104,9 +122,9 @@ h3.content-title {
   width: 100%;
 }
 
-h3.content-title {
+/* h3.content-title {
   font-weight: 700 !important;
-}
+} */
 
 .content-title .xt,
 .content-title .trend-text {

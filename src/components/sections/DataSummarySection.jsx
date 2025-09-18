@@ -4,7 +4,7 @@ import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
 
 const virusColors = {
   "COVID-19": "#1E40AF",
-  "Influenza": "#7C3AED",
+  "Flu": "#7C3AED",
   "RSV": "#047857",
   "ARI": "#EAA360",
 };

@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { colorizeVirusInTitle } from "../../utils/virusText";
+
 import "./DataPageLayout.css";
 
 const resolveText = (input, vars = {}) => {
@@ -13,6 +15,11 @@ const resolveText = (input, vars = {}) => {
       raw === null || raw === undefined || raw === "null" || raw === "undefined"
         ? ""
         : String(raw);
+
+    // Let the virus highlighter handle styling; return plain text for {virus}
+    if (key === "virus") {
+      return val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
+    }
 
     // if the value itself accidentally contains " null"/" undefined", remove it
     if (key === "trend") {
@@ -38,7 +45,9 @@ const DataPageLayout = ({
   subtitleVariables = {},
 }) => {
   const renderedTitle =
-    typeof title === "string" ? resolveText(title, titleVariables) : title;
+    typeof title === "string"
+    ? colorizeVirusInTitle(resolveText(title, titleVariables))
+    : title;
 
   const renderedSubtitle =
     typeof subtitle === "string" ? resolveText(subtitle, subtitleVariables) : subtitle;
@@ -83,7 +92,7 @@ const DataPageLayout = ({
 };
 
 DataPageLayout.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   subtitle: PropTypes.node,
   topControls: PropTypes.node,
   info: PropTypes.node,

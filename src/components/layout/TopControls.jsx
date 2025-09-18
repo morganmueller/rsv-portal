@@ -23,7 +23,7 @@ const TopControls = ({
   ];
   
   const dataTypeOptions =
-    activeVirus === "Influenza" || activeVirus === "RSV"
+    activeVirus === "Flu" || activeVirus === "RSV"
       ? allOptions.filter((opt) => opt.value !== "death") 
       : allOptions;
   

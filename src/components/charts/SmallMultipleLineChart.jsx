@@ -36,14 +36,18 @@ const SmallMultipleLineChart = ({
 }) => {
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
-    "Influenza": colors.purplePrimary,
+    "Flu": colors.purplePrimary,
     "RSV": colors.greenPrimary,
   };
 
+  // Map display label → source label used in data
+  const toSourceVirus = (v) => (v === "Flu" ? "Influenza" : v);
+  const sourceVirus = toSourceVirus(virus);
+
   const filteredData =
-    virus && Array.isArray(data) && data.some((d) => d.virus === virus)
-      ? data.filter((d) => d.virus === virus)
-      : Array.isArray(data) ? data : [];
+   virus && Array.isArray(data) && data.some((d) => d.virus === sourceVirus)
+   ? data.filter((d) => d.virus === sourceVirus)
+   : Array.isArray(data) ? data : [];
 
   const explicitTokenColor =
     color && tokens.colors?.[color] ? tokens.colors[color] : null;

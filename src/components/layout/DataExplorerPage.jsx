@@ -56,7 +56,11 @@ const DataExplorerPage = ({ config }) => {
             title={section.title?.replace("{virus}", activeVirus)}
             subtitle={section.subtitle}
             subtitleVariables={{ virus: activeVirus, trend: "higher" }}
-            titleVariables={{virus: activeVirus, trend: "higher"}}
+            titleVariables={{
+              virus: activeVirus,
+              viewLabel: view === "visits" ? "Visits" : "Hospitalizations",
+              viewLabelPreposition: view === "visits" ? "to" : "from",
+            }}
             infoIcon={section.infoIcon}
             downloadIcon={section.downloadIcon}
             onDownloadClick={handleDownload}

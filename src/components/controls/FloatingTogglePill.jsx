@@ -41,7 +41,7 @@ const FloatingTogglePill = ({
   ];
 
   const filteredDataTypeOptions =
-    stagedVirus === "Influenza" || stagedVirus === "RSV"
+    stagedVirus === "Flu" || stagedVirus === "RSV"
       ? allDataTypeOptions.filter((opt) => opt.value !== "death")
       : allDataTypeOptions;
 

@@ -3,7 +3,7 @@ import VegaLiteWrapper from "./VegaLiteWrapper";
 import { tokens } from "../../styles/tokens";
 import ChartFooter from "./ChartFooter";
 
-const { covid, flu, rsv , ari} = tokens.colorScales;
+const { covid, flu, rsv, ari } = tokens.colorScales;
 const { colors, typography } = tokens;
 
 const useMedia = (query) => {
@@ -30,10 +30,10 @@ const useMedia = (query) => {
   return matches;
 };
 
-const getXAxisFormat = (data, xField) => {
+const getXAxisFormat = (data, xKey) => {
   if (!data || data.length < 2) return "%b %d";
-  const first = new Date(data[0][xField]);
-  const second = new Date(data[1][xField]);
+  const first = new Date(data[0][xKey]);
+  const second = new Date(data[1][xKey]);
   const delta = Math.abs(second - first);
   const oneDay = 86400000;
   const oneWeek = oneDay * 7;
@@ -57,24 +57,24 @@ const LineChart = ({
   legendTitle,
   color,
   metricName = "Category",
-  isPercent = true, 
+  isPercent = true,
   seasonal,
   dataSource = "NYC Health Department Syndromic Surveillance",
   footnote,
-  columnLabels = {}
+  columnLabels = {},
 }) => {
   const virusColorMap = {
     "COVID-19": colors.bluePrimary,
-    "Influenza": colors.purplePrimary,
-    "RSV": colors.greenPrimary,
-    "ARI": colors.orangePrimary,
+    Flu: colors.purplePrimary,
+    RSV: colors.greenPrimary,
+    ARI: colors.orangePrimary,
   };
 
   const virusColorRangeMap = {
     "COVID-19": covid,
-    "Influenza": flu,
-    "RSV": rsv,
-    "ARI": ari,
+    Flu: flu,
+    RSV: rsv,
+    ARI: ari,
   };
 
   const isMobile = useMedia("(max-width: 590px)");
@@ -84,15 +84,57 @@ const LineChart = ({
   const chartTitleColor = getComputedStyle(document.documentElement).getPropertyValue("--chart-title-color").trim();
 
   const defaultColor = colors.gray600;
-  const selectedColor =
-    tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
+  const selectedColor = tokens.colors[color] || color || virusColorMap[virus] || defaultColor;
 
+  // Defaults for fields
+  const xKey = xField || "date";
+  const yKey = yField || "value";
+
+  // Map UI "Flu" -> data "Influenza"
+  const toSourceVirus = (v) => (v === "Flu" ? "Influenza" : v);
+  const sourceVirus = toSourceVirus(virus);
+
+  // Add display label for legend/tooltips
+  const withDisplayLabels = Array.isArray(data)
+    ? data.map((d) => ({
+        ...d,
+        virusDisplay: d.virus === "Influenza" ? "Flu" : d.virus,
+      }))
+    : [];
+
+  // ✅ Only filter by virus if the data actually has a virus field
+  const hasVirusField = withDisplayLabels.some((d) => d.virus != null);
   const filteredData =
-    virus && data.some((d) => d.virus === virus)
-      ? data.filter((d) => d.virus === virus)
-      : data;
+    virus && hasVirusField
+      ? withDisplayLabels.filter((d) => d.virus === sourceVirus)
+      : withDisplayLabels;
 
-  const axisFormat = getXAxisFormat(filteredData, xField);
+  // ---------- Guard against bad inputs (be tolerant of numeric strings) ----------
+  const hasValidDate = filteredData.some((d) => {
+    const v = d?.[xKey] ?? d?.date;
+    const t = v ? new Date(v).getTime() : NaN;
+    return Number.isFinite(t);
+  });
+
+  const hasFinite = filteredData.some((d) => {
+    const raw = d?.[yKey] ?? d?.value;
+    if (raw == null) return false;
+    // allow "3.2", "3.2%", "+0.5", etc.
+    const n = typeof raw === "string" ? parseFloat(raw.replace('%', '')) : raw;
+    return Number.isFinite(n);
+  });
+
+  if (!hasValidDate || !hasFinite) {
+    return (
+      <div style={{ width: "100%" }}>
+        <div style={{ padding: "1rem", color: tokens.colors.gray600 }}>No data to display.</div>
+        <ChartFooter dataSource={dataSource} footnote={footnote} />
+      </div>
+    );
+  }
+  // ------------------------------------------------------------------------------
+
+  const axisFormat = getXAxisFormat(filteredData, xKey);
 
   const xEncoding = seasonal
     ? {
@@ -107,42 +149,41 @@ const LineChart = ({
         scale: { domain: [1, 365] },
       }
     : {
-        field: xField,
+        field: xKey,
         type: "temporal",
-        axis: {
-          title: null,
-          format: axisFormat,
-          tickCount: 6,
-        },
+        axis: { title: null, format: axisFormat, tickCount: 6 },
         scale: { padding: 10 },
       };
 
-  // Tooltip display string
   const valueDisplayCalc = isPercent
     ? "datum.valueRaw != null ? (test(/%$/, '' + datum.valueRaw) ? '' + datum.valueRaw : ('' + datum.valueRaw) + '%') : (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')"
     : "datum.valueRaw != null ? '' + datum.valueRaw : (isValid(datum.value) ? format(datum.value, ',.0f') : 'N/A')";
 
-  const sharedTooltip = (tooltipFields ?? [xField, yField, ...(colorField ? [colorField] : [])]).map((field) => {
-    if (field === yField) {
+  const sharedTooltip = (tooltipFields ?? [xKey, yKey, ...(colorField ? [colorField] : [])]).map((field) => {
+    if (field === yKey) {
       return { field: "valueDisplay", title: columnLabels.value || "Reported", type: "nominal" };
     }
-    if (field === xField || field === "date") {
-      return { field, type: "temporal", format: "%b, %d, %Y", title: columnLabels[field] || "Date" };
+    if (field === xKey || field === "date") {
+      return {
+        field: field === "date" ? "date" : xKey,
+        type: "temporal",
+        format: "%b, %d, %Y",
+        title: columnLabels[field] || "Date",
+      };
     }
     const sample = filteredData.find((d) => d[field] != null)?.[field];
     return { field, type: typeof sample === "number" ? "quantitative" : "nominal", title: columnLabels[field] };
   });
 
-  // Colors
   const lineColorEncoding = colorField
     ? {
         field: "{colorField}",
         type: "nominal",
         scale: {
           range:
-            (virusColorRangeMap[virus] && (colorField === "metric"))
+            virusColorRangeMap[virus] && colorField === "metric"
               ? [virusColorRangeMap[virus][2], virusColorMap["ARI"]]
-              : virusColorRangeMap[virus]
+              : virusColorRangeMap[virus],
         },
         sort: ["0-4", "5-17", "18-64", "65+"],
         legend:
@@ -150,26 +191,26 @@ const LineChart = ({
             ? null
             : {
                 labelExpr:
-                  "datum.label === 'ARI visits' ? 'Respiratory illness visits' : datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' : datum.label",
+                  "datum.label === 'Influenza' ? 'Flu' :" +
+                  "datum.label === 'ARI visits' ? 'Respiratory illness visits' :" +
+                  "datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' :" +
+                  "datum.label",
                 labelLimit: 300,
                 clipHeight: 30,
                 title: legendTitle ?? null,
-              }
+              },
       }
     : { value: selectedColor };
 
-  const pointColorEncoding = colorField
-    ? { field: "{colorField}", type: "nominal" }
-    : { value: selectedColor };
+  const pointColorEncoding = colorField ? { field: "{colorField}", type: "nominal" } : { value: selectedColor };
 
-  // Only dim others when a selection exists; otherwise keep all fully opaque.
   const lineOpacityEncoding = colorField
     ? {
         condition: [
-          { param: "series", value: 1 },                                // hovered series
-          { test: "!length(data('series_store'))", value: 1 }           // no selection -> keep all full
+          { param: "series", value: 1 },
+          { test: "!length(data('series_store'))", value: 1 },
         ],
-        value: 0.2                                                      // otherwise dim others
+        value: 0.2,
       }
     : { value: 1 };
 
@@ -184,7 +225,7 @@ const LineChart = ({
       fontSize: 14,
       baseline: "top",
       dy: -10,
-      subtitleFontSize: 13
+      subtitleFontSize: 13,
     },
     config: {
       background: chartBg || colors.white,
@@ -210,7 +251,7 @@ const LineChart = ({
         direction: "horizontal",
         columns: legendColumns,
         columnPadding: 10,
-        labelLimit: isMobile ? 160 : 300
+        labelLimit: isMobile ? 160 : 300,
       },
       view: { stroke: "transparent" },
     },
@@ -228,23 +269,19 @@ const LineChart = ({
           "(datetime(year(datum.date), month(datum.date), date(datum.date)) - datetime(month(datum.date) > 7 ? year(datum.date) : year(datum.date) - 1, 8, 1)) / (1000 * 60 * 60 * 24) + 1",
         as: "dayOfSeason",
       },
-      {
-        calculate: "toString(datum.startYear) + '-' + substring(toString(datum.startYear + 1), 2)",
-        as: "season"
-      },
-      { calculate: valueDisplayCalc, as: "valueDisplay" }
+      { calculate: "toString(datum.startYear) + '-' + substring(toString(datum.startYear + 1), 2)", as: "season" },
+      { calculate: valueDisplayCalc, as: "valueDisplay" },
     ],
 
     layer: [
-      // single-series area fill
       ...(colorField || seasonal
         ? []
-        : [{
-            mark: { type: "area", interpolate: "linear", opacity: 0.15, color: selectedColor },
-            encoding: { x: xEncoding, y: { field: "{yField}", type: "quantitative" } },
-          }]),
-
-      // main line(s) (no tooltip or points here)
+        : [
+            {
+              mark: { type: "area", interpolate: "linear", opacity: 0.15, color: selectedColor },
+              encoding: { x: xEncoding, y: { field: "{yField}", type: "quantitative" } },
+            },
+          ]),
       {
         mark: { type: "line", interpolate: "linear", strokeWidth: 3, point: false },
         encoding: {
@@ -258,66 +295,61 @@ const LineChart = ({
           opacity: lineOpacityEncoding,
         },
       },
-
-      // visible points (no tooltip) — defines the `series` selection
       {
-        params: colorField ? [{
-          name: "series",
-          select: {
-            type: "point",
-            fields: ["{colorField}"],
-            on: "pointermove",
-            clear: "pointerout"
-          }
-        }] : [],
+        params: colorField
+          ? [
+              {
+                name: "series",
+                select: { type: "point", fields: ["{colorField}"], on: "pointermove", clear: "pointerout" },
+              },
+            ]
+          : [],
         mark: { type: "point", filled: true, size: 40, strokeWidth: 1.5 },
         encoding: {
           x: xEncoding,
           y: { field: "{yField}", type: "quantitative" },
-          color: pointColorEncoding
-        }
+          color: pointColorEncoding,
+        },
       },
-
-      // invisible "hit" points (big target) — own the tooltip + precise point selection
       {
-        params: [{
-          name: "pt",
-          select: {
-            type: "point",
-            fields: colorField ? ["{colorField}", "{xField}"] : ["{xField}"],
-            on: "pointermove",
-            clear: "pointerout"
-          }
-        }],
-        mark: { type: "point", opacity: 0, size: 140 }, // large hit area
+        params: [
+          {
+            name: "pt",
+            select: {
+              type: "point",
+              fields: colorField ? ["{colorField}", "{xField}"] : ["{xField}"],
+              on: "pointermove",
+              clear: "pointerout",
+            },
+          },
+        ],
+        mark: { type: "point", opacity: 0, size: 140 },
         encoding: {
           x: xEncoding,
           y: { field: "{yField}", type: "quantitative" },
-          // Keep same color field so the hit matches the series
           ...(colorField ? { color: { field: "{colorField}", type: "nominal" } } : {}),
-          tooltip: sharedTooltip
-        }
-      }
+          tooltip: sharedTooltip,
+        },
+      },
     ],
   };
 
-  console.log('Rendering chart with data:', data);
+  const latestDate = (() => {
+    const ts = filteredData
+      .map((d) => new Date(d["date"]).getTime())
+      .filter((n) => Number.isFinite(n));
+    return ts.length ? Math.max(...ts) : null;
+  })();
 
   return (
     <div style={{ width: "100%" }}>
       <VegaLiteWrapper
         data={filteredData}
         specTemplate={specTemplate}
-        dynamicFields={{ xField, yField, colorField }}
-        rendererMode="svg" // avoids canvas/CSS transform drift
+        dynamicFields={{ xField: xKey, yField: yKey, colorField }}
+        rendererMode="svg"
       />
-      <ChartFooter
-        dataSource={dataSource}
-        latestDate={
-          filteredData?.length > 0 ? Math.max(...filteredData.map((d) => new Date(d["date"]))) : null
-        }
-        footnote={footnote}
-      />
+      <ChartFooter dataSource={dataSource} latestDate={latestDate} footnote={footnote} />
     </div>
   );
 };

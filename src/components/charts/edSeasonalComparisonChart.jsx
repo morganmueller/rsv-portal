@@ -13,7 +13,7 @@ const defaultData = [
 
 const virusColors = {
   "COVID-19": colors.bluePrimary,
-  "Influenza": colors.purpleAccent,
+  "Flu": colors.purpleAccent,
   "RSV": colors.greenMuted,
   "ARI": colors.orangeMuted
 };

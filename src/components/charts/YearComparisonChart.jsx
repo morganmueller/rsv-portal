@@ -60,7 +60,7 @@ const YearComparisonChart = ({
   // Use palette arrays (ramps), not single primaries
   const palettesByMetric = {
     "COVID-19": tokens.colorScales.covid,
-    Influenza: tokens.colorScales.flu,
+    Flu: tokens.colorScales.flu,
     RSV: tokens.colorScales.rsv,
     ARI: tokens.colorScales.ari,
   };

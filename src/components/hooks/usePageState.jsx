@@ -40,7 +40,7 @@ export const PageStateProvider = ({
 
   // Data type fix for viruses that do not support deaths
   React.useEffect(() => {
-    if ((activeVirus === "Influenza" || activeVirus === "RSV") && dataType === "death") {
+    if ((activeVirus === "Flu" || activeVirus === "RSV") && dataType === "death") {
       setDataType("ed"); 
     }
   }, [activeVirus, dataType]);

@@ -65,7 +65,7 @@ html, body, #root {
 .header-title {
   color: var(--header-title-color);
   font-family: var(--font-heading);
-  font-size: clamp(24px, 4vw, 36px);
+  font-size: clamp(24px, 4vw, 38px);
   font-weight: 700;
   line-height: 1.2;
   margin: var(--spacing-xs);

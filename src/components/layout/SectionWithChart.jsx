@@ -7,6 +7,7 @@ const SectionWithChart = ({
   title,
   subtitle,
   subtitleVariables,
+  titleVariables,
   children,                // usually a <ChartContainer />
   infoIcon = false,
   downloadIcon = false,
@@ -24,6 +25,7 @@ const SectionWithChart = ({
       title={title}
       subtitle={subtitle}
       subtitleVariables={subtitleVariables}
+      titleVariables={titleVariables}
       infoIcon={infoIcon}
       downloadIcon={downloadIcon}
       onDownloadClick={onDownloadClick}

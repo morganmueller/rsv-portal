@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import InfoModal from "../popups/InfoModal";
-import DownloadPanel from "../popups/DownloadPanel"; 
+import DownloadPanel from "../popups/DownloadPanel";
+import { colorizeVirusInTitle } from "../../utils/virusText";
+
 import "./ContentContainer.css";
 
 const resolveText = (input, vars = {}) => {
@@ -12,6 +14,15 @@ const resolveText = (input, vars = {}) => {
       raw === null || raw === undefined || raw === "null" || raw === "undefined"
         ? ""
         : String(raw);
+
+
+  //  if (key === "virus") {
+  //   const virusKey = vars.virusKey; // "covid" | "flu" | "rsv" | "ari"
+  //   const scale = tokens.colorScales?.[virusKey];
+  //   const virusColor = Array.isArray(scale) ? scale[0] : undefined; // pick darkest shade
+  //   return `<span class="virus-label" style="color:${virusColor}">${val}</span>`;
+  //  }
+    
 
     if (key === "trend") {
       // Clean null/undefined noise
@@ -79,7 +90,9 @@ const ContentContainer = ({
   }, [animateOnScroll]);
 
   const isTitleString = typeof title === "string";
-  const renderedTitle = isTitleString ? resolveText(title, titleVariables) : title;
+  const renderedTitleHTML = isTitleString
+    ? colorizeVirusInTitle(resolveText(title, titleVariables))
+    : null;  
   const isDynamic = typeof title === "string" && /{.+?}/.test(title);
 
   const isSubtitleString = typeof subtitle === "string";
@@ -98,10 +111,10 @@ const ContentContainer = ({
             {isTitleString ? (
               <h3
                 className={`content-title ${isDynamic ? "content-title-dynamic" : ""}`}
-                dangerouslySetInnerHTML={{ __html: renderedTitle }}
+                dangerouslySetInnerHTML={{ __html: renderedTitleHTML }}
               />
             ) : (
-              <h3 className="content-title">{renderedTitle}</h3>
+              <h3 className="content-title">{title}</h3>
             )}
 
           <div className="content-title-icons">
