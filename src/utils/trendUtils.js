@@ -113,34 +113,48 @@ export function capitalizeFirstHtml(str) {
  */
 // utils/trendUtils.js
 
+// utils/trendUtils.js
 export function formatTrendPhrase(
   change,
   { withBy = true, withPercent = true } = {}
 ) {
   if (!change || !change.label) return "";
 
-  const v = change.value;
-  const isZeroString = typeof v === "string" && v.trim() === "0%";
-  const isZeroNumber = typeof v === "number" && v === 0;
-  const isEmpty = v == null || (typeof v === "string" && v.trim() === "");
+  const vRaw = change.value;
+  const vStr = typeof vRaw === "string" ? vRaw.trim() : vRaw;
 
-  // Any of these → present as "not changed"
-  if (change.label === "not changed" || isZeroString || isZeroNumber || isEmpty) {
+  const isZeroString = typeof vStr === "string" && vStr === "0%";
+  const isZeroNumber = typeof vStr === "number" && vStr === 0;
+  const isEmpty = vStr == null || (typeof vStr === "string" && vStr === "");
+
+  if (change.label.toLowerCase() === "not changed" || isZeroString || isZeroNumber || isEmpty) {
     return "not changed";
   }
 
   const parts = [change.label];
 
-  if (typeof v === "string" && v.trim() !== "") {
+  // Coerce numeric-looking strings → number, then add %
+  const looksNumericString = typeof vStr === "string" && /^[-+]?\d+(?:\.\d+)?$/.test(vStr);
+  if (looksNumericString) {
+    const n = Number(vStr);
+    if (n !== 0) {
+      if (withBy) parts.push("by");
+      parts.push(withPercent ? `${Math.abs(n)}%` : String(Math.abs(n)));
+    }
+    return parts.join(" ");
+  }
+
+  if (typeof vStr === "string") {
     if (withBy) parts.push("by");
-    parts.push(v.trim()); // already includes %
-  } else if (typeof v === "number" && Number.isFinite(v) && v !== 0) {
+    parts.push(vStr); // already formatted (e.g., "5%")
+  } else if (typeof vStr === "number" && Number.isFinite(vStr) && vStr !== 0) {
     if (withBy) parts.push("by");
-    parts.push(withPercent ? `${Math.abs(v)}%` : String(Math.abs(v)));
+    parts.push(withPercent ? `${Math.abs(vStr)}%` : String(Math.abs(vStr)));
   }
 
   return parts.join(" ");
 }
+
 
 
 /**
@@ -159,28 +173,17 @@ export function generateTrendSubtitle({ view, trendObj, latestWeek }) {
   if (!trendObj || typeof trendObj !== "object") return null;
 
   const metric = view === "hospitalizations" ? "hospitalizations" : "visits";
-  const isZeroString = typeof trendObj.value === "string" && trendObj.value.trim() === "0%";
-  const isZeroNumber = typeof trendObj.value === "number" && trendObj.value === 0;
 
-  // Force "not changed" whenever value is zero, regardless of label
-  const isNoChangeLabel = trendObj.label?.toLowerCase() === "not changed";
-  const shouldBeNoChange = isNoChangeLabel || isZeroString || isZeroNumber;
+  // Use the shared formatter so % and "by" are always consistent
+  const phrase = formatTrendPhrase(trendObj, { withBy: true, withPercent: true });
 
-  if (shouldBeNoChange) {
+  if (!phrase || phrase === "not changed") {
     return `${capitalize(metric)} for the week ending ${formatDate(latestWeek)} have not changed since the previous week.`;
   }
 
-  // Otherwise, include the number if present
-  const dirText = trendObj.label?.toLowerCase() || "changed";
-  let valueText = "";
-  if (typeof trendObj.value === "string" && trendObj.value.trim() !== "") {
-    valueText = ` ${trendObj.value.trim()}`;
-  } else if (typeof trendObj.value === "number" && Number.isFinite(trendObj.value) && trendObj.value !== 0) {
-    valueText = ` ${Math.abs(trendObj.value)}%`;
-  }
-
-  return `${capitalize(metric)} for the week ending ${formatDate(latestWeek)} have ${dirText}${valueText} since the previous week.`;
+  return `${capitalize(metric)} for the week ending ${formatDate(latestWeek)} have ${phrase} since the previous week.`;
 }
+
 
 export function coerceNoChange(trendObj) {
   if (!trendObj) return trendObj;

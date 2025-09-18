@@ -5,7 +5,7 @@ const aboutPageConfig = {
   id: "aboutPage",
   titleKey: "About this Site",
   subtitleKey:
-    "The Respiratory Illness Data pages show data on COVID-19, Flu, and RSV in New York City collected by the NYC Health Department.",
+    "The Respiratory Illness Data pages show data on COVID-19, flu, and RSV in New York City collected by the NYC Health Department.",
   controls: { dataTypeToggle: false, virusToggle: false, viewToggle: false },
 
   summary: {
