@@ -9,7 +9,7 @@ Access to care and other factors can influence the number of emergency departmen
 For more detailed information on the data, files, and collection methods, visit our <a href="" target="_blank" rel="noopener noreferrer">GitHub repository [+link when established]</a> . 
 
 ## Archived data on respiratory illnesses in NYC
-You can find data published prior to [date of launch] on our <a href="https://www.nyc.gov/site/doh/covid/covid-19-data.page" target="_blank" rel="noopener noreferrer"> **COVID-19** data page</a> and in the weekly <a href="https://www.nyc.gov/site/doh/providers/health-topics/flu-alerts.page" target="_blank" rel="noopener noreferrer"> **Flu**</a> and  <a href="https://www.nyc.gov/site/doh/covid/covid-19-data.page" target="_blank" rel="noopener noreferrer">**RSV**</a> Surveillance Summaries.  
+You can find data published prior to [date of launch] on our <a href="https://www.nyc.gov/site/doh/covid/covid-19-data.page" target="_blank" rel="noopener noreferrer"> **COVID-19** data page</a> and in the weekly <a href="https://www.nyc.gov/site/doh/providers/health-topics/flu-alerts.page" target="_blank" rel="noopener noreferrer"> **flu**</a> and  <a href="https://www.nyc.gov/site/doh/covid/covid-19-data.page" target="_blank" rel="noopener noreferrer">**RSV**</a> Surveillance Summaries.  
 
 Additional data are also available through EpiQuery for
 <a href="https://a816-health.nyc.gov/hdi/epiquery/visualizations?PageType=ts&PopulationSource=CDSD&Topic=1&Subtopic=41" target="_blank" rel="noopener noreferrer">respiratory infections</a>
@@ -19,13 +19,13 @@ and
 ## Emergency department visits and hospitalizations
 The Health Department receives near real-time data from all 52 emergency departments in NYC. The emergency departments share diagnosis codes which can be used to identify general respiratory complaints such as cough or illnesses such as pneumonia. This information helps us see trends in illness and care-seeking among NYC residents. Laboratory-reported cases 
 
-All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **Flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
+All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
 
 ## Laboratory-reported cases
-All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **Flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.   
+All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.   
 
 ## COVID‑19 deaths
-Currently, we are presenting all-ages death data for **COVID-19** only. There is no national surveillance guidance to define Flu- or RSV-related deaths among adults.  
+Currently, we are presenting all-ages death data for **COVID-19** only. There is no national surveillance guidance to define flu- or RSV-related deaths among adults.  
 
 Deaths are counted as a **COVID-19** death if: 
 
@@ -34,7 +34,7 @@ Deaths are counted as a **COVID-19** death if:
 * A case investigation for a confirmed, probable, or suspect **COVID-19** case determined that **COVID-19** was the cause of death or contributed to the death 
 
 ## Flu‑associated pediatric deaths
-All deaths in children under 18 associated with Flu are reported to the NYC Health Department, as required by the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
+All deaths in children under 18 associated with flu are reported to the NYC Health Department, as required by the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
 
 ## Health inequities
 Data received from emergency departments and electronic laboratory reports often lack information on demographic characteristics, such as race and ethnicity. Race and ethnicity information is most complete for **COVID-19** cases and deaths. The NYC Health Department continues to work to improve completeness of this information for other illnesses.  
@@ -53,7 +53,7 @@ Learn about COVID‑19 disease and prevention
 icon: /assets/flu-vector.svg  
 externalIcon: /assets/external-link-icon.png
 link: https://www.nyc.gov/flu  
-Learn about Flu disease and prevention 
+Learn about flu disease and prevention 
 
 ### RSV
 icon: /assets/rsv-vector.svg  
