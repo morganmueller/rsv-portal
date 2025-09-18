@@ -59,7 +59,7 @@ const viewDisplayLabels = {
 
 const virusLowercaseDisplay = {
   "COVID-19": "COVID-19",
-  Flu: "Flu",
+  Flu: "flu",
   RSV: "RSV",
 };
 
@@ -591,22 +591,35 @@ const ConfigDrivenPage = ({ config }) => {
                 ? `in ${groupDisplay}`
                 : `across ${normalizedLabel.toLowerCase()}`;
 
+
+
+                
+                // build "increased 30%" robustly, regardless of upstream value shape
+            const labelPlusValue = trendObj
+            ? `${trendObj.label}${trendObj.value != null && String(trendObj.value).trim() !== "" ? " " + String(trendObj.value).trim() : ""}`
+            : "not changed";
+
+            // append % to the LAST number in the phrase if no % is present anywhere
+            const labelPlusValuePct = /%/.test(labelPlusValue)
+            ? labelPlusValue
+            : labelPlusValue.replace(/(-?\d+(?:\.\d+)?)(?!.*\d)/, "$1%");
+
             const fullVars = {
-              ...textVars,
-              date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
-              trend: trendObj
-                ? `<span class="${trendClass}">${trendObj.label} ${trendObj.value}</span>`
-                : "not changed",
-              group: groupLabelText,
-              trendDirection: trendObj?.direction,
-              arrow: trendInfo?.arrow,
-              viewLabel: viewDisplayLabels[view],
-              viewLabelPreposition: viewDisplayLabelsPreposition[view],
-              virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
-              virusLowercase: virusLowercaseDisplay[activeVirus],
-              directionText: trendInfo?.directionText,
-              trendColor: trendInfo?.trendColor,
+            ...textVars,
+            date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
+            trend: `<span class="${trendClass}">${labelPlusValuePct}</span>`,  // ← use this
+            group: groupLabelText,
+            trendDirection: trendObj?.direction,
+            arrow: trendInfo?.arrow,
+            viewLabel: viewDisplayLabels[view],
+            viewLabelPreposition: viewDisplayLabelsPreposition[view],
+            virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
+            virusLowercase: virusLowercaseDisplay[activeVirus],
+            directionText: trendInfo?.directionText,
+            trendColor: trendInfo?.trendColor,
             };
+
+                
 
             const rawSubtitleTemplate = resolveText(section.subtitle);
 

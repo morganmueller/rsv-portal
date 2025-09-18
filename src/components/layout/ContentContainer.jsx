@@ -8,44 +8,30 @@ import "./ContentContainer.css";
 
 const resolveText = (input, vars = {}) => {
   if (typeof input !== "string") return input;
+
   return input.replace(/{(\w+)}/g, (_, key) => {
-    const raw = vars[key];
-    let val =
-      raw === null || raw === undefined || raw === "null" || raw === "undefined"
-        ? ""
-        : String(raw);
+    let raw = vars[key];
 
-
-  //  if (key === "virus") {
-  //   const virusKey = vars.virusKey; // "covid" | "flu" | "rsv" | "ari"
-  //   const scale = tokens.colorScales?.[virusKey];
-  //   const virusColor = Array.isArray(scale) ? scale[0] : undefined; // pick darkest shade
-  //   return `<span class="virus-label" style="color:${virusColor}">${val}</span>`;
-  //  }
-    
-
-    if (key === "trend") {
-      // Clean null/undefined noise
-     val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
-     // If trend includes any form of zero percent, remove it
-     // matches: 0%, +0%, -0%, 0.0%, 0.00%
-     const zeroPct = /(^|\s)[+-]?0(?:\.0+)?%/gi;
-     const hadOnlyZero =
-       val.trim().match(/^[+-]?0(?:\.0+)?%$/i) || val.trim() === "0" || val.trim() === "";
-     // Strip any embedded "0%"
-     val = val.replace(zeroPct, "").replace(/\s+/g, " ").trim();
-     // If it was only zero, standardize to "not changed"
-     if (hadOnlyZero || val === "" || /^not\s*changed\s*$/i.test(val)) {
-       val = "not changed";
-     }
-     const direction = vars.trendDirection || "neutral";
-     return `<span class="trend-text trend-${direction} bg-highlight">${val}</span>`;
+    if (raw === null || raw === undefined || raw === "null" || raw === "undefined") {
+      return "";
     }
 
-    val = val.replace(/\bnull\b|\bundefined\b/gi, "").replace(/\s+/g, " ").trim();
-    return `<span class="dynamic-text">${val}</span>`;
+    let val = String(raw).trim();
+
+    // Force percent suffix for trend-like values
+    if (key.toLowerCase().includes("trend") || key.toLowerCase().includes("percent")) {
+      const isNumericNoPercent = /^[-+]?\d+(?:\.\d+)?$/.test(val);
+      if (isNumericNoPercent) {
+        return `${val}%`;
+      }
+    }
+
+    return val;
   });
 };
+
+
+
 
 const ContentContainer = ({
   title,
@@ -96,7 +82,10 @@ const ContentContainer = ({
   const isDynamic = typeof title === "string" && /{.+?}/.test(title);
 
   const isSubtitleString = typeof subtitle === "string";
-  const renderedSubtitle = isSubtitleString ? resolveText(subtitle, subtitleVariables) : subtitle;
+  const renderedSubtitle =
+  typeof subtitle === "string"
+    ? resolveText(subtitle, subtitleVariables)
+    : subtitle;
 
   return (
     <div
@@ -148,15 +137,14 @@ const ContentContainer = ({
           </div>
           </div>
 
-          {renderedSubtitle &&
-            (isSubtitleString ? (
-              <div
-                className="content-subtitle"
-                dangerouslySetInnerHTML={{ __html: renderedSubtitle }}
-              />
-            ) : (
-              <div className="content-subtitle">{renderedSubtitle}</div>
-            ))}
+        {renderedSubtitle &&
+        (isSubtitleString ? (
+          <div className="content-subtitle" dangerouslySetInnerHTML={{ __html: renderedSubtitle }} />
+        ) : (
+          <div className="content-subtitle">{renderedSubtitle}</div>
+        ))
+      }
+
         </div>
       )}
 

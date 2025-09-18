@@ -12,25 +12,49 @@ const TrendSubtitle = ({ template, variables = {}, groupProps }) => {
   if (!template) return null;
 
   // Normalize trend text: remove any 0% variants and collapse to "not changed" if nothing remains
-  const normalizeTrend = (val) => {
-    if (val == null) return "";
-    let s = String(val);
+// Normalize trend text and enforce "by" + "%" when the input is numeric-looking
+const normalizeTrend = (val) => {
+  if (val == null) return "";
+  let s = String(val);
 
-    // If the value already contains HTML (e.g., <span class="trend-neutral">not changed 0%</span>),
-    // operate on the whole string so we remove the "0%" while preserving the rest.
-    // Remove any "+0%", "-0%", "0%", "0.0%", "0.00%", etc. (with optional surrounding spaces)
-    s = s.replace(/([+-]?\s*0(?:\.0+)?%)/gi, "");
+  // 1) Strip any "0%" variants (e.g., "+0%", "0.0%") → collapse to "not changed"
+  s = s.replace(/([+-]?\s*0(?:\.0+)?%)/gi, "");
+  s = s.replace(/\s+/g, " ").trim();
+  if (s === "" || /^not\s*changed$/i.test(s)) return "not changed";
 
-    // Collapse whitespace left behind
-    s = s.replace(/\s+/g, " ").trim();
+  // 2) If it's just a number or a number with optional %, force "by {n}%"
+  //    Examples: "30" -> "by 30%", "30%" -> "by 30%"
+  if (/^[-+]?\d+(?:\.\d+)?%?$/.test(s)) {
+    const n = Math.abs(parseFloat(s.replace("%", "")));
+    return `by ${Number.isFinite(n) ? n : s}%`;
+  }
 
-    // If now empty (or already "not changed"), standardize
-    if (s === "" || /^not\s*changed$/i.test(s)) {
-      return "not changed";
+  // 3) If it's a phrase like "increased 30", "decreased 12", "up 4.5", "lower 7",
+  //    normalize verb and force "by {n}%"
+  const m = s.match(
+    /\b(increase(?:d)?|decrease(?:d)?|up|down|higher|lower)\b(?:\s+by)?\s+([-+]?\d+(?:\.\d+)?)(%?)/i
+  );
+  if (m) {
+    const verb = m[1].toLowerCase();
+    const num = Math.abs(parseFloat(m[2]));
+    const normalizedVerb =
+      verb === "up" || verb === "higher"
+        ? "increased"
+        : verb === "down" || verb === "lower"
+        ? "decreased"
+        : verb.endsWith("d")
+        ? verb
+        : `${verb}d`; // "increase" -> "increased", "decrease" -> "decreased"
+
+    if (Number.isFinite(num)) {
+      return `${normalizedVerb} ${num}%`;
     }
+  }
 
-    return s;
-  };
+  // 4) Otherwise, leave as-is (already well-formed like "increased by 5%")
+  return s;
+};
+
 
   // Interpolate a string fragment, replacing {tokens}. Trend token gets special treatment.
   const interpolate = (fragment) =>
