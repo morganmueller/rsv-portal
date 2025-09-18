@@ -33,7 +33,7 @@ const fluPageConfig = {
   sections: [
     ...edPageConfig.sections,
     ...caseDataPageConfig.sections.filter(
-      (s) => !s.showIfVirus || s.showIfVirus === "Influenza"
+      (s) => !s.showIfVirus || s.showIfVirus === "Flu"
     ),
   ],
 };

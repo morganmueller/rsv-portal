@@ -12,7 +12,7 @@ import rsvPageConfig from "../config/virus/RsvPage.config";
 
 const configBySlug = {
   "covid-19": covidPageConfig,
-  "influenza": fluPageConfig,
+  "flu": fluPageConfig,
   "rsv": rsvPageConfig,
 };
 

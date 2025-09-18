@@ -28,7 +28,7 @@ const edPageConfig = {
       title: "emergencyDeptPage.charts.seasonalEdVisits.title",
       subtitle: "emergencyDeptPage.charts.seasonalEdVisits.subtitle",
       trendEnabled: true,
-      infoIcon: true,
+      infoIcon: false,
       downloadIcon: true,
       modal: {
         title: "emergencyDeptPage.charts.seasonalEdVisits.title",
@@ -68,7 +68,7 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "emergencyDeptPage.charts.percentEdVisitsByAge.title",
+        title: "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -106,7 +106,7 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "emergencyDeptPage.charts.percentEdVisitsByGeo.title",
+        title: "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {

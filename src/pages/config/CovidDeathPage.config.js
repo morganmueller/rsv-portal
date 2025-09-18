@@ -20,7 +20,7 @@ const covidDeathPageConfig = {
   },
   sections: [
     {
-      id: "covid-deaths-season",
+      id: "deaths-season",
       dataType: "death",
 
       title: "covidDeathPage.charts.seasonalComparison.title",
@@ -58,7 +58,7 @@ const covidDeathPageConfig = {
       },
     },
     {
-      id: "covid-deaths-age-group",
+      id: "deaths-age-group",
       dataType: "death",
       title: "covidDeathPage.charts.deathsByAge.title",
       subtitle: null,
@@ -97,7 +97,7 @@ const covidDeathPageConfig = {
       },
     },
     {
-      id: "covid-deaths-borough",
+      id: "deaths-borough",
       dataType: "death",
 
       title: "covidDeathPage.charts.deathsByBorough.title",
@@ -135,7 +135,7 @@ const covidDeathPageConfig = {
       },
     },
     {
-      id: "covid-deahths-re",
+      id: "deaths-re",
       dataType: "death",
 
       title: "covidDeathPage.charts.deathsByRE.title",

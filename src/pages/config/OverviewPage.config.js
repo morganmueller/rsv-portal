@@ -60,7 +60,7 @@ const overviewConfig = {
           metrics: [
             "ARI {view}",
             "COVID-19 {view}",
-            "Influenza {view}",
+            "Flu {view}",
             "RSV {view}"
           ],
           title: "",

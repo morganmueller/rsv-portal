@@ -26,14 +26,14 @@ const caseDataPageConfig = {
         dataSourceKey: "deathData",
         componentProps: {
           dataPath: "/data/deathData.csv",
-          diseaseLabel: "Pediatric influenza deaths",
+          diseaseLabel: "Pediatric flu deaths",
           season: { start: { month: 10, day: 1 }, end: { month: 5, day: 31 } },
           filters: { metric: "Pediatric influenza deaths", submetric: "Weekly" },
           weeklyField: "value",
           seasonalSubmetric: "Seasonal total",
           dateField: "date",
           showWhen: ({ virus, dataType }) =>
-            virus === "Influenza" && dataType === "lab",
+            virus === "Flu" && dataType === "lab",
           as: "p",
           className: "seasonal-bullet",
         },
@@ -128,7 +128,7 @@ const caseDataPageConfig = {
 
       title: "caseDataPage.charts.reportsBySubtype.title",
       subtitle: null,
-      showIfVirus: "Influenza", 
+      showIfVirus: "Flu", 
       infoIcon: true,
       downloadIcon: true,
       trendEnabled: true, 

@@ -3,9 +3,9 @@ import aboutCards from "../../data/aboutCards.json";
 
 const aboutPageConfig = {
   id: "aboutPage",
-  titleKey: "About the Tracker",
+  titleKey: "About this Site",
   subtitleKey:
-    "The Respiratory Illness Data pages show data on COVID-19, influenza, and RSV in New York City collected by the NYC Health Department.",
+    "The Respiratory Illness Data pages show data on COVID-19, Flu, and RSV in New York City collected by the NYC Health Department.",
   controls: { dataTypeToggle: false, virusToggle: false, viewToggle: false },
 
   summary: {
@@ -58,8 +58,8 @@ const aboutPageConfig = {
         },
         {
           id: "flu-peds-deaths",
-          titleKey: "Influenza‑associated pediatric deaths",
-          markdownSection: "Influenza‑associated pediatric deaths",
+          titleKey: "Flu‑associated pediatric deaths",
+          markdownSection: "Flu‑associated pediatric deaths",
         },
         {
           id: "inequities",

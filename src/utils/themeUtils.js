@@ -25,7 +25,7 @@ function normalizeTitleForTheme(raw) {
     return "COVID-19";
   }
   if (t.includes("influenza") || t === "flu" || t.includes("flu")) {
-    return "Influenza";
+    return "Flu";
   }
   if (t.includes("rsv")) {
     return "RSV";
@@ -41,7 +41,7 @@ function normalizeTitleForTheme(raw) {
   }
 
   // default: try exact-cased keys before final fallback
-  const candidates = ["COVID-19", "Influenza", "RSV", "Overall respiratory illness"];
+  const candidates = ["COVID-19", "Flu", "RSV", "Overall respiratory illness"];
   const hit = candidates.find((k) => k.toLowerCase() === t);
   return hit || "Overall respiratory illness";
 }
@@ -52,7 +52,7 @@ const themeMap = {
     background: colors.bgLightBlue,
     icon: "/assets/covid-vector.svg",
   },
-  Influenza: {
+  Flu: {
     color: colors.purplePrimary,
     background: colors.bgLightPurple,
     icon: "/assets/flu-vector.svg",

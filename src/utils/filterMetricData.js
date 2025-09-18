@@ -1,42 +1,60 @@
+// src/utils/filterMetricData.js
 import memoize from "memoizee";
 import { interpolate } from "./interpolate";
 
+/** Canonicalize metric labels so synonyms match (Flu≡Influenza, COVID≡COVID-19). */
+function canonMetric(s) {
+  if (!s) return "";
+  return String(s)
+    .toLowerCase()
+    // normalize covid variants
+    .replace(/covid(?:\s|-)?19/g, "covid-19")
+    .replace(/\bcovid\b/g, "covid-19")
+    // normalize flu → influenza
+    .replace(/\bflu\b/g, "influenza")
+    // normalize whitespace
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function canonDisplay(s) {
+  return typeof s === "string" ? s.trim().toLowerCase() : s ?? "unknown";
+}
+
 /**
- * Filters flat long-form data by exact metric, optional submetric, and display.
+ * Filters flat long-form data by metric (with canonical matching),
+ * optional submetric, and display.
  * Returns array: [{ date, value, valueRaw, ... }]
  */
 export const getMetricData = memoize(function (
   data,
   { metric, submetric, display, groupField }
 ) {
-  const normalizedDisplay = typeof display === "string"
-    ? display.trim().toLowerCase()
-    : null;
+  const normalizedDisplay = canonDisplay(display);
+  const targetMetricCanon = canonMetric(metric);
 
   const filtered = data.filter((d) => {
     const rowMetric = d.metric;
     const rowSubmetric = d.submetric?.trim();
-    const rowDisplay = typeof d.display === "string"
-      ? d.display.trim().toLowerCase()
-      : "unknown";
+    const rowDisplay = canonDisplay(d.display);
 
-    const matchesMetric = rowMetric === metric;
+    // ✅ exact OR canonical match (fixes Flu vs Influenza, COVID vs COVID-19)
+    const matchesMetric =
+      rowMetric === metric || canonMetric(rowMetric) === targetMetricCanon;
 
-    const matchesSubmetric =
-      groupField ? true :
-      (submetric === undefined &&
-        (!rowSubmetric || rowSubmetric === "Total" || rowSubmetric === "Overall")) ||
-      rowSubmetric === submetric;
+    const matchesSubmetric = groupField
+      ? true
+      : (submetric === undefined &&
+          (!rowSubmetric ||
+            rowSubmetric === "Total" ||
+            rowSubmetric === "Overall")) ||
+        rowSubmetric === submetric;
 
     const matchesDisplay =
       normalizedDisplay === null || rowDisplay === normalizedDisplay;
 
-    const isMatch = matchesMetric && matchesSubmetric && matchesDisplay;
-
-
-    return isMatch;
+    return matchesMetric && matchesSubmetric && matchesDisplay;
   });
-
 
   return filtered.map((d) => ({
     date: new Date(d.date),
@@ -59,20 +77,24 @@ export function pivotMetricToViews(
   display = "Percent"
 ) {
   const grouped = {};
+  const baseCanon = canonMetric(baseMetric);
+  const displayCanon = canonDisplay(display);
+  const suffixCanon = typeof viewSuffix === "string" ? viewSuffix.toLowerCase() : "";
 
   data.forEach((d) => {
-    const { metric, value, display: rowDisplay } = d;
-    if (
-      rowDisplay !== display ||
-      !metric.startsWith(baseMetric) ||
-      (viewSuffix && !metric.endsWith(viewSuffix))
-    ) return;
+    const rowDisplayCanon = canonDisplay(d.display);
+    const metricCanon = canonMetric(d.metric);
 
-    const label = viewSuffix
-      ? metric.replace(`${baseMetric} `, "").replace(` ${viewSuffix}`, "")
-      : metric.replace(`${baseMetric} `, "");
+    if (rowDisplayCanon !== displayCanon) return;
+    if (!metricCanon.startsWith(baseCanon)) return;
+    if (suffixCanon && !metricCanon.endsWith(suffixCanon)) return;
 
-    const viewType = label.toLowerCase();
+    // Extract the view label ("visits" / "hospitalizations") from the canonical string
+    const labelCanon = suffixCanon
+      ? metricCanon.replace(`${baseCanon} `, "").replace(` ${suffixCanon}`, "")
+      : metricCanon.replace(`${baseCanon} `, "");
+
+    const viewType = labelCanon.toLowerCase();
     if (!["visits", "hospitalizations"].includes(viewType)) return;
 
     const groupValue = groupField ? d[groupField]?.trim() : null;
@@ -85,7 +107,7 @@ export function pivotMetricToViews(
       };
     }
 
-    grouped[key][viewType] = +value;
+    grouped[key][viewType] = +d.value;
   });
 
   return Object.values(grouped).sort(
@@ -117,7 +139,7 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     // 🧪 Case: multiple metrics (for grouped charts/statcards/combined charts)
     if (Array.isArray(props.metrics)) {
       const resolved = props.metrics.map((m) => interpolate(m, variables));
-    
+
       // Custom components (StatGrid, OverviewGrid) get OBJECT form
       if (section.renderAs === "custom") {
         result.data[dataKey] = resolved.reduce((acc, metric) => {
@@ -137,13 +159,13 @@ export function hydrateConfigData(config, flatData, variables = {}) {
             submetric,
             display,
             groupField,
-          }).map(row => ({ ...row, series: metric }))
+          }).map((row) => ({ ...row, series: metric }))
         );
       }
       continue;
-    }    
+    }
 
-    // ↔️ Case: pivoted view
+    //  Case: pivoted view
     if (props.pivotView && baseMetric) {
       result.data[dataKey] = pivotMetricToViews(
         flatData,
@@ -153,7 +175,7 @@ export function hydrateConfigData(config, flatData, variables = {}) {
         display
       );
     }
-    // 📚 Case: multiple metricNames
+    // Case: multiple metricNames
     else if (Array.isArray(metricName)) {
       result.data[dataKey] = metricName.flatMap((m) =>
         getMetricData(flatData, {
@@ -164,7 +186,7 @@ export function hydrateConfigData(config, flatData, variables = {}) {
         }).map((row) => ({ ...row, metric: m }))
       );
     }
-    // ✅ Case: single metric
+    //  Case: single metric
     else if (metricName) {
       result.data[dataKey] = getMetricData(flatData, {
         metric: metricName,
@@ -175,8 +197,6 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     } else {
       console.warn(`⚠️ Section "${section.id}" missing metricName or baseMetric`);
     }
-
-  
   }
 
   return result;

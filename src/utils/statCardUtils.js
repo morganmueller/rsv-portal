@@ -4,7 +4,7 @@
  * for a given base metric like "ARI", "COVID", etc.
  *
  * @param {Array} data - Full long-form dataset with fields: date, metric, submetric, value
- * @param {string} metricBase - Base name of the metric (e.g. "ARI", "COVID", "RSV", "Influenza")
+ * @param {string} metricBase - Base name of the metric (e.g. "ARI", "COVID", "RSV", "Flu")
  * @returns {{
     *   latest: string | null,
     *   change: string | null,
