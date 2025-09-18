@@ -17,7 +17,7 @@ To maintain confidentiality, we don't report **counts lower than 5**.
 
 ## {virus} Laboratory-Reported Cases by Subtype
 
-**Clinical laboratories** that perform influenza testing on NYC residents may identify influenza type A, influenza type B, or influenza without specifying type A or B. 
+**Clinical laboratories** that perform Flu testing on NYC residents may identify Flu type A, Flu type B, or Flu without specifying type A or B. 
 
 To maintain confidentiality, we don't report **counts lower than 5**.
 
