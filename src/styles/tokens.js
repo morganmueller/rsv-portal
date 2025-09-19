@@ -32,10 +32,10 @@ const colors = {
   redMuted: "#F87171",
   
   // Semantic backgrounds
-  bgLightBlue:   "#E3F0FF",
-bgLightPurple: "#F8EAFE",
+bgLightBlue:   "#08519C26",
+bgLightPurple: "#4A148624",
   // bgLightBlue: "#EFF6FF",
-  bgLightGreen: "#ECFDF5",
+  bgLightGreen: "#00441A26",
   bgLightOrange: "#F4C4A5",
   // bgLightPurple: "#F5F3FF",
   bgMutedPink: "#F4C4A5",
