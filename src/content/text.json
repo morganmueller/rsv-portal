@@ -83,7 +83,7 @@
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         },
         "percentEdVisitsByGeo": {
-          "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'><span class='dynamic-label'>Diagnosis</span> by <span class='virus-label'>Borough</span>",
+          "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'>Diagnosis</span> by <span class='virus-label'>Borough</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         }
 
