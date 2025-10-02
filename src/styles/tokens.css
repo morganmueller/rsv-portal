@@ -223,7 +223,7 @@
 --img-on-light-filter: none;
 --img-on-light-shadow: none;
 --img-filter: brightness(0) saturate(100%) contrast(200%);
-
+--footer-img-filter: none;
 }
 
 
@@ -426,5 +426,6 @@
 
 
  --img-filter: invert(1) brightness(1.08) contrast(1.1);
-                     
+ --footer-img-filter: invert(1) brightness(1.08) contrast(1.1);
+
 }

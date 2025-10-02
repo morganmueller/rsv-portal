@@ -78,7 +78,7 @@
   fill: var(--footer-link);
   transition: fill 0.2s ease;
   vertical-align: middle;
-  filter: var(--img-filter);
+  filter: var(--footer-img-filter);
 
 }
 
