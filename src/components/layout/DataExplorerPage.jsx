@@ -1,3 +1,4 @@
+// src/pages/DataExplorerPage.jsx
 import React from "react";
 import { usePageState } from "../../components/hooks/usePageState";
 import DataPageLayout from "../../components/layout/DataPageLayout";
@@ -9,6 +10,19 @@ import MarkdownRenderer from "../../components/contentUtils/MarkdownRenderer";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
 
+// CENTRALIZED subtitle helpers
+import {
+  renderSectionSubtitle,
+  flattenSlice,
+  viewDisplayLabels,
+  viewDisplayLabelsPreposition,
+} from "../../utils/subtitleEngine";
+
+const resolveTokens = (input, vars = {}) => {
+  if (typeof input !== "string") return input;
+  const raw = input.includes(".") ? getText(input) : input;
+  return raw.replace(/{(\w+)}/g, (_, k) => (vars[k] ?? ""));
+};
 
 const DataExplorerPage = ({ config }) => {
   const { titleKey, subtitleKey, summary, sections = [], data = {} } = config;
@@ -22,15 +36,13 @@ const DataExplorerPage = ({ config }) => {
     >
       {summary && (
         <TrendSummaryContainer
-        sectionTitle={summary.title}
-        date={summary.lastUpdated}
-        trendDirection={summary.showTrendArrow ? "up" : "down"} // or compute real trend later
-        markdownPath={summary.markdownPath}
-        showTitle={summary.showSecondayTitle}
-        metricLabel={summary.metricLabel} 
-
-      />
-      
+          sectionTitle={summary.title}
+          date={summary.lastUpdated}
+          trendDirection={summary.showTrendArrow ? "up" : "down"}
+          markdownPath={summary.markdownPath}
+          showTitle={summary.showSecondayTitle}
+          metricLabel={summary.metricLabel}
+        />
       )}
 
       {sections.map((section, idx) => {
@@ -41,45 +53,55 @@ const DataExplorerPage = ({ config }) => {
         }
 
         const dataKey = section.chart.props?.dataSourceKey;
-        const chartData = data[dataKey] || [];
+        const slice = data[dataKey] || [];
+        const flattened = flattenSlice(slice);
+
+        const subtitleNode = renderSectionSubtitle({
+          section,
+          dataSlice: flattened,
+          context: { activeVirus, view },
+          // DataExplorer generally doesn’t have group controls; omit `group`
+        });
+
+        const titleVars = {
+          virus: activeVirus,
+          viewLabel: viewDisplayLabels[view],
+          viewLabelPreposition: viewDisplayLabelsPreposition[view],
+        };
 
         const resolvedProps = {
           ...section.chart.props,
-          data: chartData,
+          data: flattened,
           virus: activeVirus,
-          view: view,
+          view,
         };
 
         return (
           <SectionWithChart
             key={section.id || idx}
-            title={section.title?.replace("{virus}", activeVirus)}
-            subtitle={section.subtitle}
-            subtitleVariables={{ virus: activeVirus, trend: "higher" }}
-            titleVariables={{
-              virus: activeVirus,
-              viewLabel: view === "visits" ? "Visits" : "Hospitalizations",
-              viewLabelPreposition: view === "visits" ? "to" : "from",
-            }}
+            title={resolveTokens(section.title || "", titleVars)}
+            subtitle={subtitleNode}
+            subtitleVariables={{}}
+            titleVariables={titleVars}
             infoIcon={section.infoIcon}
             downloadIcon={section.downloadIcon}
             onDownloadClick={handleDownload}
             modalTitle={section.modal?.title}
             modalContent={
               section.modal?.markdownPath ? (
-            <MarkdownRenderer
-              filePath={section.modal.markdownPath}
-              sectionTitle={resolveText(section.modal.title, { ...textVars, trend: view })}
-              showTitle={true}
-            />
-
+                <MarkdownRenderer
+                  filePath={section.modal.markdownPath}
+                  sectionTitle={resolveTokens(section.modal.title || "", titleVars)}
+                  showTitle={true}
+                  variables={{ ...titleVars }}
+                />
               ) : null
-            }            
+            }
           >
             {ChartComponent ? (
               <ChartContainer
-              title={section.title?.replace("{virus}", activeVirus)}
-              chart={<ChartComponent {...resolvedProps} />}
+                title={resolveTokens(section.title || "", titleVars)}
+                chart={<ChartComponent {...resolvedProps} />}
                 footer={section.chart.footer}
               />
             ) : (
@@ -89,12 +111,9 @@ const DataExplorerPage = ({ config }) => {
             )}
           </SectionWithChart>
         );
-        
       })}
     </DataPageLayout>
-    
   );
-  
 };
 
 export default DataExplorerPage;

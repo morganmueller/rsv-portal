@@ -19,9 +19,9 @@ const TopBar = () => {
     // notranslate prevents Google from altering the bar’s UI text
     <div className="top-bar notranslate">
       <div className="top-bar-container">
-        <a href="https://www.nyc.gov/" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.nyc.gov/site/doh/" target="_blank" rel="noopener noreferrer">
           <img
-            src="https://a816-dohbesp.nyc.gov/IndicatorPublic/images/nyc-bubble-logo.svg"
+            src="/assets/NYC_Health_color_main.png"
             alt="NYC Health Logo"
             className="top-bar-logo-image"
           />

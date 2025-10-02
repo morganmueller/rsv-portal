@@ -84,6 +84,18 @@ const groupDisplayNames = {
   "All Boroughs": "All Boroughs",
 };
 
+
+
+// Always render subtitles through TrendSubtitle so tokens become styled spans
+const renderSubtitle = (template, variables, groupProps) => {
+  if (!template) return null;
+  const t =
+  typeof template === "string" && template.includes(".")
+    ? getText(template) // i18n key from text.json
+    : template;         // plain template string
+   return <TrendSubtitle template={t || ""} variables={variables || {}} groupProps={groupProps} />;
+};
+
 const displayVirus = (v) => (v === "Influenza" ? "Flu" : v);
 
 
@@ -192,7 +204,6 @@ const ConfigDrivenPage = ({ config }) => {
       .catch(console.error);
   }, [config, activeVirus, view, dataType]);
 
-  // (Removed: old summary markdown prefetch that referenced summary.markdownPath)
 
   if (!hydratedConfig) return <div className="loading"></div>;
   const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
@@ -364,7 +375,7 @@ const ConfigDrivenPage = ({ config }) => {
               if (section.id === "combined-virus") {
                 // combined-virus uses ARI series for the WoW trend
                 const seriesKey =
-                  view === "visits" ? "ARI visits" : "ARI hospitalizations";
+                  view === "visits" ? "Respiratory illness visits" : "Respiratory illness hospitalizations";
                 const ariSeries = Array.isArray(filteredData)
                   ? filteredData
                   : filteredData?.[seriesKey] || [];
@@ -385,11 +396,17 @@ const ConfigDrivenPage = ({ config }) => {
               }
 
               // Safely resolve the raw subtitle template from text.json (or plain string)
-              const rawSubtitleTemplate =
-                typeof section.subtitle === "string"
-                  ? getText(section.subtitle)
-                  : section.subtitle || "";
+              // const rawSubtitleTemplate =
+              //   typeof section.subtitle === "string"
+              //     ? getText(section.subtitle)
+              //     : section.subtitle || "";
 
+              // Build a styled TrendSubtitle node for custom sections
+               const customSubtitleNode = renderSubtitle(
+                  section.subtitle,
+                  subtitleVars
+                );
+              
               const wrapInChart = section.wrapInChart !== false; // default true
 
               const componentNode = (
@@ -405,7 +422,7 @@ const ConfigDrivenPage = ({ config }) => {
                 <ContentContainer
                   key={key}
                   title={resolveText(section.title, textVars)}
-                  subtitle={rawSubtitleTemplate}
+                  subtitle={customSubtitleNode}
                   subtitleVariables={subtitleVars}
                   animateOnScroll={section.animateOnScroll !== false}
                   background={section.background || "white"}
@@ -594,7 +611,6 @@ const ConfigDrivenPage = ({ config }) => {
 
 
                 
-                // build "increased 30%" robustly, regardless of upstream value shape
             const labelPlusValue = trendObj
             ? `${trendObj.label}${trendObj.value != null && String(trendObj.value).trim() !== "" ? " " + String(trendObj.value).trim() : ""}`
             : "not changed";

@@ -34,7 +34,6 @@ ChartContainer.propTypes = {
   chart: PropTypes.node,
   sidebar: PropTypes.node,
   footer: PropTypes.node,
-  /* NEW */
   stackSidebarAbove: PropTypes.bool,
 };
 

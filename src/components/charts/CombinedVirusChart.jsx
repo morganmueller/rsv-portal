@@ -1,12 +1,13 @@
 // src/components/charts/CombinedVirusChart.jsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import TrendSubtitle from "../controls/TrendSubtitle";
 import { getTrendFromTimeSeries, formatDate } from "../../utils/trendUtils";
 import { tokens } from "../../styles/tokens";
 import ChartFooter from "./ChartFooter";
 import ChartModal from "../popups/ChartModal";
-import VegaLiteWrapper from "./VegaLiteWrapper";
+import VegaLiteWrapper, { VegaThemeContext } from "./VegaLiteWrapper";
+
 import { toDisplayVirus, coerceRowVirus } from "../../utils/virusMap";
 
 /** Robust date coercion: supports date, week, end_date, etc. */
@@ -45,7 +46,9 @@ function toSeriesLabel(row) {
     if (/covid/i.test(base)) display = "COVID";
     else if (/influenza/i.test(base)) display = "Flu";
     else if (/rsv/i.test(base)) display = "RSV";
-    else if (/ari/i.test(base)) display = "ARI";
+    else if (/ari/i.test(base)) display = "Respiratory illness"; 
+    else if (/resp(iratory)?\s*ill/i.test(base)) display = "Respiratory illness";
+
     else display = base;
   }
   if (/^COVID-?19$/i.test(display)) display = "COVID";
@@ -66,8 +69,14 @@ const CombinedVirusChart = ({
     if (Array.isArray(data)) return null;
     const keys = Object.keys(data || {});
     const needle = view === "hospitalizations" ? "hospitalizations" : "visits";
-    return keys.find((k) => /\bARI\b/i.test(k) && k.toLowerCase().includes(needle)) || null;
-  }, [data, view]);
+    return (
+      keys.find(
+        (k) =>
+          (/\bARI\b/i.test(k) || /resp(iratory)?\s*ill/i.test(k)) &&
+          k.toLowerCase().includes(needle)
+          ) || null
+      );
+    }, [data, view]);
 
   const ariSeries = Array.isArray(data) ? [] : (ariKey ? data[ariKey] || [] : []);
 
@@ -128,14 +137,30 @@ const CombinedVirusChart = ({
       .filter((r) => r.date instanceof Date && !Number.isNaN(r.date.valueOf()));
   }, [data]);
 
-  const ARI_COLOR = tokens?.colors?.orangePrimary ?? "#FF6600";
+  const isDark = useContext(VegaThemeContext);
+  const ARI_COLOR_BASE = tokens?.colors?.orangePrimary ?? "#FF6600";
+    const lightenHex = (hex, ratio = 0.25) => {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || "");
+      if (!m) return hex;
+      const [r, g, b] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16));
+      const lift = (ch) => Math.round(ch + (255 - ch) * ratio);
+      const toHex = (n) => n.toString(16).padStart(2, "0");
+      return `#${toHex(lift(r))}${toHex(lift(g))}${toHex(lift(b))}`;
+    };
+    const ARI_COLOR = isDark ? lightenHex(ARI_COLOR_BASE, 0.2) : ARI_COLOR_BASE;
+  
+
+
+
   const seriesDomain = ["COVID", "Flu", "RSV"];
   const miniSeries = ["COVID", "Flu", "RSV"];
-  const seriesRange = [
+  const baseRange = [
     tokens?.colorScales?.covid?.[1] ?? "#0A84FF",
-    tokens?.colorScales?.flu?.[0] ?? "#F43F5E",
-    tokens?.colorScales?.rsv?.[0] ?? "#10B981",
+    tokens?.colorScales?.flu?.[1] ?? "#F43F5E",
+    tokens?.colorScales?.rsv?.[1] ?? "#10B981",
   ];
+  const seriesRange = isDark ? baseRange.map((c) => lightenHex(c, 0.3)) : baseRange;
+
 
   const valueTooltipField = {
     field: "valueDisplay",
@@ -205,7 +230,7 @@ const CombinedVirusChart = ({
           ": (isValid(datum.value) ? format(datum.value, '.1f') + '%' : 'N/A')",
         as: "valueDisplay",
       },
-      { filter: "datum.series === 'ARI'" },
+        { filter: "datum.series === 'Respiratory illness'" },
     ],
     layer: [
       {
@@ -219,7 +244,7 @@ const CombinedVirusChart = ({
         mark: { type: "line", interpolate: "linear", strokeWidth: 3, point: { filled: true, size: 40 } },
         encoding: {
           x: { field: "date", type: "temporal", axis: { title: null, format: "%b %d", tickCount: 6 }, scale: { padding: 10 } },
-          y: { field: "value", type: "quantitative", axis: { title: null, tickCount: 4 } },
+          y: { field: "value", type: "quantitative", axis: { title: null, tickCount: 4, grid: true, gridDash: [2], format: ".1f", labelExpr: "datum.label + '%'", } },
           color: { value: ARI_COLOR },
           tooltip: [{ field: "date", type: "temporal", format: "%d %b %Y", title: "Date" }, valueTooltipField],
         },
@@ -264,8 +289,22 @@ const CombinedVirusChart = ({
           y: {
             field: "value", type: "quantitative",
             axis: showYAxis
-              ? { title: null, tickCount: tall ? 6 : 4, format: ".1f", labelExpr: "datum.label + '%'" }
-              : { title: null, labels: false, ticks: false, domain: false, grid: true },
+           ? {
+               title: null,
+               tickCount: tall ? 6 : 4,
+               format: ".1f",
+               labelExpr: "datum.label + '%'",
+               grid: true,
+               gridDash: [2]     // ← keep dashed grid on the mini with axis
+             }
+           : {
+               title: null,
+               labels: false,
+               ticks: false,
+               domain: false,
+               grid: true,
+               gridDash: [2]     // ← keep dashed grid when using grid-only
+             },
             scale: yDomain ? { domain: yDomain } : undefined
           },
           color: {
@@ -281,9 +320,16 @@ const CombinedVirusChart = ({
           y: {
             field: "value", type: "quantitative",
             axis: showYAxis
-              ? { title: null, tickCount: tall ? 6 : 4, format: ".1f", labelExpr: "datum.label + '%'" }
-              : { title: null, labels: false, ticks: false, domain: false, grid: false },
-            scale: yDomain ? { domain: yDomain } : undefined
+                       ? {
+                           title: null,
+                           tickCount: tall ? 6 : 4,
+                           format: ".1f",
+                           labelExpr: "datum.label + '%'",
+                           grid: true,
+                           gridDash: [2]
+                         }
+                       : { title: null, labels: false, ticks: false, domain: false, grid: false },
+                        scale: yDomain ? { domain: yDomain } : undefined
           },
           color: {
             field: "series", type: "nominal",

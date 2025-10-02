@@ -31,7 +31,7 @@
       },
       "charts": {
         "monthlyARIChart": {
-          "title": "<span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have a <span class='ari-label'>Respiratory Illness</span> <span class='dynamic-label'>Diagnosis</span>",
+          "title": "<span class='dynamic-label'>Percent</span> of <span class='dynamic-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='dynamic-label'>Emergency Department</span> that have a <span class='dynamic-label'>Respiratory Illness Diagnosis</span>",
           "subtitle": "<p>These data show trends of people who received a respiratory illness diagnosis in an NYC emergency department and do not represent everyone with respiratory illness. For example, people who received care outside of an emergency department or who never sought care for their illness are not included.</p><p>{viewLabel} for the week ending {date} have {trend} since the previous week</p>"
         }
       },
@@ -159,7 +159,7 @@
     },
 
     "aboutPage": {
-        "mainTitle": "About the Respiratory Virus Tracker",
+        "mainTitle": "About the Respiratory Illness Data Pages",
         "mainSubtitle": "Learn about respiratory illnesses and how to use this site",
         "summary": {
           "title": "About This Project"

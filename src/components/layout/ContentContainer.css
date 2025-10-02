@@ -1,10 +1,13 @@
-:root { --bp-mobile: 768px; }
+:root { 
+  --bp-mobile: 768px; 
+}
 
-
+/* Base text color */
 body {
   color: var(--text-body, var(--gray-700));
 }
 
+/* Container */
 .content-container {
   background-color: var(--content-bg, var(--white));
   width: 100%;
@@ -23,12 +26,9 @@ body {
   animation: fadeUp 0.6s ease forwards;
 }
 
-.content-header {
-  /* margin-bottom: var(--spacing-md); */
-}
+.content-header {}
 
-
-/* GLOBAL (not inside a media query) */
+/* --- Icon buttons --- */
 .icon-button {
   appearance: none;
   background: none;
@@ -39,29 +39,49 @@ body {
   cursor: pointer;
 }
 
-.icon-button img {
-  display: block;
-  height: 20px; /* 16px for download if you prefer */
-  filter: var(--img-filter);
-  pointer-events: none; /* click the button, not the img */
-}
-
 .icon-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-.ari-label {
-  color: #FF6600;
-  font-weight: 700;
+.icon-button img,
+.info-icon img,        
+img.info-icon,         
+.download-icon img,    
+img.download-icon {    
+  display: block;
+  height: 20px; 
+  filter: var(--img-filter);
+  -webkit-filter: var(--img-filter); 
+  pointer-events: none; 
+  mix-blend-mode: normal;
+  opacity: 1;  
 }
+
+/* Per-variant sizing overrides */
+.download-icon img,
+img.download-icon {
+  height: 22px;
+}
+
+/* Button wrappers can keep spacing/sizing, but NOT the filter (filter must be on the IMG) */
+.info-icon {
+  height: 20px;
+  margin-left: var(--spacing-sm);
+}
+
+.download-icon {
+  height: 22px;
+  margin-left: var(--spacing-md);
+}
+
+/* Labels / emphasis */
+.ari-label { color: #FF6600; font-weight: 700; }
 .virus-label { font-weight: 700; }
 
-
-/* Generic highlight for dynamic placeholders (virus/view/date/etc.) */
+/* Dynamic chips / highlights */
 .dynamic-text {
-  font-weight: 700;
   gap: .35rem;
   margin: .15rem .1rem;
   padding: .2rem .3rem;
@@ -72,34 +92,33 @@ body {
   line-height: 1.5;
   font-weight: 600;
   white-space: nowrap;
-
+  font-weight: 700; /* emphasize */
 }
 
-
+/* Titles & subtitles */
 .content-title {
   font-size: var(--content-title-size, var(--font-size-lg));
-  /* font-family: var(--font-bold); */
   color: var(--content-title-color, var(--gray-900));
   margin-bottom: var(--spacing-md);
 }
 
 h3.content-title {
-  font-family: inherit ;
+  font-family: inherit;
   font-weight: 400 !important;
 }
 
 .content-title .dynamic-text,
 .content-title .virus-label,
 .content-title .trend-text {
-  font-weight: 700;               /* same weight as your current titles */
+  font-weight: 700;
 }
 
 .dynamic-text,
 .bg-highlight {
-  font-weight: 700;               /* ensure dynamic chips look emphasized */
+  font-weight: 700;
 }
-.trend-text { font-weight: 600; } /* outside titles it stays 600 */
 
+.trend-text { font-weight: 600; }
 
 .content-subtitle {
   font-size: var(--content-subtitle-size, var(--font-size-md));
@@ -108,13 +127,14 @@ h3.content-title {
   margin: 0;
 }
 
+/* Body */
 .content-body {
   width: 100%;
   padding: 0;
   box-sizing: border-box;
 }
 
-
+/* Header row */
 .content-title-row {
   display: flex;
   justify-content: space-between;
@@ -122,54 +142,27 @@ h3.content-title {
   width: 100%;
 }
 
-/* h3.content-title {
-  font-weight: 700 !important;
-} */
-
 .content-title .xt,
-.content-title .trend-text {
-  font-weight: 700;
-}
+.content-title .trend-text { font-weight: 700; }
+
 .icon {
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
 }
 
-.info-icon {
-  height: 20px;
-  margin-left: var(--spacing-sm);
-  filter: var(--img-filter);
-
-}
-
-
-
-.download-icon {
-  height: 22px;
-  margin-left: var(--spacing-md);
-  filter: var(--img-filter);
-}
-
+/* Animation */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* === Trend Tags === */
-.trend-text {
-  font-weight: 600;
-}
+/* Trend colors */
+.trend-up    { color: var(--trend-up-color, var(--red-primary)); }
+.trend-down  { color: var(--trend-down-color, var(--green-muted)); }
+.trend-neutral { color: var(--trend-neutral-color, var(--gray-600)); }
 
-/* .trend-up,
-.trend-down,
-.trend-neutral, */
+/* Highlight chip */
 .bg-highlight {
   gap: .35rem;
   margin: .15rem .1rem;
@@ -179,28 +172,11 @@ h3.content-title {
   background: var(--chip-bg, var(--portal-section-bg));
   color: var(--trend-highlight-color, var(--portal-section-fg));
   line-height: 1.5;
-  font-weight: 600;
   white-space: nowrap;
   font-weight: 700;
 }
 
-.trend-up {
-  color: var(--trend-up-color, var(--red-primary));
-}
-
-.trend-down {
-  color: var(--trend-down-color, var(--green-muted));
-}
-
-.trend-neutral {
-  color: var(--trend-neutral-color, var(--gray-600));
-}
-
-.bg-highlight {
-  color: var(--trend-highlight-color, var(--gray-800));
-}
-
-/* === Chart Containers === */
+/* Charts */
 .chart-container,
 .chart-content,
 .chart-body,
@@ -219,7 +195,7 @@ h3.content-title {
   display: block;
 }
 
-/* === Background Variants === */
+/* Background variants */
 .background-white {
   background-color: var(--white);
   border-radius: var(--radius-lg);
@@ -239,91 +215,66 @@ h3.content-title {
   box-shadow: none;
 }
 
-.content-title-icons {
-flex-wrap: nowrap;
+/* Icons wrapper */
+.content-title-icons { 
+  flex-wrap: nowrap; 
 }
 
+/* Tablet tweak */
 @media (max-width: 808px) {
-  .download-icon {
-    margin-left: var(--spacing-sm);
-
-  }
+  .download-icon { margin-left: var(--spacing-sm); }
 }
 
-
-/* === Responsive Adjustments === */
+/* === Responsive (mobile) === */
 @media (max-width: 768px) {
+  .dynamic-text { line-height: 2.5; }
 
-  .dynamic-text {
-    line-height: 2.5;
-  }
-  .content-container {
-    padding: var(--spacing-lg); 
-  }
+  .content-container { padding: var(--spacing-lg); }
 
-  .download-icon {
-    display: none !important;
-  }
+  .download-icon { display: none !important; }
 
-  .content-title {
-    font-size: var(--font-size-md);
-  }
+  .content-title { font-size: var(--font-size-md); }
 
-  .content-subtitle {
-    font-size: var(--font-size-sm);
-  }
+  .content-subtitle { font-size: var(--font-size-sm); }
 
-  /* New rules for mobile icon alignment */
+  /* Stack title + subtitle; keep icons pinned top-right */
   .content-title-row {
-    position: relative;          /* so icons can be placed inside */
-    flex-direction: column;      /* stack title + subtitle */
+    position: relative;
+    flex-direction: column;
     align-items: flex-start;
   }
 
   .content-title-icons {
     position: absolute;
-    top: 0;                      /* stick to top */
-    right: 0;                    /* stick to right */
+    top: 0;
+    right: 0;
     display: flex;
     flex-direction: row;
     gap: var(--spacing-md);
     margin-bottom: 10px;
   }
 
-
-  
   .content-title {
     font-size: var(--font-size-md);
     width: 100%;
     text-align: left;
     margin-bottom: var(--spacing-xs);
-    padding-top:12px;
-  }
-  
-  .info-icon {
-    height: 20px;
-    margin-left: var(--spacing-sm);
-  }
-  
-  .download-icon {
-    height: 16px;
-    margin-left: var(--spacing-md);
-  }
-  .icon {
-    margin-left: 0;             /* remove inline spacing */
-    margin-bottom: 10px;
-
+    padding-top: 12px;
   }
 
-  trend-up,
-.trend-down,
-.trend-neutral,
-.bg-highlight {
-  
-  line-height: 2.5;
+  .info-icon { height: 20px; margin-left: var(--spacing-sm); }
+  .download-icon { height: 16px; margin-left: var(--spacing-md); }
 
+  .icon { 
+    margin-left: 0; 
+    margin-bottom: 10px; 
+  }
+
+  /* Fix selector (add dots) and increase line-height for chips on mobile */
+  .trend-up,
+  .trend-down,
+  .trend-neutral,
+  .bg-highlight {
+    line-height: 2.5;
+  }
 }
-}
-
-
-

@@ -102,14 +102,14 @@ const LineChart = ({
       }))
     : [];
 
-  // ✅ Only filter by virus if the data actually has a virus field
+
+  
   const hasVirusField = withDisplayLabels.some((d) => d.virus != null);
   const filteredData =
     virus && hasVirusField
       ? withDisplayLabels.filter((d) => d.virus === sourceVirus)
       : withDisplayLabels;
 
-  // ---------- Guard against bad inputs (be tolerant of numeric strings) ----------
   const hasValidDate = filteredData.some((d) => {
     const v = d?.[xKey] ?? d?.date;
     const t = v ? new Date(v).getTime() : NaN;
@@ -132,7 +132,10 @@ const LineChart = ({
       </div>
     );
   }
-  // ------------------------------------------------------------------------------
+
+  const maxValue = Math.max(...filteredData.map(d => d.value));
+  console.log(maxValue)
+  const maxPlus = maxValue * 1.25
 
   const axisFormat = getXAxisFormat(filteredData, xKey);
 
@@ -191,10 +194,7 @@ const LineChart = ({
             ? null
             : {
                 labelExpr:
-                  "datum.label === 'Influenza' ? 'Flu' :" +
-                  "datum.label === 'ARI visits' ? 'Respiratory illness visits' :" +
-                  "datum.label === 'ARI hospitalizations' ? 'Respiratory illness hospitalizations' :" +
-                  "datum.label",
+                "datum.label === 'Influenza' ? 'Flu' : datum.label",
                 labelLimit: 300,
                 clipHeight: 30,
                 title: legendTitle ?? null,
@@ -289,7 +289,13 @@ const LineChart = ({
           y: {
             field: "{yField}",
             type: "quantitative",
-            axis: { title: null, tickCount: 4, ...(isPercent ? { labelExpr: "datum.value + '%'" } : {}) },
+            axis: { title: null, tickCount: 4, 
+            ...(isPercent ? { labelExpr: "datum.value + '%'" } : {}),
+            scale: {
+              domain: [0, maxPlus]
+            }
+          
+            },
           },
           color: lineColorEncoding,
           opacity: lineOpacityEncoding,

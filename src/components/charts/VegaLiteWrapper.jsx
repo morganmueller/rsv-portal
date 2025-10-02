@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/components/charts/VegaLiteWrapper.jsx
+import React, { useEffect, useMemo, useRef, useState, createContext } from "react";
 import PropTypes from "prop-types";
-import { getVegaThemeConfig, mergeDeep } from "../../utils/vegaTheme";
 import { VegaLite } from "react-vega";
 import { Handler as TooltipHandler } from "vega-tooltip";
+import { getVegaThemeConfig, mergeDeep } from "../../utils/vegaTheme";
+export const VegaThemeContext = createContext(false); 
 
-
+/** Figure out initial dark mode (SSR-safe) */
 const getInitialDark = () => {
   if (typeof document !== "undefined") {
     const attr = document.documentElement.getAttribute("data-theme");
@@ -17,19 +19,24 @@ const getInitialDark = () => {
   return false;
 };
 
-const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode = "canvas" }) => {
+const VegaLiteWrapper = ({
+  data,
+  specTemplate,
+  dynamicFields = {},
+  rendererMode = "canvas",
+}) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isDark, setIsDark] = useState(getInitialDark);
 
-  // Resize-aware width
+  /** Track container width with ResizeObserver (for responsive width) */
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
     let rafId;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const w = entry.contentRect.width || 0;
+        const w = entry.contentRect?.width || 0;
         cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
           if (w > 0) setContainerWidth(w);
@@ -43,7 +50,7 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode 
     };
   }, []);
 
-  // Watch data-theme changes
+  /** Watch data-theme on <html> and flip dark mode */
   useEffect(() => {
     if (typeof document === "undefined") return;
     const el = document.documentElement;
@@ -56,12 +63,11 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode 
     return () => mo.disconnect();
   }, []);
 
-  // Watch system preference (fallback)
+  /** Fallback: adopt system preference if page hasn’t explicitly set data-theme */
   useEffect(() => {
-    if (!window?.matchMedia) return;
+    if (typeof window === "undefined" || !window.matchMedia) return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (e) => {
-      // only adopt system when page hasn’t explicitly set data-theme
       const attr = document.documentElement.getAttribute("data-theme");
       if (!attr) setIsDark(e.matches);
     };
@@ -69,41 +75,75 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode 
     return () => mq.removeEventListener?.("change", handler);
   }, []);
 
-  // Resolve {placeholders} and base spec
-  const resolvedSpec = JSON.parse(JSON.stringify(specTemplate), (_, val) => {
-    if (typeof val === "string" && val.startsWith("{") && val.endsWith("}")) {
-      const key = val.slice(1, -1);
-      if (key === "containerWidth") return containerWidth || 1;
-      return dynamicFields[key] ?? val;
+  /** Build a concrete spec from the template + dynamic fields + current width */
+  const finalSpec = useMemo(() => {
+    // 1) Deep-clone and resolve {placeholders}
+    const resolvedSpec = JSON.parse(
+      JSON.stringify(specTemplate),
+      (_, val) => {
+        if (typeof val === "string" && val.startsWith("{") && val.endsWith("}")) {
+          const key = val.slice(1, -1);
+          if (key === "containerWidth") return containerWidth || 1;
+          return dynamicFields[key] ?? val;
+        }
+        return val;
+      }
+    );
+
+    // 2) Provide data, responsive width/height, and autosize defaults
+    resolvedSpec.data = { values: Array.isArray(data) ? data : [] };
+    resolvedSpec.width = Math.max(1, containerWidth);
+    if (!resolvedSpec.height) resolvedSpec.height = 320;
+    if (!resolvedSpec.autosize) {
+      resolvedSpec.autosize = { type: "fit", contains: "padding", resize: true };
     }
-    return val;
-  });
 
-  resolvedSpec.data = { values: Array.isArray(data) ? data : [] };
-  resolvedSpec.width = Math.max(1, containerWidth);
-  if (!resolvedSpec.height) resolvedSpec.height = 320;
-  if (!resolvedSpec.autosize) {
-    resolvedSpec.autosize = { type: "fit", contains: "padding", resize: true };
-  }
+    // 3) Compute theme (returns { background, config: { axis, legend, … } })
+    const theme = getVegaThemeConfig(isDark ? "dark" : "light");
 
-  // Compute theme and merge (theme provides config/background/axes/etc.)
-  const vegaTheme = getVegaThemeConfig(isDark ? "dark" : "light");
-  // mergeDeep(left, right) -> returns a new merged object; if your helper differs,
-  // adapt this to “merge theme first, spec last” so spec can override theme.
-  const finalSpec = mergeDeep(mergeDeep({}, vegaTheme), resolvedSpec);
+    // 4) Merge ORDER: spec first → theme last (theme should win for axis colors)
+    let merged = mergeDeep(mergeDeep({}, resolvedSpec), theme);
 
-  const embedKey = `w_${containerWidth}_${finalSpec.height}_${isDark ? "d" : "l"}`;
+    // 5) Belt & suspenders: ensure guide styles mirror axis colors in all Vega versions
+    const axisLabel = merged.config?.axis?.labelColor;
+    const axisTitle = merged.config?.axis?.titleColor;
+    merged.config = merged.config || {};
+    merged.config.style = {
+      ...(merged.config.style || {}),
+      "guide-label": {
+        ...(merged.config.style?.["guide-label"] || {}),
+        ...(axisLabel ? { fill: axisLabel } : {}),
+      },
+      "guide-title": {
+        ...(merged.config.style?.["guide-title"] || {}),
+        ...(axisTitle ? { fill: axisTitle } : {}),
+      },
+    };
 
-  const tooltip = new TooltipHandler({
-    theme: isDark ? "dark" : "light",           // ← switch theme here
-  }).call;
+    return merged;
+  }, [data, specTemplate, dynamicFields, containerWidth, isDark]);
+
+  /** Force a full re-embed on width/height/theme changes */
+  const embedKey = `w_${containerWidth}_${finalSpec?.height}_${isDark ? "d" : "l"}`;
+
+  /** vega-tooltip theme */
+  const tooltip = useMemo(
+    () =>
+      new TooltipHandler({
+        theme: isDark ? "dark" : "light",
+      }).call,
+    [isDark]
+  );
 
   const onError = (err) => {
+    // Keep console noise down but visible during dev
+    // eslint-disable-next-line no-console
     console.error("Vega error:", err);
   };
 
   return (
-    <div ref={containerRef} style={{ width: "100%", minWidth: 0 }}>
+      <VegaThemeContext.Provider value={isDark}>
+      <div ref={containerRef} style={{ width: "100%", minWidth: 0 }}>
       {containerWidth > 0 ? (
         <VegaLite
           key={embedKey}
@@ -115,6 +155,7 @@ const VegaLiteWrapper = ({ data, specTemplate, dynamicFields = {}, rendererMode 
         />
       ) : null}
     </div>
+    </VegaThemeContext.Provider>
   );
 };
 

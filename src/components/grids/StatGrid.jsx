@@ -29,15 +29,23 @@ const StatGrid = ({ data }) => {
   if (!data) return null;
 
   const viruses = [
-    { key: "ari", label: "ARI" },
+    { key: "ari", label: "Respiratory illness" },
     { key: "covid", label: "COVID-19" },
     { key: "flu", label: "Flu" },
     { key: "rsv", label: "RSV" },
   ];
 
+   const seriesKeysForLabel = (label) => {
+     if (label === "ARI") {
+     return ["Respiratory illness visits", "Respiratory illness hospitalizations"];
+   }
+     return [`${label} visits`, `${label} hospitalizations`];
+   };
+
   const statCards = viruses.map(({ key, label }) => {
-    const visitSeries = data[`${label} visits`] || [];
-    const hospitalizationSeries = data[`${label} hospitalizations`] || [];
+    const [visKey, hosKey] = seriesKeysForLabel(label);
+    const visitSeries = data[visKey] || [];
+    const hospitalizationSeries = data[hosKey] || [];
 
     const latestVisit = visitSeries.at?.(-1);
     const prevVisit = visitSeries.at?.(-2);
@@ -69,7 +77,7 @@ const StatGrid = ({ data }) => {
   });
 
   // Use ARI visits as the canonical "latest" date
-  const latestAri = (data["ARI visits"] || []).at?.(-1) || null;
+  const latestAri = (data["Respiratory illness visits"] || []).at?.(-1) || null;
   const baseDate = latestAri ? new Date(latestAri.date) : null;
 
   const formattedDate = baseDate ? fmt(baseDate) : "–";

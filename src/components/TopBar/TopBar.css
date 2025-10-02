@@ -25,11 +25,11 @@
 }
 
 .top-bar-logo-image {
-  height: 24px;
+  height: 38px;
   max-width: 120px;
   object-fit: contain;
   display: block;
-  filter: var(--top-bar-logo-filter, brightness(0) saturate(100%) invert(16%) sepia(64%) saturate(603%) hue-rotate(181deg) brightness(92%) contrast(95%));
+  filter: var(--top-bar-logo-filter, none);
 }
 
 /* === Inline Controls === */

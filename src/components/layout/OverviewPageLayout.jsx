@@ -10,6 +10,7 @@ import overviewConfig from "../config/OverviewPage.config";
 import { getText } from "../../utils/contentUtils";
 import { downloadCSV } from "../../utils/downloadUtils";
 import { getTrendFromTimeSeries, formatDate } from "../../utils/trendUtils";
+import TrendSubtitle from "../controls/TrendSubtitle"; // already in the project
 
 const OverviewPageLayout = () => {
   const [view, setView] = useState("visits");
@@ -23,7 +24,7 @@ const OverviewPageLayout = () => {
   const chartData = overviewConfig.data[chartSection.chart.props.dataSourceKey];
 
   // Use ARI series for date/trend (matches how your other pages do it)
-  const seriesKey = view === "visits" ? "ARI visits" : "ARI hospitalizations";
+  const seriesKey = view === "visits" ? "Respiratory illness visits" : "Respiratory illness hospitalizations";
   const ariSeries = Array.isArray(chartData)
     ? chartData
     : chartData?.[seriesKey] || [];
@@ -90,14 +91,20 @@ const OverviewPageLayout = () => {
       <ContentContainer
         title={getText(chartSection.title)}
         titleVariables={{ viewLabel, viewLabelPreposition }}
-        subtitle={subtitleTemplate}
-        subtitleVariables={{
-          date: dateText,
-          viewLabel,
-          viewLabelPreposition,
-          trend: trendText,
-          trendDirection: trend?.direction || "neutral",
-        }}
+        subtitle={
+          <TrendSubtitle
+            as="div" 
+            template={subtitleTemplate}
+            variables={{
+              // let TrendSubtitle / CSS add the chips
+              date: dateText,
+              viewLabel,
+              viewLabelPreposition,
+              trend: trendText,
+              trendDirection: trend?.direction || "neutral",
+            }}
+          />
+        } 
         infoIcon={chartSection.infoIcon}
         downloadIcon={chartSection.downloadIcon}
         onDownloadClick={handleDownload}
