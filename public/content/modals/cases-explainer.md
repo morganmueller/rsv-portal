@@ -45,6 +45,6 @@ The NYC Health Department classifies **race and ethnicity** into the following m
   <li>White</li>
 </ul>
 
-Information on people identified as other categories, including Native American/Alaska Native or multi-racial, are not provided in files showing race/ethnicity data. The Hispanic/Latino category includes people of any race, and all other categories exclude those who identified as Hispanic/Latino.
-
+Information on people identified as other categories, including Native American/Alaska Native or multi-racial, are not provided in files showing race/ethnicity data. The Hispanic/Latino category includes people of any race, and all other categories exclude those who identified as Hispanic/Latino The NYC Health Department acknowledges this lack of representation in the data is inequitable, and we are committed to developing methods for ensuring more inclusive, equitable representation in the future.
+<br><br>
 To maintain confidentiality, we don't report **counts lower than 5**.

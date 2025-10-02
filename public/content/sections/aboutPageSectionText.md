@@ -17,9 +17,8 @@ and
 <a href="https://a816-health.nyc.gov/hdi/epiquery/visualizations?PageType=ts&PopulationSource=CDSD&Topic=1&Subtopic=41" target="_blank" rel="noopener noreferrer">emergency department visits</a>. 
 
 ## Emergency department visits and hospitalizations
-The Health Department receives near real-time data from all 52 emergency departments in NYC. The emergency departments share diagnosis codes which can be used to identify general respiratory complaints such as cough or illnesses such as pneumonia. This information helps us see trends in illness and care-seeking among NYC residents. Laboratory-reported cases 
+The Health Department receives near real-time data from all 52 emergency departments in NYC. The emergency departments share diagnosis codes which can be used to identify general respiratory complaints such as cough or illnesses such as pneumonia. This information helps us see trends in illness and care-seeking among NYC residents. 
 
-All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
 
 ## Laboratory-reported cases
 All clinical laboratories that perform testing on NYC residents report positive test results electronically for a number of infectious diseases including **COVID-19**, **flu**, and **RSV** to the NYC Health Department, as required by law in the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.   
@@ -37,7 +36,7 @@ Deaths are counted as a **COVID-19** death if:
 All deaths in children under 18 associated with flu are reported to the NYC Health Department, as required by the <a href="https://www.nyc.gov/site/doh/providers/reporting-and-services/notifiable-diseases-and-conditions-reporting-central.page" target="_blank" rel="noopener noreferrer">NYC Health Code</a>.  
 
 ## Health inequities
-Data received from emergency departments and electronic laboratory reports often lack information on demographic characteristics, such as race and ethnicity. Race and ethnicity information is most complete for **COVID-19** cases and deaths. The NYC Health Department continues to work to improve completeness of this information for other illnesses.  
+Data received from emergency departments and electronic laboratory reports often lack information on demographic characteristics, such as race and ethnicity. Race and ethnicity information is most complete for **COVID-19** cases and deaths. The NYC Health Department acknowledges this lack of representation in the data is inequitable, and we are committed to developing methods for ensuring more inclusive, equitable representation in the future.
 
 Differences in health outcomes among racial and ethnic groups are due to long-term structural racism, not biological or personal traits. Structural racism — centuries of racist policies and discriminatory practices across institutions, including government agencies, and society — prevents communities of color from accessing vital resources (such as health care, housing and food) and opportunities (such as employment and education), and negatively affects overall health and well-being. 
 
@@ -80,7 +79,7 @@ NYS wastewater surveillance data
 icon: /assets/nys-logo.svg
 externalIcon: /assets/external-link-icon.png
 link: https://www.health.ny.gov/diseases/communicable/influenza/surveillance/
-NYS Flu surveillance reports
+NYS flu surveillance reports
 
 ## Respiratory Virus Seasonality
 Respiratory virus season usually begins in the fall and ends in the spring, but not all respiratory infections follow a seasonal pattern. **Flu** and **RSV** are seasonal and most prevalent during the fall and winter months. To date, **COVID-19** has generally increased during the fall and winter months as well as other times during the year, including the summer.
