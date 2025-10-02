@@ -49,20 +49,35 @@ export function formatPercentChange(raw) {
  */
 // utils/trendUtils.js
 
+// utils/trendUtils.js
+const toNum = v => {
+  const n = typeof v === "string" ? Number(v.trim()) : Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+
+const getLastTwoValues = (data, key) => {
+  const vals = [];
+  for (let i = data.length - 1; i >= 0 && vals.length < 2; i--) {
+    const v = toNum(data[i]?.[key]);
+    if (v !== null) vals.push(v);
+  }
+  return vals.length === 2 ? [vals[0], vals[1]] : null; // [current, previous]
+};
+
 export function getTrendFromTimeSeries(data, key) {
   if (!Array.isArray(data) || data.length < 2) return null;
 
-  const current = data.at(-1)?.[key];
-  const previous = data.at(-2)?.[key];
+  const pair = getLastTwoValues(data, key);
+  if (!pair) return null;
 
-  if (typeof current !== "number" || typeof previous !== "number") return null;
+  const [current, previous] = pair;
 
-  // Division-by-zero case → direction only; DO NOT return null text
   if (previous === 0) {
     if (current === 0) {
       return { label: "not changed", value: "0%", direction: "same" };
     }
-    return { label: "increased", value: "", direction: "up" }; // ← was null
+    // Direction only; no numeric percent
+    return { label: "increased", value: "", direction: "up" };
   }
 
   const rawChangePct = ((current - previous) / previous) * 100;
@@ -111,29 +126,31 @@ export function capitalizeFirstHtml(str) {
  * - Omits the numeric part if value is null/empty.
  * - Accepts value as number or string with %.
  */
-// utils/trendUtils.js
-
-// utils/trendUtils.js
 export function formatTrendPhrase(
   change,
   { withBy = true, withPercent = true } = {}
 ) {
   if (!change || !change.label) return "";
 
+  const label = change.label.toLowerCase();
   const vRaw = change.value;
   const vStr = typeof vRaw === "string" ? vRaw.trim() : vRaw;
 
+  // Only the label controls the “not changed” text
+  if (label === "not changed") return "not changed";
+
+  // If the value is exactly 0 (number or "0%"), treat as not changed.
   const isZeroString = typeof vStr === "string" && vStr === "0%";
   const isZeroNumber = typeof vStr === "number" && vStr === 0;
-  const isEmpty = vStr == null || (typeof vStr === "string" && vStr === "");
-
-  if (change.label.toLowerCase() === "not changed" || isZeroString || isZeroNumber || isEmpty) {
-    return "not changed";
-  }
+  if (isZeroString || isZeroNumber) return "not changed";
 
   const parts = [change.label];
 
-  // Coerce numeric-looking strings → number, then add %
+  // Empty value means direction-only phrase (e.g., “increased”)
+  const isEmpty = vStr == null || (typeof vStr === "string" && vStr === "");
+  if (isEmpty) return parts.join(" ");
+
+  // Coerce numeric-looking strings to number, then add %
   const looksNumericString = typeof vStr === "string" && /^[-+]?\d+(?:\.\d+)?$/.test(vStr);
   if (looksNumericString) {
     const n = Number(vStr);
@@ -146,7 +163,7 @@ export function formatTrendPhrase(
 
   if (typeof vStr === "string") {
     if (withBy) parts.push("by");
-    parts.push(vStr); // already formatted (e.g., "5%")
+    parts.push(vStr); // already formatted, e.g., "5%"
   } else if (typeof vStr === "number" && Number.isFinite(vStr) && vStr !== 0) {
     if (withBy) parts.push("by");
     parts.push(withPercent ? `${Math.abs(vStr)}%` : String(Math.abs(vStr)));
@@ -277,38 +294,48 @@ export function getLatestWeek(data){
 }
 
 export function isFirstWeekFromData(data = []) {
-  if (!Array.isArray(data) || data.length === 0) return "N/A";
-  
-  const lastRow = data.at(-1);
-  const dateStr = lastRow?.week || lastRow?.date;
-  if (!dateStr) return "N/A";
+  // Always return a boolean. Never return strings like "N/A".
+  if (!Array.isArray(data) || data.length === 0) return false;
+
+  const last = data.at(-1);
+  const dateStr = last?.week || last?.date;
+  if (!dateStr) return false;
 
   const rowDate = new Date(dateStr);
-  if (isNaN(rowDate)) return "N/A";
+  if (Number.isNaN(rowDate.getTime())) return false;
 
-  const currentYear = new Date().getFullYear()
+  // Infer the week-end day-of-week from the most recent few rows (default to Saturday).
+  const inferEndDOW = () => {
+    const counts = new Map();
+    for (let i = data.length - 1, seen = 0; i >= 0 && seen < 6; i--) {
+      const dStr = data[i]?.week || data[i]?.date;
+      const d = dStr ? new Date(dStr) : null;
+      if (d && !Number.isNaN(d.getTime())) {
+        const dow = d.getDay(); // 0=Sun ... 6=Sat (JS)
+        counts.set(dow, (counts.get(dow) || 0) + 1);
+        seen++;
+      }
+    }
+    if (counts.size === 0) return 6; // fallback: Saturday
+    // pick the mode
+    return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  };
 
-  // Start at September 1
-  const septemberFirst = new Date(currentYear, 8, 1); // Month index 8 = September
+  const endDOW = inferEndDOW(); // likely 6 for your CSV
 
-  // Find the first Sunday in September
-  const dayOfWeek = septemberFirst.getDay(); // 0 = Sunday, 6 = Saturday
-  const daysToSunday = (7 - dayOfWeek) % 7; // how many days to get to Sunday
-  const firstSunday = new Date(currentYear, 8, 1 + daysToSunday);
+  // Use the YEAR OF THE ROW, not the current year.
+  const y = rowDate.getFullYear();
 
-  // First complete week = Sunday through Saturday
-  const firstWeekStart = firstSunday;
-  const firstWeekEnd = new Date(firstSunday);
-  firstWeekEnd.setDate(firstWeekStart.getDate() + 6);
+  // Find the first date ON/AFTER Sep 1 that lands on the inferred week-end DOW.
+  const sep1 = new Date(y, 8, 1); // month 8 = September
+  const offset = (endDOW - sep1.getDay() + 7) % 7;
+  const firstWeekEnd = new Date(y, 8, 1 + offset);
 
-  // Ensure it's still fully in September
-  if (firstWeekEnd.getMonth() !== 8) {
-    return false; // No full week in September this year
-  }
+  // “First week of the season” = that first week-end date in September.
+  // If your data sometimes uses week-end dates in another month, you can drop the month check.
+  const isFirstWeek =
+    rowDate.getTime() === firstWeekEnd.getTime() &&
+    rowDate.getMonth() === 8; // ensure it’s in September
 
-  // Check if rowDate falls in that range
-  const inFirstWeek =
-    rowDate >= firstWeekStart && rowDate <= firstWeekEnd;
-
-  return inFirstWeek;
+  return Boolean(isFirstWeek);
 }

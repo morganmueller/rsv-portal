@@ -5,7 +5,7 @@ const aboutPageConfig = {
   id: "aboutPage",
   titleKey: "About this Site",
   subtitleKey:
-    "The Respiratory Illness Data pages show data on COVID-19, flu, and RSV in New York City collected by the NYC Health Department.",
+    "<span class='dynamic-label'>The Respiratory Illness Data Pages</span> show data on <a href='https://www.nyc.gov/site/doh/covid/covid-19-main.page' target='_blank' rel='noopener noreferrer'>COVID-19</a>, <a href='https://www.nyc.gov/site/doh/health/health-topics/flu-seasonal.page' target='_blank' rel='noopener noreferrer'>flu (influenza)</a>, and <a href='https://www.nyc.gov/site/doh/health/health-topics/respiratory-syncytial-virus.page' target='_blank'  rel='noopener noreferrer'>RSV (respiratory syncytial virus)</a> in <span class='dynamic-label'>New York City</span> collected by the <span class='dynamic-label'>NYC Health Department</span>.",
   controls: { dataTypeToggle: false, virusToggle: false, viewToggle: false },
 
   summary: {

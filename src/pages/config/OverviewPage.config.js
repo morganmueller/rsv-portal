@@ -25,7 +25,7 @@ const overviewConfig = {
   chart: {
     props: {
       metrics: [
-        "ARI visits", "ARI hospitalizations",
+        "Respiratory illness visits", "Respiratory illness hospitalizations",
         "COVID-19 visits", "COVID-19 hospitalizations",
         "Influenza visits", "Influenza hospitalizations",
         "RSV visits", "RSV hospitalizations"
@@ -58,7 +58,7 @@ const overviewConfig = {
         type: "combinedVirusChart",
         props: {
           metrics: [
-            "ARI {view}",
+            "Respiratory illness {view}",
             "COVID-19 {view}",
             "Flu {view}",
             "RSV {view}"
@@ -111,8 +111,6 @@ const overviewConfig = {
           "Parainfluenza",
           "Respiratory Syncytial Virus"
         ]
-        // metricName optional here because the hydrator is already filtering by it
-        // If you prefer the component to self-load instead, add dataPath and omit dataSourceKey/chart.props.
       },
       animateOnScroll: true,
       background: "white"

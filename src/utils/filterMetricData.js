@@ -38,7 +38,6 @@ export const getMetricData = memoize(function (
     const rowSubmetric = d.submetric?.trim();
     const rowDisplay = canonDisplay(d.display);
 
-    // ✅ exact OR canonical match (fixes Flu vs Influenza, COVID vs COVID-19)
     const matchesMetric =
       rowMetric === metric || canonMetric(rowMetric) === targetMetricCanon;
 
@@ -136,7 +135,6 @@ export function hydrateConfigData(config, flatData, variables = {}) {
 
     const display = props.display ?? props.defaultDisplay ?? variables.display;
 
-    // 🧪 Case: multiple metrics (for grouped charts/statcards/combined charts)
     if (Array.isArray(props.metrics)) {
       const resolved = props.metrics.map((m) => interpolate(m, variables));
 

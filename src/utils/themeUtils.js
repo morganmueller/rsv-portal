@@ -48,23 +48,23 @@ function normalizeTitleForTheme(raw) {
 
 const themeMap = {
   "COVID-19": {
-    color: colors.bluePrimary,
-    background: colors.bgLightBlue,
+    color: "var(--blue-primary)",
+    background: "var(--bg-light-blue)",
     icon: "/assets/covid-vector.svg",
   },
   Flu: {
-    color: colors.purplePrimary,
-    background: colors.bgLightPurple,
+    color: "var(--purple-primary)",
+    background: "var(--bg-light-purple)",
     icon: "/assets/flu-vector.svg",
   },
   RSV: {
-    color: colors.greenPrimary,
-    background: colors.bgLightGreen,
+    color: "var(--green-primary)",
+    background: "var(--bg-light-green)",
     icon: "/assets/rsv-vector.svg",
   },
   "Overall respiratory illness": {
     color: colors.orangeText,
-    background: colors.bgLightOrange,
+    background: "var(--bg-light-orange)",
     icon: "/assets/ari-vector.svg",
   },
 };
