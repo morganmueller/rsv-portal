@@ -1,33 +1,74 @@
-// utils/trendUtils.js
+
+
+
+/** Compute WoW % change number from a series (last two rows).
+ *  Returns a raw percent (e.g., +4.7 or -8.2), not a fraction.
+ *  key defaults to "value".
+ */
+export function getWoWPercentChange(series, key = "value") {
+  if (!Array.isArray(series) || series.length < 2) return null;
+  const curr = Number(series.at(-1)?.[key]);
+  const prev = Number(series.at(-2)?.[key]);
+  if (!Number.isFinite(curr) || !Number.isFinite(prev)) return null;
+  if (prev === 0) return curr === 0 ? 0 : 100; // direction-only case
+  return ((curr - prev) / prev) * 100;
+}
+
+/** Same as above but returns the normalized & rounded display number,
+ *  honoring the shared EPSILON (so <1% => 0).
+ */
+export function getWoWPercentChangeDisplay(series, key = "value") {
+  const raw = getWoWPercentChange(series, key);
+  return normalizePercentChange(raw);
+}
+
+/** ============================================================================
+ * Trend + formatting utilities
+ * Single source of truth for week-over-week % change thresholds and rounding.
+ * ========================================================================== */
+
+/** Parse numbers like "  -0.8 %", "2%", "3", 4 → finite number or null */
+function coercePercentNumber(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === "number") return Number.isFinite(raw) ? raw : null;
+  if (typeof raw === "string") {
+    const n = Number(raw.replace(/[%\s,]+/g, ""));
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
+/** Shared epsilon: treat |Δ| < 1% as "no change" everywhere */
+export const EPSILON_NO_CHANGE = 1;
 
 /** ===== Percent-change helpers (shared across cards, subtitles, etc.) ===== */
 
 /** Returns true if the raw % change should be treated as "no change" (< 1%). */
 export function isNoChange(raw) {
-  const n = Number(raw);
-  return Number.isFinite(n) && Math.abs(n) < 1;
+  const n = coercePercentNumber(raw);
+  return n === null ? false : Math.abs(n) < EPSILON_NO_CHANGE;
 }
 
 /**
  * Normalize a raw % change for display:
- *  - If |Δ| < 1 → 0 (no change)
+ *  - If |Δ| < EPSILON_NO_CHANGE → 0 (no change)
  *  - Else round to nearest whole number
  * Returns null if input is not finite.
  */
 export function normalizePercentChange(raw) {
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  return isNoChange(n) ? 0 : Math.round(n);
+  const n = coercePercentNumber(raw);
+  if (n === null) return null;
+  return Math.abs(n) < EPSILON_NO_CHANGE ? 0 : Math.round(n);
 }
 
 /**
- * Direction from raw (unrounded) % change.
+ * Direction from the (preferably same) numeric value you display.
  * Returns: 'same' | 'up' | 'down' | null
  */
 export function getTrendDirection(raw) {
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  if (isNoChange(n)) return "same";
+  const n = coercePercentNumber(raw);
+  if (n === null) return null;
+  if (Math.abs(n) < EPSILON_NO_CHANGE) return "same";
   return n > 0 ? "up" : "down";
 }
 
@@ -41,19 +82,23 @@ export function formatPercentChange(raw) {
 
 /**
  * Compute week-over-week trend from a time series' last two rows.
- * Enforces: |Δ| < 1% ⇒ "not changed" (direction "same"), otherwise rounds to whole %.
+ * Enforces: |Δ| < EPSILON_NO_CHANGE ⇒ "not changed" (direction "same"), otherwise rounds to whole %.
  * If previous == 0, returns direction without a percent value.
  *
  * Returns: { label: "increased"|"decreased"|"not changed", value: string|null, direction: "up"|"down"|"same" }
- * - value is a string like "4%" or "0%" or null (when not computable or prev==0 with positive current)
+ * - value is a string like "4%" or "0%" or "" (when prev==0 and current>0)
  */
-// utils/trendUtils.js
-
-// utils/trendUtils.js
-const toNum = v => {
-  const n = typeof v === "string" ? Number(v.trim()) : Number(v);
-  return Number.isFinite(n) ? n : null;
+const toNum = (v) => {
+  if (v == null) return null;
+  if (typeof v === "number") return Number.isFinite(v) ? v : null;
+  if (typeof v === "string") {
+    // allow "6.88%", " 6.88 %", "6,88" (commas stripped), etc.
+    const n = Number(v.replace(/[%\s,]+/g, ""));
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
 };
+
 
 const getLastTwoValues = (data, key) => {
   const vals = [];
@@ -76,13 +121,13 @@ export function getTrendFromTimeSeries(data, key) {
     if (current === 0) {
       return { label: "not changed", value: "0%", direction: "same" };
     }
-    // Direction only; no numeric percent
+    // Direction only; no numeric percent (matches card/subtitle behavior)
     return { label: "increased", value: "", direction: "up" };
   }
 
   const rawChangePct = ((current - previous) / previous) * 100;
 
-  if (Math.abs(rawChangePct) < 1) {
+  if (Math.abs(rawChangePct) < EPSILON_NO_CHANGE) {
     return { label: "not changed", value: "0%", direction: "same" };
   }
 
@@ -91,7 +136,6 @@ export function getTrendFromTimeSeries(data, key) {
     ? { label: "increased", value: `${rounded}%`, direction: "up" }
     : { label: "decreased", value: `${Math.abs(rounded)}%`, direction: "down" };
 }
-
 
 /** ===== Formatting utilities ===== */
 
@@ -172,19 +216,12 @@ export function formatTrendPhrase(
   return parts.join(" ");
 }
 
-
-
 /**
  * Build a full, human-readable subtitle.
  * Input:
  *  - view: "visits" | "hospitalizations"
  *  - trendObj: { label, value (string|null|number), direction }
  *  - latestWeek: ISO or date parsable string
- *
- * Output:
- *  "Visits for the week ending August 8, 2025 have increased by 4% since the previous week."
- *  If value is null (e.g., prev==0): "…have increased since the previous week."
- *  If trend is not available: returns null (caller can hide subtitle or show fallback).
  */
 export function generateTrendSubtitle({ view, trendObj, latestWeek }) {
   if (!trendObj || typeof trendObj !== "object") return null;
@@ -201,7 +238,6 @@ export function generateTrendSubtitle({ view, trendObj, latestWeek }) {
   return `${capitalize(metric)} for the week ending ${formatDate(latestWeek)} have ${phrase} since the previous week.`;
 }
 
-
 export function coerceNoChange(trendObj) {
   if (!trendObj) return trendObj;
   const isZeroString = typeof trendObj.value === "string" && trendObj.value.trim() === "0%";
@@ -211,7 +247,6 @@ export function coerceNoChange(trendObj) {
   }
   return trendObj;
 }
-
 
 /** ===== UI helpers for trend badges/text ===== */
 
@@ -256,41 +291,40 @@ export function getLatestWeekFromData(data = []) {
   return lastRow.week || lastRow.date || "N/A";
 }
 
-export function getLatestWeek(data){
-  let latestDate = new Date("2020-01-01T00:00:00")
-  if(!data){
-    return ""
+export function getLatestWeek(data) {
+  let latestDate = new Date("2020-01-01T00:00:00");
+  if (!data) {
+    return "";
   } else {
-    for(const graph in data){
-      const dates = data[graph]
+    for (const graph in data) {
+      const dates = data[graph];
       if (!dates || dates.length === 0) {
         return null; // Handle empty or invalid input
       }
-      for(const [key, value] of Object.entries(dates)){
-        // console.log("key", key)
-        let currentDate
-        if(Array.isArray(value)){
-          for(let i = 0; i < value.length; i++){
+      for (const [key, value] of Object.entries(dates)) {
+        let currentDate;
+        if (Array.isArray(value)) {
+          for (let i = 0; i < value.length; i++) {
             currentDate = new Date(value[i]["date"]);
           }
         } else {
           currentDate = new Date(value["date"]);
         }
-      
-          if(latestDate < currentDate){
-            latestDate = currentDate
-          }
+
+        if (latestDate < currentDate) {
+          latestDate = currentDate;
         }
+      }
     }
   }
   const formattedDate = latestDate
-  ? new Date(latestDate).toLocaleDateString("en-US", {
-      month: "numeric",
-      day: "numeric",
-      year: "numeric",
-    })
-  : null;
-  return formattedDate
+    ? new Date(latestDate).toLocaleDateString("en-US", {
+        month: "numeric",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
+  return formattedDate;
 }
 
 export function isFirstWeekFromData(data = []) {
@@ -332,7 +366,6 @@ export function isFirstWeekFromData(data = []) {
   const firstWeekEnd = new Date(y, 8, 1 + offset);
 
   // “First week of the season” = that first week-end date in September.
-  // If your data sometimes uses week-end dates in another month, you can drop the month check.
   const isFirstWeek =
     rowDate.getTime() === firstWeekEnd.getTime() &&
     rowDate.getMonth() === 8; // ensure it’s in September
