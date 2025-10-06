@@ -1,51 +1,79 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { getThemeByTitle } from "../utils/themeUtils";
-import { normalizePercentChange, getTrendDirection } from "../utils/trendUtils";
+import {
+  getTrendFromTimeSeries,
+  normalizePercentChange,
+  getTrendDirection,
+} from "../utils/trendUtils";
 import "./StatCardBottom.css";
 
-const TrendChip = ({ rawChange }) => {
-  const dir = getTrendDirection(rawChange);
+/** Arrow + direction label on top row; percent on its own line inside the chip */
+const TrendChip = ({ dir, percent }) => {
   if (dir === null) return null;
 
-  if (dir === "same") {
-    return (
-      <span className="trend-nochange">
-        <span className="stat-arrow">→</span>
-        No change
-      </span>
-    );
-  }
-  if (dir === "up") {
-    return (
-      <span className="trend-increasing">
-        <span className="stat-arrow">▲</span>
-        Increasing
-      </span>
-    );
-  }
+  const map = {
+    up:   { cls: "trend-increasing", arrow: "▲", label: "Increasing" },
+    down: { cls: "trend-decreasing", arrow: "▼", label: "Decreasing" },
+    same: { cls: "trend-nochange",   arrow: "→", label: "No change"  },
+  };
+  const { cls, arrow, label } = map[dir] ?? map.same;
+
   return (
-    <span className="trend-decreasing">
-      <span className="stat-arrow">▼</span>
-      Decreasing
+    <span className={`trend-chip ${cls}`}>
+      <span className="chip-top">
+        <span className="stat-arrow" aria-hidden="true">{arrow}</span>
+        <span className="chip-label">{label}</span>
+      </span>
+      {percent && <span className="chip-value">{percent}</span>}
     </span>
   );
 };
 
+function extractNumberFromPercent(value) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const m = value.match(/-?\d+(\.\d+)?/);
+    return m ? Number(m[0]) : null;
+  }
+  return null;
+}
+
 const StatCardBottom = ({
   title,
-  visitChange,   // WoW delta (%)
-  visitPercent,  // optional current level (hidden by default in compact)
+  series,
+  valueKey = "value",
+  visitChange,   // legacy fallback
+  visitPercent,  // (unused here; kept for compatibility)
 }) => {
   const theme = getThemeByTitle(title);
-  const normalizedChange = normalizePercentChange(visitChange);
+
+  // Normalize trend object
+  const trend = useMemo(() => {
+    if (Array.isArray(series) && series.length >= 2) {
+      return getTrendFromTimeSeries(series, valueKey);
+    }
+    const n = normalizePercentChange(visitChange);
+    if (n == null) return null;
+    const dir = getTrendDirection(n);
+    return dir === "same"
+      ? { label: "not changed", value: "0%", direction: "same" }
+      : { label: n > 0 ? "increased" : "decreased", value: `${Math.abs(n)}%`, direction: dir };
+  }, [series, valueKey, visitChange]);
+
+  const dir = trend?.direction ?? null;
+
+  // Percent string shown inside the chip
+  const displayPercent = useMemo(() => {
+    if (!trend) return null;
+    if (dir === "same") return "0%";
+    const n = extractNumberFromPercent(trend.value);
+    return Number.isFinite(n) ? `${Math.abs(n)}%` : null;
+  }, [trend, dir]);
 
   return (
     <div
       className="stat-card-bottom"
-      style={{
-        "--card-bg": theme.background,
-        "--stat-value": theme.color,
-      }}
+      style={{ "--card-bg": theme.background, "--stat-value": theme.color }}
       aria-label={`${title} stat card (compact)`}
     >
       <div className="stat-card-header-bottom">
@@ -62,24 +90,10 @@ const StatCardBottom = ({
       </div>
 
       <div className="stat-block-bottom">
-        {/* Optional: show level, rounded to whole numbers if desired
-        <div className="stat-percent-bottom">
-          {Number.isFinite(+visitPercent) ? `${Math.round(visitPercent)}%` : ""}
-        </div>
-        */}
         <div className="stat-detail-bottom">
           <div className="stat-trend-row-bottom">
-            {normalizedChange !== null && (
-              <>
-                <TrendChip rawChange={visitChange} />
-                {getTrendDirection(visitChange) !== "same" && (
-
-                <span className="stat-percent-change">
-                  {Math.abs(normalizedChange)}%
-                </span>
-                )}
-              </>
-            )}
+            {trend && <TrendChip dir={dir} percent={displayPercent} />}
+            {/* removed the separate .stat-percent-change element */}
           </div>
         </div>
       </div>

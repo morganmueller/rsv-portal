@@ -1,3 +1,5 @@
+/* === Stat Grid Bottom (compact cards) === */
+
 .stat-card-bottom {
   background-color: var(--card-bg, var(--gray-100));
   border-radius: var(--radius-lg);
@@ -21,10 +23,7 @@
   margin-bottom: 4px;
 }
 
-.stat-card-icon-bottom {
-  width: 24px;
-  height: 24px;
-}
+.stat-card-icon-bottom { width: 24px; height: 24px; }
 
 .stat-card-title-bottom {
   font-size: var(--font-size-lg);
@@ -62,7 +61,7 @@
 
 .stat-trend-row-bottom {
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--card-trend-color);
   margin-top: 2px;
   padding-bottom: 5px;
@@ -75,14 +74,6 @@
   width: 100%;
 }
 
-.stat-percent-change {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--card-trend-color);
-  margin-top: 2px;
-  text-align: center;
-}
-
 .stat-delta-strong {
   font-weight: 700;
   color: var(--card-title-color);
@@ -90,207 +81,49 @@
   white-space: nowrap;
 }
 
-.stat-arrow {
-  font-size: 18px;
-  font-weight: 700;
-  margin-right: 2px;
-}
+.stat-arrow { font-size: 18px; font-weight: 700; margin-right: 2px; }
 
-/* === Trend Chips (tokenized) === */
-.trend-increasing {
-  color: var(--trend-up-color);
-  background: var(--trend-bg);
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  padding: 0 6px;
-  text-transform: uppercase;
+/* === Trend chips (compact) === */
+/* Base chip: shared look (no color here so direction classes control it) */
+.trend-chip {
   display: inline-flex;
+  flex-direction: column;     /* stack rows */
   align-items: center;
-  gap: 2px;
-}
-
-.trend-decreasing {
-  color: var(--trend-down-color);
-  background: var(--trend-bg);
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  padding: 0 6px;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.trend-nochange {
-  color: var(--trend-neutral-color);
-  background: var(--trend-bg);
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  padding: 0 6px;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .stat-card-bottom {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-  .stat-block-bottom {
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .stat-card-title-bottom {
-    font-size: 15px;
-  }
-  .stat-percent-bottom {
-    display: none; /* hide big % on mobile */
-  }
-  .stat-percent-change {
-    font-size: 14px;
-  }
-  .trend-increasing,
-  .trend-decreasing,
-  .trend-nochange {
-    font-size: 14px;
-    padding: 0 4px;
-  }
-}
-.stat-card-bottom {
-  background-color: var(--card-bg, var(--gray-100));
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  flex: 0 1 172px;
-  max-width: 172px;
-  min-width: 172px;
-  box-sizing: border-box;
-  position: relative;
-  height: auto;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.stat-card-header-bottom {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: 4px;
-}
-
-.stat-card-icon-bottom {
-  width: 24px;
-  height: 24px;
-}
-
-.stat-card-title-bottom {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--card-title-color);
-  flex: 1;
-}
-
-.stat-block-bottom {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-top: var(--spacing-md);
-  gap: var(--spacing-md);
-}
-
-.stat-percent-bottom {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.2;
-  flex-shrink: 0;
-  color: var(--stat-value, var(--blue-primary));
-}
-
-.stat-detail-bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  text-align: left;
-  flex: 1;
-  word-wrap: break-word;
-  min-width: 0;
-}
-
-.stat-trend-row-bottom {
-  font-weight: 400;
-  font-size: 14px;
-  color: var(--card-trend-color);
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  row-gap: 4px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.stat-percent-change {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--card-trend-color);
-  margin-top: 2px;
-  text-align: center;
-}
-
-.stat-delta-strong {
-  font-weight: 700;
-  color: var(--card-title-color);
-  margin-left: 2px;
-  white-space: nowrap;
-}
-
-.stat-arrow {
-  font-size: 18px;
-  font-weight: 700;
-  margin-right: 2px;
-}
-
-/* === Trend Chips (tokenized) === */
-.trend-increasing {
-  color: var(--trend-up-color);
- 
-}
-
-.trend-decreasing {
-  color: var(--trend-down-color);
- 
-}
-
-.trend-nochange {
-  color: var(--trend-neutral-color);
-
-}
-
-.trend-increasing,
-.trend-decreasing,
-.trend-nochange,
-.bg-highlight {
-  gap: .35rem;
+  gap: 2px;                   /* space between rows */
   margin: .15rem .1rem;
   padding: .2rem .3rem;
   border-radius: 10px;
   border: 1px solid var(--chip-border, var(--portal-section-border));
   background: var(--chip-bg, var(--portal-section-bg));
-  color: var(--trend-highlight-color, var(--portal-section-fg));
-  line-height: 1.5;
-  font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.4;
   font-weight: 700;
+  white-space: normal;
 }
 
-/* Responsive adjustments */
+/* First row: arrow + label stay together */
+.chip-top {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Second row: the percent */
+.chip-value {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+/* Directional colors only */
+.trend-increasing { color: var(--trend-up-color); }
+.trend-decreasing { color: var(--trend-down-color); }
+.trend-nochange   { color: var(--trend-neutral-color); }
+
+/* === Responsive (compact) === */
 @media (max-width: 768px) {
   .stat-card-bottom {
     flex: 1 1 100%;
@@ -301,19 +134,7 @@
     align-items: center;
     gap: 6px;
   }
-  .stat-card-title-bottom {
-    font-size: 15px;
-  }
-  .stat-percent-bottom {
-    display: none; /* hide big % on mobile */
-  }
-  .stat-percent-change {
-    font-size: 14px;
-  }
-  .trend-increasing,
-  .trend-decreasing,
-  .trend-nochange {
-    font-size: 14px;
-    padding: 0 4px;
-  }
+  .stat-card-title-bottom { font-size: 15px; }
+  .stat-percent-bottom { display: none; } /* hide big % on mobile */
+  .trend-chip { font-size: 14px; padding: 0 .25rem; }
 }

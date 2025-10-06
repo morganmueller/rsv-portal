@@ -1,3 +1,5 @@
+/* === Stat Grid (full cards) === */
+
 .stat-card {
   background-color: var(--card-bg, var(--gray-100));
   border-radius: var(--radius-lg);
@@ -12,12 +14,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
-.stat-card:focus {
-  outline: none;
-  box-shadow: none;
-}
-
+.stat-card:focus { outline: none; box-shadow: none; }
 
 /* HEADER */
 .stat-card-header {
@@ -69,7 +66,7 @@
   margin: 0 auto;
   padding: 0;
 }
-.stat-change-number {
+.stat-change-number { /* no longer used; kept for backward compatibility */
   font-weight: 600;
   font-size: 20px;
   line-height: 1.2;
@@ -98,31 +95,51 @@
 /* Special layout hook */
 .ari-card-body { align-items: center; }
 
-/* Trend chips (tokenized for dark mode) */
-trend-increasing,
-.trend-decreasing,
-.trend-nochange {
-  gap: .35rem;
+/* === Trend chips (full) === */
+/* Base chip: shared look (no color here so direction classes control it) */
+.trend-chip {
+  display: inline-flex;
+  flex-direction: column;      /* stack rows */
+  align-items: center;
+  gap: 2px;                    /* space between rows */
   margin: .15rem .1rem;
   padding: .2rem .3rem;
   border-radius: 10px;
   border: 1px solid var(--chip-border, var(--portal-section-border));
   background: var(--chip-bg, var(--portal-section-bg));
-  color: var(--trend-highlight-color, var(--portal-section-fg));
-  line-height: 1.5;
-  font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.4;
   font-weight: 700;
+  white-space: normal;
 }
+
+/* First row: arrow + label stay together */
+.chip-top {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Second row: the percent */
+.chip-value {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+.stat-arrow { font-size: 18px; font-weight: bold; margin-right: 2px; }
+
+/* Directional colors only */
 .trend-increasing { color: var(--trend-up-color); }
 .trend-decreasing { color: var(--trend-down-color); }
 .trend-nochange   { color: var(--trend-neutral-color); }
 
-.stat-arrow { font-size: 18px; font-weight: bold; margin-right: 2px; }
-
 /* ====== Responsive ====== */
 
-/* Tablet (769–1024): stack body; info under title; trend + % side-by-side */
+/* Tablet (769–1024): stack body; info under title; smaller chip text */
 @media (min-width: 769px) and (max-width: 1024px) {
   .stat-card {
     padding: var(--spacing-sm) var(--spacing-md);
@@ -150,12 +167,8 @@ trend-increasing,
     padding: 0;
     min-width: 0;
   }
-  .stat-change-number { font-size: 18px; }
   .stat-percent { display: none; }
-  .trend-increasing, .trend-decreasing, .trend-nochange {
-    font-size: 14px;
-    padding: 0 5px;
-  }
+  .trend-chip { font-size: 14px; padding: 0 .3rem; }
 }
 
 /* Wide tablet (769–1204): centered alignment variant */
@@ -187,12 +200,8 @@ trend-increasing,
     padding: 0;
     min-width: 0;
   }
-  .stat-change-number { font-size: 18px; }
   .stat-percent { display: none; }
-  .trend-increasing, .trend-decreasing, .trend-nochange {
-    font-size: 14px;
-    padding: 0 5px;
-  }
+  .trend-chip { font-size: 14px; padding: 0 .3rem; }
   .stat-arrow { font-size: 16px; margin-right: 2px; }
 }
 
@@ -227,12 +236,8 @@ trend-increasing,
     padding-left: 0;
     min-width: 0;
   }
-  .stat-change-number { order: 4; font-size: 14px; }
   .statcard-title { font-size: 15px; }
   .stat-card-icon { width: 18px; height: 18px; }
-  .trend-increasing, .trend-decreasing, .trend-nochange {
-    font-size: 14px;
-    padding: 0 4px;
-  }
+  .trend-chip { font-size: 14px; padding: 0 .25rem; }
   .stat-arrow { font-size: 16px; margin-right: 2px; }
 }

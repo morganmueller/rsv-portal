@@ -582,10 +582,33 @@ const ConfigDrivenPage = ({ config }) => {
                return series.includes(`${sourceVirusForFilter} ${view}`);
               }) ?? [];
 
-            const trendKey = section.chart?.props?.yField || view;
-            const trendObj = section.trendEnabled
-              ? getTrendFromTimeSeries(virusFilteredData, trendKey)
-              : null;
+              const trendKey = section.chart?.props?.yField || "value";
+               let seriesForTrend = virusFilteredData;
+              
+               // For the ED trends section, force the exact series used in the chart:
+               if (section.id === "ed-trends") {
+                 const metricName = `${activeVirus} ${view}`; // e.g., "RSV visits"
+                 const rows = Array.isArray(filteredData)
+                   ? filteredData
+                   : Object.values(filteredData || {}).flat();
+                 seriesForTrend = rows
+                   .filter(r =>
+                     String(r.metric) === metricName &&
+                     String(r.submetric || "Overall") === "Overall" &&
+                     String(r.display || "Percent").toLowerCase().startsWith("percent")
+                   )
+                   .sort((a, b) => new Date(a.date || a.week) - new Date(b.date || b.week));
+              
+                 // Debug (safe to keep while testing)
+                 console.groupCollapsed("[ED subtitle] exact series for trend");
+                 console.log("metric:", metricName, "| count:", seriesForTrend.length);
+                 console.log("last two:", seriesForTrend.at(-2), seriesForTrend.at(-1));
+                 console.groupEnd();
+               }
+              
+               const trendObj = section.trendEnabled
+                 ? getTrendFromTimeSeries(seriesForTrend, trendKey)
+                 : null;
 
             const trendInfo = getTrendInfo({
               trendDirection: trendObj?.direction,

@@ -17,11 +17,17 @@ const normalizeTrend = (val) => {
   if (val == null) return "";
   let s = String(val);
 
-  // 1) Strip any "0%" variants (e.g., "+0%", "0.0%") → collapse to "not changed"
-  s = s.replace(/([+-]?\s*0(?:\.0+)?%)/gi, "");
-  s = s.replace(/\s+/g, " ").trim();
-  if (s === "" || /^not\s*changed$/i.test(s)) return "not changed";
-
+  // 1) If the value EQUALS zero percent (not part of a larger number), collapse to "not changed"
+    const textOnly = s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim(); // strip tags for parsing
+    if (
+      /^[-+]?\s*0(?:\.0+)?\s*%$/i.test(textOnly) || // "0%", "+0%", "0.0%"
+      /\b(increase(?:d)?|decrease(?:d)?|up|down|higher|lower)\b(?:\s+by)?\s+[-+]?\s*0(?:\.0+)?\s*%$/i.test(textOnly)
+    ) {
+      return "not changed";
+    }
+    // from here on, work with the plain text
+    s = textOnly;
+    
   // 2) If it's just a number or a number with optional %, force "by {n}%"
   //    Examples: "30" -> "by 30%", "30%" -> "by 30%"
   if (/^[-+]?\d+(?:\.\d+)?%?$/.test(s)) {

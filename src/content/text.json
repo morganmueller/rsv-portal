@@ -46,7 +46,7 @@
       },
       "summaryBox": {
         "title": "<span class='dynamic-label'>Emergency Department</span> Trends for the Week Ending <span class='dynamic-label'>{date}</span>",
-        "description": "<p>Here you can find recent trends in emergency department visits related to respiratory illnesses in NYC. Emergency department data can provide a timely view of changes in respiratory virus spread and care-seeking.</p><p>The NYC Health Department examines visits to the emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
+        "description": "<p>Here you can find recent trends in emergency department <span class='dynamic-label'>visits</span> related to respiratory illnesses in NYC. Emergency department data can provide a timely view of changes in respiratory virus spread and care-seeking.</p><p>The NYC Health Department examines visits to the emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
       },
 
       "otherResp": {
