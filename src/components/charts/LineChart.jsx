@@ -299,6 +299,8 @@ const LineChart = ({
           },
           color: lineColorEncoding,
           opacity: lineOpacityEncoding,
+          tooltip: sharedTooltip
+
         },
       },
       {
@@ -306,7 +308,7 @@ const LineChart = ({
           ? [
               {
                 name: "series",
-                select: { type: "point", fields: ["{colorField}"], on: "pointermove", clear: "pointerout" },
+                select: { type: "point", fields: ["{colorField}"], on: "pointerdown, touchend, click", clear: "pointerout" },
               },
             ]
           : [],
@@ -329,7 +331,7 @@ const LineChart = ({
             },
           },
         ],
-        mark: { type: "point", opacity: 0, size: 140 },
+        mark: { type: "point", size: 140, filled: true, fillOpacity: 0.001 },
         encoding: {
           x: xEncoding,
           y: { field: "{yField}", type: "quantitative" },
