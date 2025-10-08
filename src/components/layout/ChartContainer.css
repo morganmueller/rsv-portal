@@ -100,10 +100,9 @@ main {
 .chart-content.stack .chart-sidebar .toggle-controls .toggle-button {
   display: inline-flex !important;
   width: auto !important;
-  min-width: 120px;       /* optional: nice pill width */
+  min-width: 120px;       
   flex: 0 0 auto;
   justify-content: center;
-  /* remove if ToggleControls sets block-level margins */
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
@@ -111,18 +110,31 @@ main {
 
 
 .chart-body {
-  flex: 1 1 auto;               /* <- no width:0 here */
-  min-width: 0;                 /* allow shrink inside flex */
+  flex: 1 1 auto;              
+  min-width: 0;                
 
 }
 
 .chart-vega {
   width: 100%;
-  min-width: 0;                 /* <- don’t force 300px; avoids overflow on small screens */
+  min-width: 0;                
   flex: 1;
 }
 
-/* Optional fade helpers */
+
+/* Make taps register as clicks; don’t let scroll gestures block them */
+.chart-vega, .chart-vega svg, .chart-vega canvas {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Keep tooltip above headers/modals */
+#vg-tooltip-element {
+  z-index: 9999 !important;
+  pointer-events: none; /* tooltip never captures taps */
+}
+
+
 .chart-fade-wrapper { transition: opacity 0.6s ease; }
 .chart-fade-wrapper.fade-in { opacity: 1; }
 .chart-fade-wrapper.fade-out { opacity: 0; }
