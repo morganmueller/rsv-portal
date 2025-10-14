@@ -18,7 +18,7 @@ Data by borough reflect people's residence at the time of reporting, and not nec
 To maintain confidentiality, we don't report **counts lower than 5**. Due to small counts, we report trends in deaths by borough by month. 
 
 
-## {virus} Deaths by Race & Ethnicity
+## {virus} Deaths by Race and Ethnicity
 
 The NYC Health Department classifies **race and ethnicity** into the following mutually exclusive categories:
 <ul>
