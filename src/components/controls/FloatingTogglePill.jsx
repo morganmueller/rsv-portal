@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import VirusFilterGroup, { virusOptions } from "./VirusFilterGroup";
+import { getThemeByTitle } from "../../utils/themeUtils";
+
 import DataTypeToggleGroup from "./DataTypeToggleGroup";
 import "./FloatingTogglePill.css";
 
@@ -79,10 +81,21 @@ const FloatingTogglePill = ({
     setOpen(true);
   };
 
+  const virusTheme = getThemeByTitle(activeVirus);
+
   return (
     <div className={`floating-pill ${className} ${open ? "open" : ""}`}>
       {!isChoosingNewVirus && activeVirus && !open ? (
-        <button className="pill-button" onClick={() => setOpen(true)}>
+        <button
+          className="pill-button"
+          onClick={() => setOpen(true)}
+          style={{
+            backgroundColor: virusTheme.background,
+            color: virusTheme.color,
+            borderColor: virusTheme.color,
+            transition: "all 0.3s ease",
+          }}
+        >
           {icon && (
             <img
               src={icon}

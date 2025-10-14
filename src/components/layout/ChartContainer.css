@@ -139,6 +139,24 @@ main {
 .chart-fade-wrapper.fade-in { opacity: 1; }
 .chart-fade-wrapper.fade-out { opacity: 0; }
 
+
+/* Always render over any sticky headers/modals; never eat taps */
+#vg-tooltip-element {
+  z-index: 9999 !important;
+  pointer-events: none;
+  /* These are belt & suspenders; JS also sets position:fixed */
+  position: fixed;
+  max-width: min(280px, 92vw);
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 8px 10px;
+  white-space: normal;         /* allow wrapping */
+  word-break: break-word;      /* avoid horizontal overflow */
+  box-sizing: border-box;
+}
+
+
+
 /* ====== Tablet and up ====== */
 @media (min-width: var(--bp-tablet)) {
   /* sticky only when the sidebar is on the side */
@@ -161,4 +179,9 @@ main {
 
   /* stacking on small screens is natural; no grid props needed */
   .chart-sidebar { width: 100%; }
+
+  #vg-tooltip-element {
+    font-size: 12px;
+    max-width: 92vw;
+  }
 }

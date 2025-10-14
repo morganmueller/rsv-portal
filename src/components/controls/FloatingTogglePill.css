@@ -23,7 +23,7 @@
 /* === Pill Button (Collapsed View) === */
 .pill-button {
   background-color: var(--bg-light-blue);
-  color: var(--gray-800);
+  color: var(--gray-800) !important;
   padding: 8px 16px;
   border-radius: 999px;
   border: none;
@@ -38,6 +38,10 @@
   gap: 6px;
 }
 
+.pill-button:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
 .pill-button .arrow {
   font-size: 10px;
   transition: transform 0.3s ease;
@@ -123,7 +127,7 @@
 .pill-section label {
   font-weight: 600;
   font-size: 13px;
-  color: var(--gray-700);
+  color: var(--gray-800);
   font-family: var(--font-body);
   margin-bottom: 2px;
 }

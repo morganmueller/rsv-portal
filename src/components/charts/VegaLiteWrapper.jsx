@@ -1,12 +1,17 @@
-// src/components/charts/VegaLiteWrapper.jsx
-import React, { useEffect, useMemo, useRef, useState, createContext } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  createContext
+} from "react";
 import PropTypes from "prop-types";
 import { VegaLite } from "react-vega";
 import { Handler as TooltipHandler } from "vega-tooltip";
 import { getVegaThemeConfig, mergeDeep } from "../../utils/vegaTheme";
-export const VegaThemeContext = createContext(false); 
 
-/** Figure out initial dark mode (SSR-safe) */
+export const VegaThemeContext = createContext(false);
+
 const getInitialDark = () => {
   if (typeof document !== "undefined") {
     const attr = document.documentElement.getAttribute("data-theme");
@@ -36,7 +41,7 @@ const VegaLiteWrapper = ({
     let rafId;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const w = entry.contentRect?.width || 0;
+        const w = entries[0]?.contentRect?.width || entry.contentRect?.width || 0;
         cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
           if (w > 0) setContainerWidth(w);
@@ -104,7 +109,7 @@ const VegaLiteWrapper = ({
     // 4) Merge ORDER: spec first → theme last (theme should win for axis colors)
     let merged = mergeDeep(mergeDeep({}, resolvedSpec), theme);
 
-    // 5) Belt & suspenders: ensure guide styles mirror axis colors in all Vega versions
+    // 5) Ensure guide styles mirror axis colors in all Vega versions
     const axisLabel = merged.config?.axis?.labelColor;
     const axisTitle = merged.config?.axis?.titleColor;
     merged.config = merged.config || {};
@@ -126,35 +131,109 @@ const VegaLiteWrapper = ({
   /** Force a full re-embed on width/height/theme changes */
   const embedKey = `w_${containerWidth}_${finalSpec?.height}_${isDark ? "d" : "l"}`;
 
-  /** vega-tooltip theme */
-  const tooltip = useMemo(
-    () =>
-      new TooltipHandler({
-        theme: isDark ? "dark" : "light",
-      }).call,
-    [isDark]
-  );
+  /** Hide tooltip helper */
+  const hideTooltip = React.useCallback(() => {
+    const el = document.getElementById("vg-tooltip-element");
+    if (el) el.style.display = "none";
+  }, []);
+
+  /** Global listeners to dismiss tooltip on outside tap/scroll/escape */
+  useEffect(() => {
+    const onDocPointerDown = (e) => {
+      const node = containerRef.current;
+      if (!node) return;
+      if (!node.contains(e.target)) hideTooltip();
+    };
+    const onKeyDown = (e) => { if (e.key === "Escape") hideTooltip(); };
+    const onScroll = () => hideTooltip();
+
+    document.addEventListener("pointerdown", onDocPointerDown, true); // capture outside first
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", hideTooltip);
+    window.addEventListener("orientationchange", hideTooltip);
+    document.addEventListener("visibilitychange", hideTooltip);
+
+    return () => {
+      document.removeEventListener("pointerdown", onDocPointerDown, true);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", hideTooltip);
+      window.removeEventListener("orientationchange", hideTooltip);
+      document.removeEventListener("visibilitychange", hideTooltip);
+    };
+  }, [hideTooltip]);
+
+  /** vega-tooltip with mobile-friendly positioning (center + clamp) */
+  const tooltip = useMemo(() => {
+    const base = new TooltipHandler({
+      theme: isDark ? "dark" : "light",
+      offsetX: 0,
+      offsetY: 12,
+      style: {
+        maxWidth: "min(280px, 92vw)",
+        fontSize: "12px",
+        lineHeight: "1.35",
+        padding: "8px 10px",
+      },
+    });
+    const call = base.call;
+
+    return (handler, event, item, value) => {
+      call(handler, event, item, value);
+      // Reposition + ensure visible
+      requestAnimationFrame(() => {
+        const el = document.getElementById("vg-tooltip-element");
+        if (!el || !event) return;
+
+        // Re-show if a previous tap hid it
+        el.style.display = "block";
+        el.style.position = "fixed";
+
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const rect = el.getBoundingClientRect();
+
+        // Center under the touch/cursor with 12px offset
+        const gutter = 8;
+        let left = Math.round((event.clientX ?? 0) - rect.width / 2);
+        let top  = Math.round((event.clientY ?? 0) + 12);
+
+        // Clamp to viewport
+        left = Math.max(gutter, Math.min(left, vw - rect.width - gutter));
+        top  = Math.max(gutter, Math.min(top,  vh - rect.height - gutter));
+
+        el.style.left = `${left}px`;
+        el.style.top  = `${top}px`;
+      });
+    };
+  }, [isDark]);
 
   const onError = (err) => {
-    // Keep console noise down but visible during dev
     // eslint-disable-next-line no-console
     console.error("Vega error:", err);
   };
 
   return (
-      <VegaThemeContext.Provider value={isDark}>
-      <div ref={containerRef} style={{ width: "100%", minWidth: 0 }}>
-      {containerWidth > 0 ? (
-        <VegaLite
-          key={embedKey}
-          spec={finalSpec}
-          actions={false}
-          renderer={rendererMode}
-          tooltip={tooltip}
-          onError={onError}
-        />
-      ) : null}
-    </div>
+    <VegaThemeContext.Provider value={isDark}>
+      <div
+        ref={containerRef}
+        style={{ width: "100%", minWidth: 0 }}
+        // Hide any existing tooltip immediately when a new gesture starts,
+        // so tapping blank space also dismisses it.
+        onPointerDownCapture={hideTooltip}
+      >
+        {containerWidth > 0 ? (
+          <VegaLite
+            key={embedKey}
+            spec={finalSpec}
+            actions={false}
+            renderer={rendererMode}
+            tooltip={tooltip}
+            onError={onError}
+          />
+        ) : null}
+      </div>
     </VegaThemeContext.Provider>
   );
 };

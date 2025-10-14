@@ -8,31 +8,31 @@ import SectionWithChart from "./SectionWithChart";
 import ChartContainer from "./ChartContainer";
 import ContentContainer from "./ContentContainer";
 import MarkdownRenderer from "../contentUtils/MarkdownRenderer";
-import { downloadCSV, buildDownloadName } from "../../utils/downloadUtils"; // ← add buildDownloadName
+import { downloadCSV, buildDownloadName } from "../../utils/downloadUtils";
 import { toSourceVirus, coerceRowVirus, coerceRowView } from "../../utils/virusMap";
 
 import FloatingTogglePill from "../controls/FloatingTogglePill";
-import MarkdownParagraphSection from "../contentUtils/MarkdownParagraphSection";
 import { tokens } from "../../styles/tokens";
 import chartRegistry from "../../utils/chartRegistry";
 import { getText } from "../../utils/contentUtils";
 import CombinedVirusChart from "../charts/CombinedVirusChart";
 import DynamicParagraph from "../sections/DynamicParagraph";
-import SeasonalBullet from "../bullets/SeasonalBullet"
+import SeasonalBullet from "../bullets/SeasonalBullet";
 
 import HydratedDataContext from "../../context/HydratedDataContext";
 
 import {
   getTrendFromTimeSeries,
-  generateTrendSubtitle,
+  getLastTwoValuesSameSeries,
   formatDate,
-  coerceNoChange,
   formatTrendPhrase,
-  capitalizeFirstHtml,
+  coerceNoChange,
   getTrendInfo,
   getLatestWeekFromData,
   getLatestWeek,
-  isFirstWeekFromData
+  isFirstWeekFromData,
+  parseLocalISO,
+  EPSILON_NO_CHANGE,
 } from "../../utils/trendUtils";
 
 import { loadConfigWithData } from "../../utils/loadConfigWithData";
@@ -40,18 +40,23 @@ import { getGroupOptions } from "../../utils/getGroupOptions";
 import StatGrid from "../grids/StatGrid";
 import OverviewGrid from "../grids/OverviewGrid";
 import ToggleControls from "../controls/ToggleControls";
-import GroupDropdown from "../controls/GroupDropdown";
 import TrendSubtitle from "../controls/TrendSubtitle";
 import "./ConfigDrivenPage.css";
 
+/* ---------------------------------------
+ * Custom components available to config
+ * ------------------------------------- */
 const customComponents = {
   StatGrid,
   OverviewGrid,
   CombinedVirusChart,
   DynamicParagraph,
-  SeasonalBullet
+  SeasonalBullet,
 };
 
+/* ---------------------------------------
+ * Display helpers / dictionaries
+ * ------------------------------------- */
 const viewDisplayLabels = {
   visits: "Visits",
   hospitalizations: "Hospitalizations",
@@ -84,20 +89,26 @@ const groupDisplayNames = {
   "All Boroughs": "All Boroughs",
 };
 
+/* ---------------------------------------
+ * Small helpers
+ * ------------------------------------- */
 
-
-// Always render subtitles through TrendSubtitle so tokens become styled spans
 const renderSubtitle = (template, variables, groupProps) => {
   if (!template) return null;
   const t =
-  typeof template === "string" && template.includes(".")
-    ? getText(template) // i18n key from text.json
-    : template;         // plain template string
-   return <TrendSubtitle template={t || ""} variables={variables || {}} groupProps={groupProps} />;
+    typeof template === "string" && template.includes(".")
+      ? getText(template)
+      : template;
+  return (
+    <TrendSubtitle
+      template={t || ""}
+      variables={variables || {}}
+      groupProps={groupProps}
+    />
+  );
 };
 
 const displayVirus = (v) => (v === "Influenza" ? "Flu" : v);
-
 
 const resolveText = (input, variables = {}) => {
   const raw =
@@ -117,6 +128,31 @@ const interpolateTokens = (value, vars) => {
 const interpolateObject = (obj, vars) =>
   JSON.parse(JSON.stringify(obj), (_, value) => interpolateTokens(value, vars));
 
+/** Interpret numbers reliably */
+const toNum = (v) => {
+  if (v == null) return null;
+  if (typeof v === "number") return Number.isFinite(v) ? v : null;
+  if (typeof v === "string") {
+    const n = Number(v.replace(/[%\s,]+/g, ""));
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+};
+
+/** Human-readable metric label for subtitle when view isn't applicable. */
+function resolveMetricLabel({ dataType, view }) {
+  if (dataType === "ed") {
+    return viewDisplayLabels[view] || "Visits";
+  }
+  if (dataType === "cases" || dataType === "lab") return "Cases";
+  if (dataType === "deaths" || dataType === "death") return "Deaths";
+  return "Value";
+}
+
+/* ============================================================================================
+ * MAIN COMPONENT
+ * ==========================================================================================*/
+
 const ConfigDrivenPage = ({ config }) => {
   const { titleKey, subtitleKey, summary, sections = [], controls = {} } =
     config;
@@ -132,60 +168,39 @@ const ConfigDrivenPage = ({ config }) => {
     setVirus = () => {},
   } = pageState;
 
-  // --- SUMMARY FIXES (resolve per dataType) ----------------------
+  // --- SUMMARY FIX (resolve per dataType) ----------------------
   const resolvedSummary =
-    summary && (summary.ed || summary.lab || summary.death)
-      ? (summary[dataType] || summary.default || {})
-      : (summary || {});
+    summary && (summary.ed || summary.lab || summary.death || summary.cases)
+      ? summary[dataType] || summary.default || {}
+      : summary || {};
 
   const resolvedSummaryMarkdownPath =
-    typeof resolvedSummary.markdownPath === "object"
-      ? resolvedSummary.markdownPath[dataType] || resolvedSummary.markdownPath.default
-      : resolvedSummary.markdownPath;
-  // --------------------------------------------------------------
+    typeof resolvedSummary?.markdownPath === "object"
+      ? resolvedSummary.markdownPath[dataType] ||
+        resolvedSummary.markdownPath.default
+      : resolvedSummary?.markdownPath;
+  // ------------------------------------------------------------
 
   const [hydratedConfig, setHydratedConfig] = useState(null);
   const [groupSelections, setGroupSelections] = useState({});
-
-  const updateGroup = (key, val) => {
+  const updateGroup = (key, val) =>
     setGroupSelections((prev) => ({ ...prev, [key]: val }));
-  };
-
-
-  
 
   const [showPill, setShowPill] = useState(false);
   const controlsRef = useRef(null);
 
-  
-  // Find the nearest scrollable ancestor; fall back to window
-  const getScrollParent = (node) => {
-    if (!node) return window;
-    const regex = /(auto|scroll|overlay)/;
-    let el = node.parentElement;
-    while (el) {
-      const cs = getComputedStyle(el);
-      if (regex.test(cs.overflowY) || regex.test(cs.overflow)) return el;
-      el = el.parentElement;
-    }
-    return window;
-  };
-  
+  // Sticky toggle pill trigger
   useEffect(() => {
     if (!controlsRef.current) return;
-  
     const observer = new IntersectionObserver(
       ([entry]) => setShowPill(!entry.isIntersecting),
       { root: null, threshold: 0 }
     );
-  
     observer.observe(controlsRef.current);
     return () => observer.disconnect();
   }, [activeVirus, view, dataType]);
-  
-  
-  
 
+  // Load config + data if needed
   useEffect(() => {
     if (config.data) {
       setHydratedConfig(config);
@@ -204,12 +219,13 @@ const ConfigDrivenPage = ({ config }) => {
       .catch(console.error);
   }, [config, activeVirus, view, dataType]);
 
-
   if (!hydratedConfig) return <div className="loading"></div>;
   const { data = {}, sections: hydratedSections = [] } = hydratedConfig;
 
+  // Base tokens for text replacement
   const pageTextVars = {
     virus: activeVirus,
+    virusSource: toSourceVirus(activeVirus),
     view,
     dataType,
     viewLabel: viewDisplayLabels[view],
@@ -218,13 +234,15 @@ const ConfigDrivenPage = ({ config }) => {
     virusLowercase: virusLowercaseDisplay[activeVirus],
   };
 
-  const latestDate = getLatestWeek(data)
-
+  const latestDate = getLatestWeek(data);
   const resolvedTitleKey =
     typeof titleKey === "object" ? titleKey[dataType] : titleKey;
   const resolvedSubtitleKey =
     typeof subtitleKey === "object" ? subtitleKey[dataType] : subtitleKey;
 
+  /* ---------------------------------------
+   * Render
+   * ------------------------------------- */
   return (
     <HydratedDataContext.Provider value={{ data }}>
       <DataPageLayout
@@ -249,7 +267,9 @@ const ConfigDrivenPage = ({ config }) => {
         {resolvedSummaryMarkdownPath && (
           <TrendSummaryContainer
             key={`summary-${activeVirus}-${view}-${dataType}`}
-            sectionTitle={resolveText(resolvedSummary.titleKey || resolvedSummary.title)}
+            sectionTitle={resolveText(
+              resolvedSummary.titleKey || resolvedSummary.title
+            )}
             date={latestDate}
             markdownPath={resolvedSummaryMarkdownPath}
             showTitle
@@ -267,7 +287,11 @@ const ConfigDrivenPage = ({ config }) => {
             {Array.isArray(resolvedSummary?.bullets) &&
               activeVirus === "Flu" &&
               resolvedSummary.bullets.map((b) => {
-                if (b.renderAs === "custom" && b.component && customComponents[b.component]) {
+                if (
+                  b.renderAs === "custom" &&
+                  b.component &&
+                  customComponents[b.component]
+                ) {
                   const Cmp = customComponents[b.component];
                   const slice = b.dataSourceKey ? data?.[b.dataSourceKey] : undefined;
                   const cfg = { id: b.id, ...(b.componentProps || {}) };
@@ -283,7 +307,9 @@ const ConfigDrivenPage = ({ config }) => {
                   );
                 }
                 const slice =
-                  b.dataSourceKey && data?.[b.dataSourceKey] ? data[b.dataSourceKey] : undefined;
+                  b.dataSourceKey && data?.[b.dataSourceKey]
+                    ? data[b.dataSourceKey]
+                    : undefined;
                 return (
                   <SeasonalBullet
                     key={b.id}
@@ -294,23 +320,29 @@ const ConfigDrivenPage = ({ config }) => {
                 );
               })}
           </TrendSummaryContainer>
-
         )}
-        {/* -------------------------------------------------------------------------- */}
 
+        {/* ---------------------- Sections ---------------------- */}
         {hydratedSections
-        
           .filter((section) => {
             const allowed = section.showIfVirus;
             const allowedDataType = section.dataType;
+
             const matchesDataType =
-              !allowedDataType || allowedDataType === dataType;
-            
-              const matchesVirus =
-               !allowed ||
-               (Array.isArray(allowed)
-               ? allowed.some((v) => displayVirus(v) === activeVirus)
-               : displayVirus(allowed) === activeVirus);
+              !allowedDataType ||
+              String(allowedDataType).toLowerCase() ===
+                String(dataType).toLowerCase();
+
+            // Normalize both sides, map "Influenza" -> "Flu", and compare case-insensitively
+            const normalizeVirus = (v) =>
+              v ? displayVirus(String(v)).toLowerCase() : "";
+            const activeVirusNorm = normalizeVirus(activeVirus);
+
+            const matchesVirus = !allowed
+              ? true
+              : Array.isArray(allowed)
+              ? allowed.some((v) => normalizeVirus(v) === activeVirusNorm)
+              : normalizeVirus(allowed) === activeVirusNorm;
 
             return matchesDataType && matchesVirus;
           })
@@ -331,6 +363,7 @@ const ConfigDrivenPage = ({ config }) => {
               textVars
             );
 
+            // If config provides a dynamic name, keep it. Otherwise ensure later matching is robust.
             if (section.chart?.props?.getMetricNames) {
               interpolatedProps.metricName =
                 section.chart.props.getMetricNames({
@@ -354,69 +387,211 @@ const ConfigDrivenPage = ({ config }) => {
             if (section.renderAs === "overview" || section.renderAs === "hidden")
               return null;
 
-            /** ---------- CUSTOM COMPONENT BRANCH ---------- */
+            /* ---------- CUSTOM SECTION BRANCH ---------- */
             if (section.renderAs === "custom") {
-              const CustomComponent = customComponents[section.component];
-              if (!CustomComponent) return null;
+              if (section.component) {
+                const CustomComponent = customComponents[section.component];
+                if (!CustomComponent) return null;
 
-              const chartProps = interpolateObject(
-                section.chart?.props || {},
-                textVars
-              );
-              const compProps = interpolateObject(
-                section.componentProps || {},
-                textVars
-              );
-              const mergedProps = { ...compProps, ...chartProps };
+                const chartProps = interpolateObject(
+                  section.chart?.props || {},
+                  textVars
+                );
+                const compProps = interpolateObject(
+                  section.componentProps || {},
+                  textVars
+                );
+                const mergedProps = { ...compProps, ...chartProps };
 
-              // Build subtitle variables safely (combined-virus needs date/trend)
-              let subtitleVars = { ...textVars };
+                // Subtitle vars (e.g., combined-virus needs date/trend)
+                let subtitleVars = { ...textVars };
 
-              if (section.id === "combined-virus") {
-                // combined-virus uses ARI series for the WoW trend
-                const seriesKey =
-                  view === "visits" ? "Respiratory illness visits" : "Respiratory illness hospitalizations";
-                const ariSeries = Array.isArray(filteredData)
-                  ? filteredData
-                  : filteredData?.[seriesKey] || [];
+                if (section.id === "combined-virus") {
+                  const seriesKey =
+                    view === "visits"
+                      ? "Respiratory illness visits"
+                      : "Respiratory illness hospitalizations";
+                  const ariSeries = Array.isArray(filteredData)
+                    ? filteredData
+                    : filteredData?.[seriesKey] || [];
 
-                const last = ariSeries?.at?.(-1) || {};
-                const latestISO = last.week || last.date || null;
+                  const last = ariSeries?.at?.(-1) || {};
+                  const latestISO = last.week || last.date || null;
 
-                const trendObjRaw = getTrendFromTimeSeries(ariSeries, "value");
-                const trendObj = coerceNoChange(trendObjRaw);
-                const trendText = trendObj ? formatTrendPhrase(trendObj) : "not available";
+                  const trendObj = getTrendFromTimeSeries(ariSeries, "value");
+                  const trendText = trendObj
+                    ? formatTrendPhrase(trendObj)
+                    : "not changed";
 
-                subtitleVars = {
-                  ...subtitleVars,
-                  date: latestISO ? formatDate(latestISO) : "N/A",
-                  trend: trendText,
-                  trendDirection: trendObj?.direction || "same",
-                };
-              }
+                  subtitleVars = {
+                    ...subtitleVars,
+                    date: latestISO ? formatDate(latestISO) : "N/A",
+                    trend: trendText,
+                    trendDirection: trendObj?.direction || "same",
+                  };
+                }
 
-              // Safely resolve the raw subtitle template from text.json (or plain string)
-              // const rawSubtitleTemplate =
-              //   typeof section.subtitle === "string"
-              //     ? getText(section.subtitle)
-              //     : section.subtitle || "";
-
-              // Build a styled TrendSubtitle node for custom sections
-               const customSubtitleNode = renderSubtitle(
+                const customSubtitleNode = renderSubtitle(
                   section.subtitle,
                   subtitleVars
                 );
-              
-              const wrapInChart = section.wrapInChart !== false; // default true
 
-              const componentNode = (
-                <CustomComponent
-                  {...(Array.isArray(filteredData) ? { data: filteredData } : { data: filteredData })}
-                  view={view}
-                  onViewChange={setView}
-                  {...mergedProps}
-                />
+                const wrapInChart = section.wrapInChart !== false;
+
+                const componentNode = (
+                  <CustomComponent
+                    {...(Array.isArray(filteredData)
+                      ? { data: filteredData }
+                      : { data: filteredData })}
+                    view={view}
+                    onViewChange={setView}
+                    {...mergedProps}
+                  />
+                );
+
+                const latestDateForName = getLatestWeek(data);
+
+                return (
+                  <ContentContainer
+                    key={key}
+                    title={resolveText(section.title, textVars)}
+                    subtitle={customSubtitleNode}
+                    subtitleVariables={subtitleVars}
+                    animateOnScroll={section.animateOnScroll !== false}
+                    background={section.background || "white"}
+                    infoIcon={section.infoIcon}
+                    downloadIcon={section.downloadIcon}
+                    downloadPreviewData={
+                      Array.isArray(filteredData)
+                        ? filteredData
+                        : Object.values(filteredData || {}).flat()
+                    }
+                    downloadColumnLabels={interpolatedProps.columnLabels}
+                    downloadDescription={interpolatedProps.downloadDescription}
+                    modalTitle={resolveText(section.modal?.title, textVars)}
+                    modalContent={
+                      section.modal?.markdownPath && (
+                        <MarkdownRenderer
+                          filePath={section.modal.markdownPath}
+                          sectionTitle={resolveText(
+                            section.modal.title || "",
+                            textVars
+                          )}
+                          showTitle={false}
+                          variables={textVars}
+                        />
+                      )
+                    }
+                    onDownloadClick={() => {
+                      const exportRows = Array.isArray(filteredData)
+                        ? filteredData
+                        : Object.entries(filteredData || {}).flatMap(
+                            ([seriesName, rows]) =>
+                              (rows || []).map((row) => ({
+                                ...row,
+                                series: String(seriesName)
+                                  .replace(" visits", "")
+                                  .replace(" hospitalizations", "")
+                                  .replace("COVID-19", "COVID")
+                                  .replace("Influenza", "Flu"),
+                              }))
+                          );
+
+                      const virusForFile =
+                        section.id === "combined-virus" ? "ARI" : activeVirus;
+                      const metricForFile = dataType === "ed" ? view : undefined;
+                      const categoryForFile = section.id || "section";
+
+                      const fileName =
+                        section.chart?.props?.downloadFileName ||
+                        buildDownloadName({
+                          virus: virusForFile,
+                          metric: metricForFile,
+                          category: categoryForFile,
+                          date: latestDateForName,
+                          ext: "csv",
+                        });
+
+                      if (exportRows && exportRows.length) {
+                        downloadCSV(exportRows, fileName);
+                        return;
+                      }
+
+                      const rawPath =
+                        section.componentProps?.dataPath ||
+                        section.chart?.props?.dataPath;
+                      if (rawPath) {
+                        const a = document.createElement("a");
+                        a.href = rawPath;
+                        a.download = fileName;
+                        a.style.display = "none";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                      }
+                    }}
+                  >
+                    {wrapInChart ? (
+                      <ChartContainer
+                        title={resolveText(section.title, textVars)}
+                        chart={
+                          <CustomComponent
+                            {...(Array.isArray(filteredData)
+                              ? { data: filteredData }
+                              : { data: filteredData })}
+                            view={view}
+                            onViewChange={setView}
+                            {...mergedProps}
+                          />
+                        }
+                        {...(section.showSidebarToggle
+                          ? {
+                              sidebar: (
+                                <ToggleControls
+                                  data={
+                                    Array.isArray(filteredData)
+                                      ? filteredData
+                                      : Object.values(filteredData || {}).flat()
+                                  }
+                                  view={view}
+                                  onToggle={setView}
+                                />
+                              ),
+                            }
+                          : {})}
+                        stackSidebarAbove={!!section.sidebarAboveChart}
+                        footer={section.chart?.footer}
+                        altTableData={
+                          Array.isArray(filteredData)
+                            ? filteredData
+                            : Object.values(filteredData || {}).flat()
+                        }
+                        altTableVariables={textVars}
+                        altTableColumns={section.chart?.altTable?.columns}
+                        altTableCaption={
+                          section.chart?.altTable?.caption ||
+                          resolveText(section.title, textVars)
+                        }
+                        altTableSrOnly={section.chart?.altTable?.srOnly ?? true}
+                      />
+                    ) : (
+                      componentNode
+                    )}
+                  </ContentContainer>
+                );
+              }
+
+              // ---- Simple paragraph (no component, no chart) ----
+              const subtitleVars = { ...textVars };
+              const customSubtitleNode = renderSubtitle(
+                section.subtitle,
+                subtitleVars
               );
+
+              const bodyHtml =
+                resolveText(section.textKey, subtitleVars) ??
+                section.text ??
+                "";
 
               return (
                 <ContentContainer
@@ -427,114 +602,18 @@ const ConfigDrivenPage = ({ config }) => {
                   animateOnScroll={section.animateOnScroll !== false}
                   background={section.background || "white"}
                   infoIcon={section.infoIcon}
-                  downloadIcon={section.downloadIcon}
-                  downloadPreviewData={Array.isArray(filteredData) ? filteredData : Object.values(filteredData || {}).flat()}
-                  downloadColumnLabels={interpolatedProps.columnLabels}
-                  downloadDescription={interpolatedProps.downloadDescription}
-                  modalTitle={resolveText(section.modal?.title, textVars)}
-                  modalContent={
-                    section.modal?.markdownPath && (
-                      <MarkdownRenderer
-                        filePath={section.modal.markdownPath}
-                        sectionTitle={resolveText(
-                          section.modal.title || "",
-                          textVars
-                        )}
-                        showTitle={false}
-                        variables={textVars}
-                      />
-                    )
-                  }
-                  onDownloadClick={() => {
-                    // Export exactly what this section is rendering
-                    const exportRows = Array.isArray(filteredData)
-                      ? filteredData
-                      : Object.entries(filteredData || {}).flatMap(([seriesName, rows]) =>
-                          (rows || []).map((row) => ({
-                            ...row,
-                            series: String(seriesName)
-                              .replace(" visits", "")
-                              .replace(" hospitalizations", "")
-                              .replace("COVID-19", "COVID")
-                              .replace("Influenza", "Flu"),
-                          }))
-                        );
-
-                    // Build a sensible name:
-                    // - for the combined-virus overview, use "ARI" as the virus label
-                    // - include view only for ED data
-                    const virusForFile = section.id === "combined-virus" ? "ARI" : activeVirus;
-                    const metricForFile = dataType === "ed" ? view : undefined;
-                    const categoryForFile = section.id || "section";
-
-                    const fileName =
-                      section.chart?.props?.downloadFileName ||
-                      buildDownloadName({
-                        virus: virusForFile,
-                        metric: metricForFile,
-                        category: categoryForFile,
-                        date: latestDate,
-                        ext: "csv",
-                      });
-
-                    // If we have rendered rows, download them.
-                    if (exportRows && exportRows.length) {
-                      downloadCSV(exportRows, fileName);
-                      return;
-                    }
-
-                    // Fallback: if this custom section points to a static CSV, download that.
-                    const rawPath = section.componentProps?.dataPath || section.chart?.props?.dataPath;
-                    if (rawPath) {
-                      const a = document.createElement("a");
-                      a.href = rawPath;
-                      a.download = fileName;
-                      a.style.display = "none";
-                      document.body.appendChild(a);
-                      a.click();
-                      document.body.removeChild(a);
-                    }
-                  }}
+                  downloadIcon={false}
                 >
-                  {wrapInChart ? (
-                    <ChartContainer
-                      title={resolveText(section.title, textVars)}
-                      chart={
-                        <CustomComponent
-                          {...(Array.isArray(filteredData)
-                            ? { data: filteredData }
-                            : { data: filteredData })}
-                          view={view}
-                          onViewChange={setView}
-                          {...mergedProps}
-                        />
-                      }
-                      {...(section.showSidebarToggle
-                        ? {
-                            sidebar: (
-                              <ToggleControls
-                                data={
-                                  Array.isArray(filteredData)
-                                    ? filteredData
-                                    : Object.values(filteredData || {}).flat()
-                                }
-                                view={view}
-                                onToggle={setView}
-                              />
-                            ),
-                          }
-                        : {})}
-                      stackSidebarAbove={!!section.sidebarAboveChart}
-                      footer={section.chart.footer}
-                    />
-                  ) : (
-                    componentNode
-                  )}
+                  <div className="markdown-body">
+                    {typeof bodyHtml === "string" ? <p>{bodyHtml}</p> : bodyHtml}
+                  </div>
                 </ContentContainer>
               );
             }
 
-            /** ---------- DEFAULT (NON-CUSTOM) BRANCH ---------- */
+            /* ---------- DEFAULT (NON-CUSTOM) BRANCH ---------- */
+
+            // Group UI state
             const groupField = section.chart?.props?.groupField;
             const groupLabel = section.chart?.props?.groupLabel || "All Groups";
             const safeDataArray = Array.isArray(filteredData)
@@ -545,13 +624,15 @@ const ConfigDrivenPage = ({ config }) => {
               groupField,
               groupLabel
             );
-            const activeGroup = groupSelections[key] ?? groupOptions[0] ?? null;
+            const activeGroup =
+              groupSelections[key] ?? groupOptions[0] ?? null;
 
             const normalizedGroup = (activeGroup || "").trim();
             const normalizedLabel = (groupLabel || "").trim();
             const groupDisplay =
               groupDisplayNames[normalizedGroup] || normalizedGroup;
 
+            // Flatten multi-series datasets
             const isMultiSeries =
               typeof filteredData === "object" && !Array.isArray(filteredData);
             const flattenedData = isMultiSeries
@@ -563,107 +644,302 @@ const ConfigDrivenPage = ({ config }) => {
                 )
               : filteredData;
 
+            // Apply group filter for CHART DISPLAY
             const groupFilteredData =
               !activeGroup || activeGroup === groupLabel
                 ? flattenedData
                 : flattenedData.filter((d) => d[groupField] === activeGroup);
 
-              const sourceVirusForFilter = toSourceVirus(activeVirus);
-              
-              const virusFilteredData =
-                groupFilteredData?.filter?.((row) => {
-                // normalize both sides to SOURCE labels ('Influenza', 'COVID-19', 'RSV')
-               const vRaw = coerceRowVirus(row);
-               const v = vRaw ? toSourceVirus(vRaw) : null;
-               const vw = coerceRowView(row);
-               if (v && vw) return v === sourceVirusForFilter && vw === view;
-               // fallback to legacy substring behavior if needed
-               const series = String(row.series || row.metric || row.virus || "");
-               return series.includes(`${sourceVirusForFilter} ${view}`);
+            // Virus filter helper
+            const sourceVirusForFilter = toSourceVirus(activeVirus);
+            const filterByVirus = (rows) =>
+              rows?.filter?.((row) => {
+                const vRaw = coerceRowVirus(row);
+                const v = vRaw ? toSourceVirus(vRaw) : null;
+                if (v) return v === sourceVirusForFilter;
+                const series = String(
+                  row.series || row.metric || row.virus || ""
+                );
+                return series
+                  .toLowerCase()
+                  .includes(sourceVirusForFilter.toLowerCase());
               }) ?? [];
 
-              const trendKey = section.chart?.props?.yField || "value";
-               let seriesForTrend = virusFilteredData;
-              
-               // For the ED trends section, force the exact series used in the chart:
-               if (section.id === "ed-trends") {
-                 const metricName = `${activeVirus} ${view}`; // e.g., "RSV visits"
-                 const rows = Array.isArray(filteredData)
-                   ? filteredData
-                   : Object.values(filteredData || {}).flat();
-                 seriesForTrend = rows
-                   .filter(r =>
-                     String(r.metric) === metricName &&
-                     String(r.submetric || "Overall") === "Overall" &&
-                     String(r.display || "Percent").toLowerCase().startsWith("percent")
-                   )
-                   .sort((a, b) => new Date(a.date || a.week) - new Date(b.date || b.week));
-              
-                 // Debug (safe to keep while testing)
-                 console.groupCollapsed("[ED subtitle] exact series for trend");
-                 console.log("metric:", metricName, "| count:", seriesForTrend.length);
-                 console.log("last two:", seriesForTrend.at(-2), seriesForTrend.at(-1));
-                 console.groupEnd();
-               }
-              
-               const trendObj = section.trendEnabled
-                 ? getTrendFromTimeSeries(seriesForTrend, trendKey)
-                 : null;
+            // CHART DATA (respects group for visual display)
+            const virusFilteredData =
+              dataType === "ed"
+                ? groupFilteredData.filter((row) => {
+                    const vRaw = coerceRowVirus(row);
+                    const v = vRaw ? toSourceVirus(vRaw) : null;
+                    const vw = coerceRowView(row);
+                    if (v && vw) return v === sourceVirusForFilter && vw === view;
+                    const series = String(
+                      row.series || row.metric || row.virus || ""
+                    );
+                    return series
+                      .toLowerCase()
+                      .includes(
+                        `${sourceVirusForFilter} ${view}`.toLowerCase()
+                      );
+                  })
+                : filterByVirus(groupFilteredData);
 
+            // Resolve the chart's metric name safely (string only)
+            let chartMetricName = interpolatedProps.metricName;
+            if (Array.isArray(chartMetricName)) {
+              chartMetricName = chartMetricName[0] ?? "";
+            }
+            if (chartMetricName == null) chartMetricName = "";
+
+            const srcVirus = toSourceVirus(activeVirus); // e.g., "Flu" -> "Influenza"
+            const uiVirus = activeVirus;
+            if (chartMetricName) {
+              chartMetricName = chartMetricName
+                .replace(/\bFlu\b/g, "Influenza")
+                .replace(/\bCOVID\b/g, "COVID-19");
+              if (uiVirus !== srcVirus) {
+                const re = new RegExp(`\\b${uiVirus}\\b`, "g");
+                chartMetricName = chartMetricName.replace(re, srcVirus);
+              }
+            }
+
+            // CHART working data
+            const workingData = virusFilteredData?.length
+              ? virusFilteredData
+              : groupFilteredData?.length
+              ? groupFilteredData
+              : flattenedData;
+
+            // If we still don't have a metric name, infer it from the latest row with a metric
+            if (!chartMetricName && workingData?.length) {
+              const lastWithMetric = [...workingData]
+                .reverse()
+                .find((r) => r?.metric);
+              chartMetricName = String(lastWithMetric?.metric ?? "");
+            }
+
+            /* ===== STRICT TREND SELECTION to match TrendSubtitle + cases config =====
+             * - LAB/CASES: exact metric "{Virus} cases", submetric "Total"
+             * - DEATHS:    exact metric "{Virus} deaths", submetric "Total"
+             * - ED:        respect {view} and (if selected) group; otherwise same-series
+             * - Seasonal datasets: only the latest season
+             */
+
+            // --- unified trend pool selection ---
+            let trendPoolBase;
+            if (dataType === "ed") {
+              // ED: use the already-filtered working data
+              trendPoolBase = workingData;
+            } else if (dataType === "death" || dataType === "deaths") {
+              // DEATHS: Use the section's actual data source
+              // flattenedData is the processed data being displayed in the chart
+              trendPoolBase = flattenedData?.length ? flattenedData : workingData;
+              console.log("[TREND deaths] Pool size:", trendPoolBase.length, "Last 3:", trendPoolBase.slice(-3));
+            } else if (dataType === "lab" || dataType === "cases") {
+              // CASES: Use the section's actual data source
+              trendPoolBase = flattenedData?.length ? flattenedData : workingData;
+              console.log("[TREND cases] Pool size:", trendPoolBase.length, "Last 3:", trendPoolBase.slice(-3));
+            } else {
+              // Fallback for any other data type
+              trendPoolBase = filterByVirus(flattenedData);
+            }
+
+            // If there are seasons in the data, keep only latest season
+            let trendData = trendPoolBase;
+            if (trendData?.length && "season" in (trendData[0] || {})) {
+              const lastSeason = [...trendData]
+                .filter((r) => r?.season != null)
+                .reduce((acc, r) => {
+                  const d = parseLocalISO(
+                    r?.date ?? r?.week ?? r?.dateStr
+                  );
+                  const ts = d ? d.getTime() : -Infinity;
+                  const prev = acc.get(r.season) ?? -Infinity;
+                  if (ts > prev) acc.set(r.season, ts);
+                  return acc;
+                }, new Map());
+              const latestSeason = [...lastSeason.entries()].sort(
+                (a, b) => b[1] - a[1]
+              )[0]?.[0];
+              if (latestSeason) {
+                trendData = trendData.filter((r) => r.season === latestSeason);
+                console.log(`[TREND] Filtered to latest season: ${latestSeason}, rows: ${trendData.length}`);
+              }
+            }
+
+            // Desired metric string for lab/cases/deaths
+            const desiredMetric =
+              dataType === "deaths" || dataType === "death"
+                ? `COVID-19 deaths`  // Match exactly what's in your CSV
+                : dataType === "lab" || dataType === "cases"
+                ? `${srcVirus} cases`  // This will be "COVID-19 cases", "Influenza cases", or "RSV cases"
+                : null;
+
+            const totalNames = [
+              "Total",
+              "All",
+              "Overall",
+              "All Ages",
+              "All Boroughs",
+            ];
+            const isTotal = (s) =>
+              totalNames.includes(String(s || "").trim());
+
+            // Debug logging for deaths and cases
+            if (dataType === "deaths" || dataType === "death") {
+              console.log("[DEBUG deaths-series filter]", {
+                desiredMetric,
+                availableMetrics: [...new Set((trendData || []).map(r => r.metric))],
+                availableSubmetrics: [...new Set((trendData || []).map(r => r.submetric))],
+                lastRows: (trendData || []).slice(-3),
+                trendDataLength: trendData?.length,
+              });
+            }
+            
+            if (dataType === "lab" || dataType === "cases") {
+              console.log("[DEBUG cases-series filter]", {
+                desiredMetric,
+                srcVirus,
+                availableMetrics: [...new Set((trendData || []).map(r => r.metric))],
+                availableSubmetrics: [...new Set((trendData || []).map(r => r.submetric))],
+                lastRows: (trendData || []).slice(-3),
+                trendDataLength: trendData?.length,
+              });
+            }
+              
+            // Start with a *strict* filtered series when applicable
+            let seriesForTrend =
+              desiredMetric
+                ? (trendData || []).filter(
+                    (r) =>
+                      String(r?.metric) === desiredMetric &&
+                      isTotal(r?.submetric)
+                  )
+                : (trendData || []);
+
+            console.log(`[TREND] After metric filter: ${seriesForTrend.length} rows`);
+
+            // ED only: if grouped, allow trend to respect active group
+            if (
+              dataType === "ed" &&
+              activeGroup &&
+              activeGroup !== groupLabel &&
+              groupField
+            ) {
+              seriesForTrend = seriesForTrend.filter(
+                (r) => String(r[groupField]) === String(activeGroup)
+              );
+              console.log(`[TREND ED] After group filter (${activeGroup}): ${seriesForTrend.length} rows`);
+            }
+
+            // Chronological sort
+            seriesForTrend = seriesForTrend.slice().sort((a, b) => {
+              const da = parseLocalISO(a?.date ?? a?.week ?? a?.dateStr);
+              const db = parseLocalISO(b?.date ?? b?.week ?? b?.dateStr);
+              if (da && db) return da - db;
+              if (
+                a?.dayOfSeason != null &&
+                b?.dayOfSeason != null
+              ) {
+                return Number(a.dayOfSeason) - Number(b.dayOfSeason);
+              }
+              return 0;
+            });
+
+            // Compute WoW trend using SAME-SERIES matcher from trendUtils
+            const enableTrend = section.trendEnabled !== false;
+            let trendObjRaw = null;
+
+            if (enableTrend) {
+              // If strict filter yielded < 2 numeric points, fall back to whole pool with options.
+              const poolForPair =
+                seriesForTrend?.length >= 2 ? seriesForTrend : trendData;
+
+              console.log(`[TREND] Computing from pool of ${poolForPair.length} rows`);
+
+              const pair = getLastTwoValuesSameSeries(poolForPair, "value", {
+                metricKey: "metric",
+                submetricKey: "submetric",
+                metricOnly: dataType === "ed", // ED: match on metric only
+                forceTotal:
+                  dataType !== "ed", // LAB/CASES/DEATHS: prefer totals
+                totalValues: totalNames,
+              });
+
+              if (pair) {
+                const [curr, prev] = pair;
+                console.log(`[TREND] Found pair: current=${curr}, previous=${prev}`);
+                
+                if (prev === 0) {
+                  trendObjRaw =
+                    curr === 0
+                      ? { label: "not changed", value: "0%", direction: "same" }
+                      : { label: "increased", value: "", direction: "up" };
+                } else {
+                  const pct = ((curr - prev) / prev) * 100;
+                  if (Math.abs(pct) < EPSILON_NO_CHANGE) {
+                    trendObjRaw = {
+                      label: "not changed",
+                      value: "0%",
+                      direction: "same",
+                    };
+                  } else {
+                    const rounded = Math.round(pct);
+                    trendObjRaw = {
+                      label: rounded > 0 ? "increased" : "decreased",
+                      value: `${Math.abs(rounded)}%`,
+                      direction: rounded > 0 ? "up" : "down",
+                    };
+                  }
+                }
+                console.log(`[TREND] Computed trend:`, trendObjRaw);
+              } else {
+                console.warn(`[TREND] Could not find valid pair for trend calculation`);
+              }
+            }
+
+            const trendObj = coerceNoChange(trendObjRaw);
+
+            // Trend display helpers (direction text etc. are optional for TrendSubtitle)
+            const metricLabelForInfo = resolveMetricLabel({ dataType, view });
             const trendInfo = getTrendInfo({
               trendDirection: trendObj?.direction,
-              metricLabel: viewDisplayLabels[view],
+              metricLabel: metricLabelForInfo,
               virus: activeVirus,
             });
 
-            const trendClass =
-              trendObj?.direction === "up"
-                ? "trend-up"
-                : trendObj?.direction === "down"
-                ? "trend-down"
-                : "trend-neutral";
-
-            const latestWeek = getLatestWeekFromData(groupFilteredData);
-            const isFirstWeek = isFirstWeekFromData(groupFilteredData)
+            const latestWeek = getLatestWeekFromData(workingData);
+            const isFirstWeek = isFirstWeekFromData(workingData);
 
             const groupLabelText =
               normalizedGroup && normalizedGroup !== normalizedLabel
                 ? `in ${groupDisplay}`
                 : `across ${normalizedLabel.toLowerCase()}`;
 
-
-
-                
-            const labelPlusValue = trendObj
-            ? `${trendObj.label}${trendObj.value != null && String(trendObj.value).trim() !== "" ? " " + String(trendObj.value).trim() : ""}`
-            : "not changed";
-
-            // append % to the LAST number in the phrase if no % is present anywhere
-            const labelPlusValuePct = /%/.test(labelPlusValue)
-            ? labelPlusValue
-            : labelPlusValue.replace(/(-?\d+(?:\.\d+)?)(?!.*\d)/, "$1%");
+            const trendText = trendObj
+              ? formatTrendPhrase(trendObj)
+              : "not available";
 
             const fullVars = {
-            ...textVars,
-            date: `<span class="bg-highlight">${formatDate(latestWeek)}</span>`,
-            trend: `<span class="${trendClass}">${labelPlusValuePct}</span>`,  // ← use this
-            group: groupLabelText,
-            trendDirection: trendObj?.direction,
-            arrow: trendInfo?.arrow,
-            viewLabel: viewDisplayLabels[view],
-            viewLabelPreposition: viewDisplayLabelsPreposition[view],
-            virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
-            virusLowercase: virusLowercaseDisplay[activeVirus],
-            directionText: trendInfo?.directionText,
-            trendColor: trendInfo?.trendColor,
+              ...textVars,
+              date: `<span class="bg-highlight">${formatDate(
+                latestWeek
+              )}</span>`,
+              trend: trendText,
+              group: groupLabelText,
+              trendDirection: trendObj?.direction || "same",
+              arrow: trendInfo?.arrow,
+              viewLabel: metricLabelForInfo,
+              viewLabelPreposition: viewDisplayLabelsPreposition[view],
+              virusLabelArticle: virusDisplayLabelsArticle[activeVirus],
+              virusLowercase: virusLowercaseDisplay[activeVirus],
+              directionText: trendInfo?.directionText,
+              trendColor: trendInfo?.trendColor,
             };
-
-                
 
             const rawSubtitleTemplate = resolveText(section.subtitle);
 
-            const computedSubtitle = (
-              isFirstWeek ? null :
+            const computedSubtitle = isFirstWeek && dataType !== "death" ? null : (
               <TrendSubtitle
                 template={rawSubtitleTemplate}
                 variables={fullVars}
@@ -675,6 +951,7 @@ const ConfigDrivenPage = ({ config }) => {
               />
             );
 
+            // Resolve chart component and props
             const ChartComponent = chartRegistry[section.chart?.type];
             if (!ChartComponent) {
               console.warn(`Chart type '${section.chart?.type}' not found`);
@@ -683,13 +960,14 @@ const ConfigDrivenPage = ({ config }) => {
 
             const resolvedProps = {
               ...interpolatedProps,
-              data: groupFilteredData,
+              data: workingData,
               virus: activeVirus,
               view,
               colorMap: tokens.colorScales?.[(activeVirus || "").toLowerCase()],
               tooltip: true,
             };
 
+            // Sensible x mapping for line charts
             if (
               section.chart?.type?.toLowerCase().includes("line") &&
               !resolvedProps.xField
@@ -697,13 +975,12 @@ const ConfigDrivenPage = ({ config }) => {
               resolvedProps.xField = "date";
             }
 
-            // For filenames, use the selected group when one is chosen; else the section id
+            // Filename category: prefer selected group
             const categoryForFile =
               normalizedGroup && normalizedGroup !== normalizedLabel
                 ? normalizedGroup
                 : section.id || "chart";
 
-            // include view in filename only for ED data
             const metricForFile = dataType === "ed" ? view : undefined;
 
             return (
@@ -715,17 +992,18 @@ const ConfigDrivenPage = ({ config }) => {
                 infoIcon={section.infoIcon}
                 downloadIcon={section.downloadIcon}
                 onDownloadClick={() => {
-                  const flattened = Array.isArray(groupFilteredData)
-                    ? groupFilteredData
-                    : Object.entries(groupFilteredData || {}).flatMap(([seriesName, rows]) =>
-                        (rows || []).map((row) => ({
-                          ...row,
-                          series: seriesName
-                            .replace(" visits", "")
-                            .replace(" hospitalizations", "")
-                            .replace("COVID-19", "COVID")
-                            .replace("Influenza", "Flu"),
-                        }))
+                  const flattened = Array.isArray(workingData)
+                    ? workingData
+                    : Object.entries(workingData || {}).flatMap(
+                        ([seriesName, rows]) =>
+                          (rows || []).map((row) => ({
+                            ...row,
+                            series: seriesName
+                              .replace(" visits", "")
+                              .replace(" hospitalizations", "")
+                              .replace("COVID-19", "COVID")
+                              .replace("Influenza", "Flu"),
+                          }))
                       );
 
                   if (!flattened?.length) return;
@@ -734,16 +1012,16 @@ const ConfigDrivenPage = ({ config }) => {
                     section.chart?.props?.downloadFileName ||
                     buildDownloadName({
                       virus: activeVirus,
-                      metric: metricForFile,           // ← omit for case/death
+                      metric: metricForFile,
                       category: categoryForFile,
                       date: latestDate,
                       ext: "csv",
-                      includeMetric: !(dataType === "cases" || dataType === "deaths"),
+                      includeMetric:
+                        !(dataType === "cases" || dataType === "deaths"),
                     });
 
                   downloadCSV(flattened, fileName);
                 }}
-                
                 columnLabels={interpolatedProps.columnLabels}
                 modalTitle={resolveText(section.modal?.title, fullVars)}
                 modalContent={
@@ -760,28 +1038,7 @@ const ConfigDrivenPage = ({ config }) => {
                   )
                 }
                 animateOnScroll={section.animateOnScroll !== false}
-                previewData={
-                  section.id === "combined-virus"
-                  ? Object.entries(data[dataSourceKey] || {})
-                  .flatMap(([seriesName, rows]) =>
-                        (rows || []).map((row) => ({
-                          ...row,
-                          series: seriesName
-                            .replace(" visits", "")
-                            .replace(" hospitalizations", "")
-                            .replace("COVID-19", "COVID")
-                            .replace("Influenza", "Flu"),
-                        }))
-                      )
-                    : groupFilteredData
-                }
-                {...(section.id === "combined-virus"
-                  ? {
-                      viewToggle: controls.viewToggle,
-                      view,
-                      onViewChange: setView,
-                    }
-                  : {})}
+                previewData={workingData}
               >
                 <ChartContainer
                   title={resolveText(section.title, fullVars)}
@@ -793,7 +1050,7 @@ const ConfigDrivenPage = ({ config }) => {
                             data={
                               Array.isArray(filteredData)
                                 ? filteredData
-                                : Object.values(filteredData).flat()
+                                : Object.values(filteredData || {}).flat()
                             }
                             view={view}
                             onToggle={setView}
@@ -803,6 +1060,15 @@ const ConfigDrivenPage = ({ config }) => {
                     : {})}
                   stackSidebarAbove={!!section.sidebarAboveChart}
                   footer={section.chart.footer}
+                  altTableData={workingData}
+                  altTableVariables={fullVars}
+                  altTableColumns={section.chart?.altTable?.columns}
+                  altTableCaption={
+                    section.chart?.altTable?.caption ||
+                    resolveText(section.title, fullVars)
+                  }
+                  altTableSrOnly={section.chart?.altTable?.srOnly ?? true}
+                  disableAltTable={section.disableAltTable} 
                 />
               </SectionWithChart>
             );
@@ -822,7 +1088,7 @@ const ConfigDrivenPage = ({ config }) => {
           controls={controls}
         />
       )}
-   </HydratedDataContext.Provider>
+    </HydratedDataContext.Provider>
   );
 };
 

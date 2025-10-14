@@ -65,9 +65,9 @@ const StatCardBottom = ({
   // Percent string shown inside the chip
   const displayPercent = useMemo(() => {
     if (!trend) return null;
-    if (dir === "same") return "0%";
+    if (dir === "same") return null;
     const n = extractNumberFromPercent(trend.value);
-    return Number.isFinite(n) ? `${Math.abs(n)}%` : null;
+     return Number.isFinite(n) ? `${Math.abs(n)}%` : null;
   }, [trend, dir]);
 
   return (

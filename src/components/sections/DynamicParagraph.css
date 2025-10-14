@@ -1,6 +1,6 @@
 /* Portal-wide surface tokens (set once in a global file if you already have these, remove this block) */
 :root {
-    --portal-section-bg: #F3F4F6;      /* ← same gray as other sections */
+    --portal-section-bg: #F3F4F6;      
     --portal-section-border: #E5E7EB;
     --portal-section-fg: #1F2937;
   }
@@ -41,7 +41,12 @@
     --chip-fg: var(--portal-section-fg);
   }
   
+ /* make sure this is loaded after any global typography CSS */
+ .data-summary-markdown .dp-sentence .chip.chip--virus .chip__label {
+  text-transform: capitalize !important;
+}
 
+  
 
 
   @media (max-width: 768px) {

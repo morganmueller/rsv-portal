@@ -1,18 +1,11 @@
-// src/components/bullets/SeasonalBullet.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { loadCSVData } from "../../utils/loadCSVData";
 import "./SeasonalBullet.css";
 
-/**
- * SeasonalBullet
- * - Prefers a provided `dataSource` slice.
- * - If absent/empty, self-loads from `config.dataPath`.
- * - Builds the final seasonal sentence locally and renders it.
- */
 export default function SeasonalBullet({
   config,
-  dataSource, // hydrated slice if available
+  dataSource, // hydrated slice if available (preferred)
   pageState,
   as: As = "p",
   className = "seasonal-bullet",
@@ -20,7 +13,7 @@ export default function SeasonalBullet({
   const {
     id,
     dataPath,
-    season,
+    season, // { start: {month, day}, end: {month, day} }
     diseaseLabel,
     filters = {},
     weeklyField = "value",
@@ -53,119 +46,161 @@ export default function SeasonalBullet({
   }, [dataSource, dataPath]);
 
   // choose rows: prefer passed slice, else fallback
-  const sourceRows = Array.isArray(dataSource) && dataSource.length
-    ? dataSource
-    : (fallbackRows || []);
+  const sourceRows =
+    Array.isArray(dataSource) && dataSource.length ? dataSource : fallbackRows || [];
 
   // ----- visibility gate -----
   const shouldShow = useMemo(() => {
     return typeof showWhen === "function" ? !!showWhen(pageState || {}) : true;
   }, [showWhen, pageState]);
 
-  // ----- compute message + key values (weekly/seasonal/date) -----
+  // ======================= Core computation =======================
   const info = useMemo(() => {
     if (err) return null;
-    if (!shouldShow || !season) return null;
+    if (!shouldShow) return null;
     if (!Array.isArray(sourceRows) || sourceRows.length === 0) return null;
 
-    // 1) Filter by metric (only), not submetric yet
+    // 1) Filter to this metric
     const metricRows = filters.metric
       ? sourceRows.filter((r) => r.metric === filters.metric)
       : sourceRows;
 
     if (!metricRows.length) return null;
 
-    // 2) From metricRows, split weekly vs seasonal total
-    const weeklyRows = metricRows.filter(
-      (r) => r.submetric === (filters.submetric || "Weekly")
-    );
+    // 2) Helpers to detect seasonal vs weekly
+    const toStr = (x) => (x == null ? "" : String(x));
+    const isSeasonalLabel = (s) => typeof s === "string" && /^seasonal\s+/i.test(s.trim());
 
-    // Some rows have empty values; take the last weekly row with a non-empty weeklyField & date
-    const latest = [...weeklyRows].reverse().find((r) => {
-      const v = String(r?.[weeklyField] ?? "").trim();
-      const d = String(r?.[dateField] ?? "").trim();
-      return v !== "" && d !== "";
+    // Seasonal rows for this metric
+    const seasonalRows = metricRows.filter((r) => isSeasonalLabel(r.submetric));
+
+    // Prefer explicit seasonalSubmetric match; otherwise most recent by date
+    const seasonRow = seasonalSubmetric
+      ? seasonalRows.find((r) => r.submetric === seasonalSubmetric)
+      : [...seasonalRows].sort((a, b) => new Date(b[dateField]) - new Date(a[dateField]))[0];
+
+    // Weekly rows are anything labeled "Weekly" OR any non-seasonal submetric for backward compat
+    const weeklyRows = metricRows.filter((r) => {
+      const sub = toStr(r.submetric).trim();
+      if (!sub) return false;
+      if (/^weekly$/i.test(sub)) return true;
+      return !isSeasonalLabel(sub) && !/^seasonal total$/i.test(sub);
     });
 
-    const seasonTotalRow = metricRows.find(
-      (r) => r.submetric === seasonalSubmetric
-    );
-
-    if (!latest || !seasonTotalRow) return null;
-
-    const weeklyVal = String(latest[weeklyField]).trim();
-    const seasonalVal = String(seasonTotalRow[weeklyField]).trim();
-    const dateStr = String(latest[dateField]).trim();
-
-    if (!weeklyVal || !seasonalVal || !dateStr) return null;
-
-    const message = buildSeasonalMessage({
-      dateStr,
-      weeklyValue: weeklyVal,
-      seasonalTotalValue: seasonalVal,
-      cfg: { diseaseLabel, season, templates },
+    // Latest weekly row with a value/date, if it exists
+    const latestWeekly = [...weeklyRows].reverse().find((r) => {
+      const v = toStr(r?.[weeklyField]).trim();
+      const d = r?.[dateField];
+      return v !== "" && d != null && !Number.isNaN(new Date(d).getTime());
     });
 
-    const inSeasonFlag = isInSeason(dateStr, season);
-    const asOfDate = formatDisplayDateLong(dateStr);
-    const seasonRange = getSeasonYearRange(dateStr, season);
+    // Require a seasonal row; otherwise we can't render the bullet
+    if (!seasonRow) return null;
 
-    return { message, weeklyVal, seasonalVal, dateStr, inSeasonFlag, asOfDate, seasonRange };
+    // Values as strings (so zero/lt buckets still work consistently)
+    const weeklyVal = latestWeekly ? toStr(latestWeekly[weeklyField]).trim() : null;
+    const seasonalVal = toStr(seasonRow[weeklyField]).trim();
+
+    // Normalize the "as of" date from weekly or seasonal row (supports Date or string)
+    const asOfRaw = latestWeekly?.[dateField] ?? seasonRow?.[dateField] ?? null;
+    if (!asOfRaw) return null;
+
+    const asOfDateObj = asOfRaw instanceof Date ? asOfRaw : new Date(asOfRaw);
+    if (Number.isNaN(asOfDateObj.getTime())) return null;
+
+    // ISO-like string if needed elsewhere; human chip uses a long format
+    const asOfDateISO = asOfDateObj.toISOString().slice(0, 10);
+
+    if (!seasonalVal) return null;
+
+    // Season label directly from submetric (e.g., "Seasonal 2025-2026" -> "2025–2026")
+    const rawSeasonLabel = toStr(seasonRow.submetric);
+    const seasonLabel = rawSeasonLabel.replace(/^Seasonal\s+/i, "").replace(/-/g, "–");
+
+    // "In-season" check uses the configured month/day window but keyed to the as-of date
+    const inSeasonFlag = isInSeason(asOfDateObj, season);
+    const asOfDate = formatDisplayDateLong(asOfDateObj);
+
+    // Build message via templates (if provided), else use rich render
+    const message = templates
+      ? buildSeasonalMessage({
+          asOfDate,
+          weeklyValue: weeklyVal,
+          seasonalTotalValue: seasonalVal,
+          seasonLabel,
+          diseaseLabel,
+          inSeasonFlag,
+          templates,
+        })
+      : null;
+
+    return {
+      weeklyVal,
+      seasonalVal,
+      asOfDate,     // human readable chip
+      asOfDateISO,  // normalized if needed later
+      seasonLabel,
+      inSeasonFlag,
+      message,
+    };
   }, [
     err,
     shouldShow,
     sourceRows,
     filters.metric,
-    filters.submetric,
     weeklyField,
     seasonalSubmetric,
     dateField,
-    diseaseLabel,
     season,
+    diseaseLabel,
     templates,
   ]);
 
   if (!info) return null;
 
-  // If custom templates are provided, keep the exact string.
   const allowRichRender = !templates;
 
-  // Styling helpers for rich render
+  // ======================= Render helpers =======================
   const bucketType = (val) => {
     if (val === "0") return "zero";
     if (typeof val === "string" && val.startsWith("<")) return "lt";
     return "num";
   };
 
-  const wkBucket = bucketType(info.weeklyVal);
+  const wkBucket = info.weeklyVal == null ? null : bucketType(info.weeklyVal);
   const stBucket = bucketType(info.seasonalVal);
 
-  const WkVal = () => (
-    <span className={`sb-val is-${wkBucket}`}>
-      {wkBucket === "zero" ? "no" : info.weeklyVal}
-    </span>
-  );
+  const WkVal = () =>
+    wkBucket == null ? null : (
+      <span className={`sb-val is-${wkBucket}`}>{wkBucket === "zero" ? "no" : info.weeklyVal}</span>
+    );
 
   const StVal = () => (
-    <span className={`sb-val is-${stBucket}`}>
-      {stBucket === "zero" ? "no" : info.seasonalVal}
-    </span>
+    <span className={`sb-val is-${stBucket}`}>{stBucket === "zero" ? "no" : info.seasonalVal}</span>
   );
 
   const DateChip = () => <span className="sb-chip sb-chip--date">{info.asOfDate}</span>;
-  const SeasonChip = () => <span className="sb-chip sb-chip--season">{info.seasonRange}</span>;
+  const SeasonChip = () => <span className="sb-chip sb-chip--season">{info.seasonLabel}</span>;
 
+  // ======================= Render =======================
   return allowRichRender ? (
     <As className={className} data-bullet-id={id}>
       {info.inSeasonFlag ? (
         <>
-          {/* There were <WkVal /> {diseaseLabel || "deaths"} reported this week. */}
-          <span className="sb-divider" />
-          As of <DateChip />, <StVal /> {diseaseLabel || "deaths"} have been reported during the <SeasonChip /> season.
+          {/* If you want the weekly sentence back when weeklyVal exists, uncomment below:
+          {wkBucket != null && (
+            <>
+              There were <WkVal /> {diseaseLabel || "deaths"} reported this week.
+              <span className="sb-divider" />
+            </>
+          )} */}
+          As of <DateChip />, <StVal /> {diseaseLabel || "deaths"} have been reported during the{" "}
+          <SeasonChip /> season.
         </>
       ) : (
         <>
-          A total of <StVal /> {diseaseLabel || "deaths"} were reported to the Health Department during the <SeasonChip /> season.
+          A total of <StVal /> {diseaseLabel || "deaths"} were reported to the Health Department
+          during the <SeasonChip /> season.
         </>
       )}
     </As>
@@ -207,8 +242,8 @@ SeasonalBullet.propTypes = {
 /* ======================= Local helpers ======================= */
 const m = (mm) => Math.max(0, Math.min(11, (mm ?? 1) - 1));
 
-function isInSeason(dateStr, seasonCfg) {
-  const d = new Date(dateStr);
+function isInSeason(dateish, seasonCfg) {
+  const d = dateish instanceof Date ? dateish : new Date(dateish);
   if (!(seasonCfg && seasonCfg.start && seasonCfg.end) || Number.isNaN(d.getTime())) return false;
 
   const start = new Date(d.getFullYear(), m(seasonCfg.start.month), seasonCfg.start.day || 1);
@@ -217,55 +252,61 @@ function isInSeason(dateStr, seasonCfg) {
   return start <= end ? d >= start && d <= end : d >= start || d <= end;
 }
 
-function formatDisplayDateLong(dateStr) {
-  const d = new Date(dateStr);
+function formatDisplayDateLong(dateish) {
+  const d = dateish instanceof Date ? dateish : new Date(dateish);
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
-function getSeasonYearRange(dateStr, seasonCfg) {
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return "";
-  const y = d.getFullYear();
-  const startMonth = m(seasonCfg.start.month);
-  const endMonth = m(seasonCfg.end.month);
-  return startMonth > endMonth ? `${y}–${y + 1}` : `${y}–${y}`;
-}
-
-function buildSeasonalMessage({ dateStr, weeklyValue, seasonalTotalValue, cfg }) {
-  const disease = cfg.diseaseLabel || "deaths";
-  const inSeason = isInSeason(dateStr, cfg.season);
-  const asOfDate = formatDisplayDateLong(dateStr);
-  const seasonRg = getSeasonYearRange(dateStr, cfg.season);
-  const t = cfg.templates || {};
+/**
+ * Build a message string using optional templates.
+ * Uses parsed seasonLabel (e.g., "2025–2026") and provided asOfDate.
+ */
+function buildSeasonalMessage({
+  asOfDate,
+  weeklyValue,
+  seasonalTotalValue,
+  seasonLabel,
+  diseaseLabel,
+  inSeasonFlag,
+  templates = {},
+}) {
+  const disease = diseaseLabel || "deaths";
 
   const T = {
     inSeason: {
-      weeklyZero: t.inSeason?.weeklyZero || `There were no ${disease} reported this week.`,
-      weeklyLt: t.inSeason?.weeklyLt || ((n) => `There were fewer than ${n} ${disease} reported this week.`),
-      weeklyNum: t.inSeason?.weeklyNum || ((n) => `There were ${n} ${disease} reported this week.`),
+      weeklyZero: templates.inSeason?.weeklyZero || `There were no ${disease} reported this week.`,
+      weeklyLt:
+        templates.inSeason?.weeklyLt ||
+        ((n) => `There were fewer than ${n} ${disease} reported this week.`),
+      weeklyNum:
+        templates.inSeason?.weeklyNum ||
+        ((n) => `There were ${n} ${disease} reported this week.`),
 
       seasonToDateZero:
-        t.inSeason?.seasonToDateZero ||
-        `As of ${asOfDate}, no ${disease} have been reported to the Health Department during the ${seasonRg} season.`,
+        templates.inSeason?.seasonToDateZero ||
+        `As of ${asOfDate}, no ${disease} have been reported to the Health Department during the ${seasonLabel} season.`,
       seasonToDateLt:
-        t.inSeason?.seasonToDateLt ||
+        templates.inSeason?.seasonToDateLt ||
         ((n) =>
-          `As of ${asOfDate}, fewer than ${n} ${disease} have been reported to the Health Department during the ${seasonRg} season.`),
+          `As of ${asOfDate}, fewer than ${n} ${disease} have been reported to the Health Department during the ${seasonLabel} season.`),
       seasonToDateNum:
-        t.inSeason?.seasonToDateNum ||
-        ((n) => `As of ${asOfDate}, ${n} ${disease} have been reported to the Health Department during the ${seasonRg} season.`),
+        templates.inSeason?.seasonToDateNum ||
+        ((n) =>
+          `As of ${asOfDate}, ${n} ${disease} have been reported to the Health Department during the ${seasonLabel} season.`),
     },
     outOfSeason: {
       totalZero:
-        t.outOfSeason?.totalZero ||
-        `No ${disease} were reported to the Health Department during the ${seasonRg} season.`,
+        templates.outOfSeason?.totalZero ||
+        `No ${disease} were reported to the Health Department during the ${seasonLabel} season.`,
       totalLt:
-        t.outOfSeason?.totalLt ||
-        ((n) => `Fewer than ${n} ${disease} were reported to the Health Department during the ${seasonRg} season.`),
+        templates.outOfSeason?.totalLt ||
+        ((n) =>
+          `Fewer than ${n} ${disease} were reported to the Health Department during the ${seasonLabel} season.`),
       totalNum:
-        t.outOfSeason?.totalNum ||
-        ((n) => `A total of ${n} ${disease} were reported to the Health Department during the ${seasonRg} season.`),
+        templates.outOfSeason?.totalNum ||
+        ((n) =>
+          `A total of ${n} ${disease} were reported to the Health Department during the ${seasonLabel} season.`),
     },
   };
 
@@ -273,9 +314,10 @@ function buildSeasonalMessage({ dateStr, weeklyValue, seasonalTotalValue, cfg })
     if (val === "0") return zero;
     if (typeof val === "string" && val.startsWith("<")) return lt(val.slice(1));
     return num(val);
+    // Note: if val is null/undefined, caller avoids this function entirely.
   };
 
-  if (!inSeason) {
+  if (!inSeasonFlag) {
     return parseBucket(seasonalTotalValue, {
       zero: T.outOfSeason.totalZero,
       lt: T.outOfSeason.totalLt,
@@ -283,16 +325,21 @@ function buildSeasonalMessage({ dateStr, weeklyValue, seasonalTotalValue, cfg })
     });
   }
 
-  const weekly = parseBucket(weeklyValue, {
-    zero: T.inSeason.weeklyZero,
-    lt: T.inSeason.weeklyLt,
-    num: T.inSeason.weeklyNum,
-  });
-  const seasonToDate = parseBucket(seasonalTotalValue, {
+  // If in-season and a weekly value exists, include weekly sentence before season-to-date.
+  const weeklySentence =
+    weeklyValue == null
+      ? ""
+      : parseBucket(weeklyValue, {
+          zero: T.inSeason.weeklyZero,
+          lt: T.inSeason.weeklyLt,
+          num: T.inSeason.weeklyNum,
+        }) + " ";
+
+  const seasonToDateSentence = parseBucket(seasonalTotalValue, {
     zero: T.inSeason.seasonToDateZero,
     lt: T.inSeason.seasonToDateLt,
     num: T.inSeason.seasonToDateNum,
   });
 
-  return `${weekly} ${seasonToDate}`;
+  return `${weeklySentence}${seasonToDateSentence}`.trim();
 }

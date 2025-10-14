@@ -11,56 +11,55 @@ import GroupDropdown from "./GroupDropdown";
 const TrendSubtitle = ({ template, variables = {}, groupProps }) => {
   if (!template) return null;
 
-  // Normalize trend text: remove any 0% variants and collapse to "not changed" if nothing remains
-// Normalize trend text and enforce "by" + "%" when the input is numeric-looking
-const normalizeTrend = (val) => {
-  if (val == null) return "";
-  let s = String(val);
 
-  // 1) If the value EQUALS zero percent (not part of a larger number), collapse to "not changed"
-    const textOnly = s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim(); // strip tags for parsing
+
+  // Normalize trend text and enforce "by {n}%" when the input is numeric-looking
+  const normalizeTrend = (val) => {
+    if (val == null) return "";
+    let s = String(val);
+
+    // Strip tags for parsing
+    const textOnly = s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+    // Collapse explicit zero to "not changed"
     if (
       /^[-+]?\s*0(?:\.0+)?\s*%$/i.test(textOnly) || // "0%", "+0%", "0.0%"
       /\b(increase(?:d)?|decrease(?:d)?|up|down|higher|lower)\b(?:\s+by)?\s+[-+]?\s*0(?:\.0+)?\s*%$/i.test(textOnly)
     ) {
       return "not changed";
     }
-    // from here on, work with the plain text
-    s = textOnly;
-    
-  // 2) If it's just a number or a number with optional %, force "by {n}%"
-  //    Examples: "30" -> "by 30%", "30%" -> "by 30%"
-  if (/^[-+]?\d+(?:\.\d+)?%?$/.test(s)) {
-    const n = Math.abs(parseFloat(s.replace("%", "")));
-    return `by ${Number.isFinite(n) ? n : s}%`;
-  }
 
-  // 3) If it's a phrase like "increased 30", "decreased 12", "up 4.5", "lower 7",
-  //    normalize verb and force "by {n}%"
-  const m = s.match(
-    /\b(increase(?:d)?|decrease(?:d)?|up|down|higher|lower)\b(?:\s+by)?\s+([-+]?\d+(?:\.\d+)?)(%?)/i
-  );
-  if (m) {
-    const verb = m[1].toLowerCase();
-    const num = Math.abs(parseFloat(m[2]));
-    const normalizedVerb =
-      verb === "up" || verb === "higher"
-        ? "increased"
-        : verb === "down" || verb === "lower"
-        ? "decreased"
-        : verb.endsWith("d")
-        ? verb
-        : `${verb}d`; // "increase" -> "increased", "decrease" -> "decreased"
-
-    if (Number.isFinite(num)) {
-      return `${normalizedVerb} ${num}%`;
+    // If it's just a number or a number with optional %, force "by {n}%"
+    // Examples: "30" -> "by 30%", "30%" -> "by 30%"
+    if (/^[-+]?\d+(?:\.\d+)?%?$/.test(textOnly)) {
+      const n = Math.abs(parseFloat(textOnly.replace("%", "")));
+      return Number.isFinite(n) ? `by ${n}%` : textOnly;
     }
-  }
 
-  // 4) Otherwise, leave as-is (already well-formed like "increased by 5%")
-  return s;
-};
+    // If it's a phrase like "increased 30", "decreased 12", "up 4.5", normalize to "{verb} {n}%"
+    const m = textOnly.match(
+      /\b(increase(?:d)?|decrease(?:d)?|up|down|higher|lower)\b(?:\s+by)?\s+([-+]?\d+(?:\.\d+)?)(%?)/i
+    );
+    if (m) {
+      const verb = m[1].toLowerCase();
+      const num = Math.abs(parseFloat(m[2]));
+      const normalizedVerb =
+        verb === "up" || verb === "higher"
+          ? "increased"
+          : verb === "down" || verb === "lower"
+          ? "decreased"
+          : verb.endsWith("d")
+          ? verb
+          : `${verb}d`; // "increase" -> "increased", "decrease" -> "decreased"
 
+      if (Number.isFinite(num)) {
+        return `${normalizedVerb} ${num}%`;
+      }
+    }
+
+    // Otherwise, leave as-is (already well-formed like "increased by 5%")
+    return textOnly;
+  };
 
   // Interpolate a string fragment, replacing {tokens}. Trend token gets special treatment.
   const interpolate = (fragment) =>
@@ -70,8 +69,11 @@ const normalizeTrend = (val) => {
       if (key === "trend") {
         // Allow either raw text or HTML in variables.trend
         const normalized = normalizeTrend(v);
-        // If caller also provides trendDirection ("up"|"down"|"neutral"), decorate it
-        const direction = variables.trendDirection || "neutral";
+
+        // Accept "up"|"down"|"same"|"neutral"|"none" from caller; normalize to "same" for neutral/none
+        let direction = variables.trendDirection || "neutral";
+        if (direction === "neutral" || direction === "none") direction = "same";
+
         // If the original was HTML, we still wrap the normalized text so style is consistent
         return `<span class="trend-text trend-${direction} bg-highlight">${normalized}</span>`;
       }
@@ -106,7 +108,6 @@ const normalizeTrend = (val) => {
         }
 
         const html = interpolate(part);
-
         return (
           <span
             key={`frag-${idx}`}

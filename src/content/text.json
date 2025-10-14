@@ -46,22 +46,14 @@
       },
       "summaryBox": {
         "title": "<span class='dynamic-label'>Emergency Department</span> Trends for the Week Ending <span class='dynamic-label'>{date}</span>",
-        "description": "<p>Here you can find recent trends in emergency department <span class='dynamic-label'>visits</span> related to respiratory illnesses in NYC. Emergency department data can provide a timely view of changes in respiratory virus spread and care-seeking.</p><p>The NYC Health Department examines visits to the emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
+        "description": "<p>Here you can find recent trends in emergency department <span class='dynamic-label'>visits</span> related to respiratory illnesses in NYC. Emergency department data can provide a timely view of changes in respiratory virus spread and care-seeking.</p><p>The NYC Health Department examines visits to emergency departments with respiratory illness diagnoses. These can include COVID-19, influenza, and respiratory syncytial virus, general respiratory complaints such as cough, or illnesses such as pneumonia.</p>"
       },
 
       "otherResp": {
         "title": "<span class='dynamic-label'>Respiratory Panel Results</span>",
         "intro": "The NYC Health Department receives data from selected NYC laboratories that test for an expanded panel of circulating respiratory viruses, including those that are not required to be reported to the NYC Health Department.",
-        "sentence": "For the week of {date}, the percent of positive test results for other respiratory viruses were: {list}.",
-        "labels": {
-          "Adenovirus": "adenovirus",
-          "Human Coronavirus": "coronavirus",
-          "Enterovirus/Rhinovirus": "enterovirus/rhinovirus",
-          "Human Metapneumovirus": "human metapneumovirus",
-          "Influenza": "influenza",
-          "Parainfluenza": "parainfluenza",
-          "Respiratory Syncytial Virus": "respiratory syncytial virus"
-        }
+        "sentence": "For the week of {date}, the percent of positive test results for other respiratory viruses were: {list}."
+
       }
     },
   
@@ -73,6 +65,12 @@
       "summarySection": {
         "summaryTitle": "Emergency Department Summary"
       },
+
+      "noRaceEthnicitySection": {
+        "title": "Information about Race and Ethnicity",
+        "body": "Data received from emergency departments often lack information on demographic characteristics like race and ethnicity. The NYC Health Department acknowledges this lack of representation in the data is inequitable, and we are committed to developing methods for ensuring more inclusive, equitable representation in the future."
+      },
+
       "charts": {
         "seasonalEdVisits": {
           "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'>Diagnosis</span>",
@@ -86,6 +84,7 @@
           "title": "<span class='dynamic-label'>Percent</span> of <span class='virus-label'>{viewLabel}</span> {viewLabelPreposition} the <span class='virus-label'>Emergency Department</span> that have {virusLabelArticle} {virus} <span class='dynamic-label'>Diagnosis</span> by <span class='virus-label'>Borough</span>",
           "subtitle": "{viewLabel} for the week ending {date} have {trend} since the previous week for {group}"
         }
+        
 
       }
     },
@@ -95,6 +94,11 @@
 
       "summarySection": {
         "summaryTitle": "Case Data Summary"
+      },
+
+      "noRaceEthnicitySection": {
+        "title": "Information about Race and Ethnicity",
+        "body": "Flu and RSV data received from electronic laboratory reports often lack information on demographic characteristics, such as race and ethnicity. The NYC Health Department acknowledges this lack of representation in the data is inequitable, and we are committed to developing methods for ensuring more inclusive, equitable representation in the future."
       },
 
       "charts": {

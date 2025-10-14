@@ -45,9 +45,11 @@ const SmallMultipleLineChart = ({
   const sourceVirus = toSourceVirus(virus);
 
   const filteredData =
-   virus && Array.isArray(data) && data.some((d) => d.virus === sourceVirus)
-   ? data.filter((d) => d.virus === sourceVirus)
-   : Array.isArray(data) ? data : [];
+    virus && Array.isArray(data) && data.some((d) => d.virus === sourceVirus)
+      ? data.filter((d) => d.virus === sourceVirus)
+      : Array.isArray(data)
+      ? data
+      : [];
 
   const explicitTokenColor =
     color && tokens.colors?.[color] ? tokens.colors[color] : null;
@@ -88,12 +90,19 @@ const SmallMultipleLineChart = ({
     };
   });
 
-  const filtered = parsed.filter((d) => {
-    const isMatch = !metricName || d.metric === metricName;
-    const isDisplayMatch = !normalizedDisplay || d.display === normalizedDisplay;
-    return isMatch && isDisplayMatch;
-  });
+  // Filter: correct metric name, valid values only
+  const filtered = parsed
+    .filter((d) => {
+      const isMatch =
+        !metricName ||
+        d.metric?.toLowerCase().includes(metricName.toLowerCase()) ||
+        metricName.toLowerCase().includes(d.metric?.toLowerCase() || "");
+      const isDisplayMatch = !normalizedDisplay || d.display === normalizedDisplay;
+      return isMatch && isDisplayMatch;
+    })
+    .filter((d) => Number.isFinite(d.value));
 
+  // Group logic
   let groups;
   if (metricName?.includes("age") && !groupedAges) {
     groups = ["0-4", "5-17", "18-64", "65+"];
@@ -105,8 +114,13 @@ const SmallMultipleLineChart = ({
     groups = ["Asian/Pacific Islander", "Black/African American", "White", "Hispanic/Latino"];
   } else {
     const set = new Set(filtered.map((d) => d[colorField]).filter(Boolean));
-    groups = Array.from(set);
+    groups = [...new Set(Array.from(set))];
   }
+
+  // Skip empty or zero-only groups
+  groups = groups.filter((group) =>
+    filtered.some((d) => d[colorField] === group && Number(d.value) > 0)
+  );
 
   if (!groups || groups.length === 0) {
     return (
@@ -129,16 +143,23 @@ const SmallMultipleLineChart = ({
       anchor: "start",
       fontSize: 14,
       baseline: "top",
-      dy: -10
+      dy: -10,
     },
     config: {
       background: colors.white,
       axis: {
         labelColor: colors.gray700,
         titleColor: colors.gray800,
-        labelFontSize: 12
+        labelFontSize: 12,
       },
-      axisY: { domain: false, ticks: false, tickCount: 2, orient: "left", zindex: 0, gridDash: [2] },
+      axisY: {
+        domain: false,
+        ticks: false,
+        tickCount: 2,
+        orient: "left",
+        zindex: 0,
+        gridDash: [2],
+      },
       axisX: { domain: true, grid: false },
       view: { stroke: "transparent" },
       legend: {
@@ -149,11 +170,11 @@ const SmallMultipleLineChart = ({
         symbolSize: 100,
         symbolStrokeWidth: 5,
         orient: "bottom",
-        title: legendTitle
-      }
+        title: legendTitle,
+      },
     },
     ...(sharedY ? { resolve: { scale: { y: "shared" } } } : {}),
-    vconcat: []
+    vconcat: [],
   };
 
   const valueTooltipField =
@@ -161,6 +182,7 @@ const SmallMultipleLineChart = ({
       ? { field: "valueRaw", title: columnLabels.value || "Reported" }
       : { field: "value", title: columnLabels.value || "Reported" };
 
+  // Build one sub-chart per group
   specTemplate.vconcat = groups.map((group) => ({
     title: {
       text: group,
@@ -168,14 +190,28 @@ const SmallMultipleLineChart = ({
       align: "left",
       fontSize: 14,
       fontWeight: "bold",
-      color: "#374151"
+      color: "#374151",
     },
     height: 75,
     width: "{containerWidth}",
     transform: [{ filter: `datum['${colorField}'] === '${group}'` }],
     encoding: {
-      x: { field: "date", type: "temporal", axis: { title: null, format: dateFormat, tickCount: 6, labelAngle: 0 } },
-      y: { field: "value", type: "quantitative", title: null }
+      x: {
+        field: "date",
+        type: "temporal",
+        axis: {
+          title: null,
+          format: dateFormat,
+          tickCount: 6,
+          labelAngle: 0,
+        },
+      },
+      y: {
+        field: "value",
+        type: "quantitative",
+        title: null,
+        scale: { nice: true, zero: true }, // prevent flat-line scaling
+      },
     },
     layer: [
       { mark: { type: "area", opacity: 0.15, color: selectedColor } },
@@ -186,31 +222,27 @@ const SmallMultipleLineChart = ({
           tooltip: [
             { field: "date", type: "temporal", format: "%b, %d, %Y", title: "Date" },
             { field: colorField, type: "nominal", title: columnLabels[colorField] || "Group" },
-            valueTooltipField
-          ]
-        }
+            valueTooltipField,
+          ],
+        },
       },
       {
-        mark: { type: "point", size: 300, opacity: 0.001 }, 
+        mark: { type: "point", size: 300, opacity: 0.001 },
         encoding: {
           color: { value: selectedColor },
           tooltip: [
             { field: "date", type: "temporal", format: "%b, %d, %Y", title: "Date" },
             { field: colorField, type: "nominal", title: columnLabels[colorField] || "Group" },
-            valueTooltipField
-          ]
-        }
-      }
-    ]
+            valueTooltipField,
+          ],
+        },
+      },
+    ],
   }));
 
   return (
     <div style={{ width: "100%", minWidth: 0 }}>
-      <VegaLiteWrapper
-        data={filtered}
-        specTemplate={specTemplate}
-        rendererMode="svg"               
-      />
+      <VegaLiteWrapper data={filtered} specTemplate={specTemplate} rendererMode="svg" />
       <ChartFooter
         latestDate={
           filteredData?.length > 0

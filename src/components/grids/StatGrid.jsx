@@ -161,7 +161,7 @@ const StatGrid = ({ data }) => {
         </div>
       </div>
 
-      <div className="week-of">Compared to week of {previousWeek}</div>
+      <div className="week-of">Compared with week of {previousWeek}</div>
     </div>
   );
 };
