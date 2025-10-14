@@ -33,9 +33,13 @@ const rsvPageConfig = {
 
   sections: [
     ...edPageConfig.sections,
-    ...caseDataPageConfig.sections.filter(
-      (s) => !s.showIfVirus // includes RSV and general
-    ),
+    ...caseDataPageConfig.sections.filter((s) => {
+     // keep general sections
+     if (!s.showIfVirus) return true;
+     // keep RSV-specific sections
+     const want = Array.isArray(s.showIfVirus) ? s.showIfVirus : [s.showIfVirus];
+      return want.includes("RSV");
+   }),
   ],
 };
 

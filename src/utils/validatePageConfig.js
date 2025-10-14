@@ -4,23 +4,6 @@
  * Utility to validate the structure of a ConfigDrivenPage config object.
  * Call this function in development or testing to catch misconfigured keys.
  *
- * ✅ Example usage:
- *
- * import aboutPageConfig from "../configs/aboutPage.config.js";
- * import { validatePageConfig } from "../utils/validatePageConfig.js";
- *
- * const errors = validatePageConfig(aboutPageConfig);
- * if (errors.length > 0) {
- *   console.warn("Config validation errors:", errors);
- * }
- */
-/**
- * validatePageConfig.js
- *
- * Utility to validate the structure of a ConfigDrivenPage config object.
- * Call this function in development or testing to catch misconfigured keys.
- *
- * ✅ Example usage:
  *
  * import aboutPageConfig from "../configs/aboutPage.config.js";
  * import { validatePageConfig } from "../utils/validatePageConfig.js";

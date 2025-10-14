@@ -2,6 +2,21 @@
 import memoize from "memoizee";
 import { interpolate } from "./interpolate";
 
+/** Parse "YYYY-MM-DD" as a LOCAL date (avoid UTC shifting a day). */
+export function parseLocalISO(isoLike) {
+  if (!isoLike) return null;
+  if (isoLike instanceof Date && !Number.isNaN(isoLike.getTime())) return isoLike;
+
+  const s = String(isoLike);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) {
+    const d = new Date(s);
+    return Number.isNaN(d.getTime()) ? null : d; // fallback
+  }
+  const [, y, mm, dd] = m.map(Number);
+  return new Date(y, mm - 1, dd); // local midnight
+}
+
 /** Canonicalize metric labels so synonyms match (Flu≡Influenza, COVID≡COVID-19). */
 function canonMetric(s) {
   if (!s) return "";
@@ -24,7 +39,7 @@ function canonDisplay(s) {
 /**
  * Filters flat long-form data by metric (with canonical matching),
  * optional submetric, and display.
- * Returns array: [{ date, value, valueRaw, ... }]
+ * Returns array: [{ date: Date, value, valueRaw, ... }]
  */
 export const getMetricData = memoize(function (
   data,
@@ -38,9 +53,12 @@ export const getMetricData = memoize(function (
     const rowSubmetric = d.submetric?.trim();
     const rowDisplay = canonDisplay(d.display);
 
-    const matchesMetric =
-      rowMetric === metric || canonMetric(rowMetric) === targetMetricCanon;
+    // FIXED: Use exact match, not startsWith or includes
+    // This prevents "COVID-19 deaths by age group" from matching "COVID-19 deaths"
+    const rowMetricCanon = canonMetric(rowMetric);
+    const matchesMetric = rowMetricCanon === targetMetricCanon;
 
+    // If grouping (e.g., by borough/age), include all submetrics; otherwise default to Overall/Total when submetric is undefined.
     const matchesSubmetric = groupField
       ? true
       : (submetric === undefined &&
@@ -49,24 +67,25 @@ export const getMetricData = memoize(function (
             rowSubmetric === "Overall")) ||
         rowSubmetric === submetric;
 
-    const matchesDisplay =
-      normalizedDisplay === null || rowDisplay === normalizedDisplay;
+    const matchesDisplay = rowDisplay === normalizedDisplay;
 
     return matchesMetric && matchesSubmetric && matchesDisplay;
   });
 
   return filtered.map((d) => ({
-    date: new Date(d.date),
+    date: parseLocalISO(d.date),
     value: +d.value,
     valueRaw: d.valueRaw ?? d.value,
+    metric: d.metric, // 👈 ADD: Preserve original metric name
+    submetric: d.submetric, // 👈 ADD: Preserve original submetric
     ...(groupField && d[groupField] ? { [groupField]: d[groupField] } : {}),
-    ...(submetric === undefined && d.submetric ? { submetric: d.submetric } : {}),
+    _dateRaw: d.date, // keep original string if needed elsewhere
   }));
 }, { length: 2 });
 
 /**
  * Pivots long-form metric data to view-separated wide form.
- * Returns array: [{ date, visits, hospitalizations }]
+ * Returns array: [{ date: Date, visits, hospitalizations, ...(groupField?) }]
  */
 export function pivotMetricToViews(
   data,
@@ -97,12 +116,13 @@ export function pivotMetricToViews(
     if (!["visits", "hospitalizations"].includes(viewType)) return;
 
     const groupValue = groupField ? d[groupField]?.trim() : null;
-    const key = groupField ? `${d.date}|${groupValue}` : d.date;
+    const key = groupField ? `${d.date}|${groupValue}` : String(d.date);
 
     if (!grouped[key]) {
       grouped[key] = {
-        date: d.date,
+        date: parseLocalISO(d.date),
         ...(groupField ? { [groupField]: groupValue } : {}),
+        _dateRaw: d.date,
       };
     }
 
@@ -110,7 +130,7 @@ export function pivotMetricToViews(
   });
 
   return Object.values(grouped).sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
+    (a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0)
   );
 }
 
@@ -186,12 +206,32 @@ export function hydrateConfigData(config, flatData, variables = {}) {
     }
     //  Case: single metric
     else if (metricName) {
-      result.data[dataKey] = getMetricData(flatData, {
+      const filteredData = getMetricData(flatData, {
         metric: metricName,
         submetric,
         display,
         groupField,
+      }).filter((d) => {
+        // Ensure only rows with exact metricName match are included
+        const m = String(d.metric || "").toLowerCase();
+        const target = String(metricName || "").toLowerCase();
+        return m === target;
       });
+      
+      // Add metric field to each row so trend matching works
+      result.data[dataKey] = filteredData.map(row => ({
+        ...row,
+        metric: metricName
+      }));
+      if (Array.isArray(result.data[dataKey])) {
+        const seen = new Set();
+        result.data[dataKey] = result.data[dataKey].filter((r) => {
+          const key = `${r.date?.toISOString?.() ?? r._dateRaw}|${r.submetric ?? ""}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
     } else {
       console.warn(`⚠️ Section "${section.id}" missing metricName or baseMetric`);
     }

@@ -18,10 +18,10 @@ const edPageConfig = {
     lastUpdated: "05/01/2025",
     showTrendArrow: false,
     showSecondaryTitle: false,
-    
   },
 
   sections: [
+    // --- Seasonal ED trends (Overall) ---
     {
       id: "ed-trends",
       dataType: "ed",
@@ -43,8 +43,6 @@ const edPageConfig = {
           footnote: null,
           seasonal: null,
           legend: null,
-          // title:
-          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis",
           getMetricNames: ({ virus, view }) => [`${virus} ${view}`],
           submetric: "Overall",
           xField: "date",
@@ -56,9 +54,20 @@ const edPageConfig = {
             value: "Emergency department {view}",
           },
         },
+        // Accessible alt table
+        altTable: {
+          caption:
+            "Percent of all {view} {viewLabelPreposition} the Emergency Department that have {virusLabelArticle} {virusLowercase} diagnosis (Overall)",
+          srOnly: true,
+          columns: [
+            { key: "date", header: "Week Ending", format: "date" },
+            { key: "value", header: "Percent of ED {view}", format: "percent" },
+          ],
+        },
       },
     },
 
+    // --- ED by Age ---
     {
       id: "percent-ed-visits-age",
       dataType: "ed",
@@ -68,7 +77,8 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
+        title:
+          "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Age Group",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -79,8 +89,6 @@ const edPageConfig = {
           dataSource: null,
           footnote: null,
           seasonal: null,
-          // title:
-          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by age group",
           metricName: "{virus} {view} by age group",
           groupField: "submetric",
           groupLabel: "All Ages",
@@ -94,9 +102,21 @@ const edPageConfig = {
             submetric: "Age Group",
           },
         },
+        // Accessible alt table
+        altTable: {
+          caption:
+            "Percent of ED {view} with {virusLowercase} diagnosis by age group",
+          srOnly: true,
+          columns: [
+            { key: "date", header: "Week Ending", format: "date" },
+            { key: "submetric", header: "Age Group", format: "text" },
+            { key: "value", header: "Percent of ED {view}", format: "percent" },
+          ],
+        },
       },
     },
 
+    // --- ED by Borough ---
     {
       id: "percent-ed-visits-geo",
       dataType: "ed",
@@ -106,7 +126,8 @@ const edPageConfig = {
       infoIcon: true,
       downloadIcon: true,
       modal: {
-        title: "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
+        title:
+          "{viewLabel} {viewLabelPreposition} the Emergency Department That Have {virusLabelArticle} {virus} Diagnosis by Borough",
         markdownPath: "/content/modals/emergency-dept-explainer.md",
       },
       chart: {
@@ -116,8 +137,6 @@ const edPageConfig = {
           dataSourceKey: "edByGeo",
           dataSource: null,
           footnote: null,
-          // title:
-          //   "Percent of all {view} {viewLabelPreposition} the emergency department that have {virusLabelArticle} {virusLowercase} diagnosis by borough",
           seasonal: null,
           metricName: "{virus} {view} by borough",
           groupField: "submetric",
@@ -132,7 +151,34 @@ const edPageConfig = {
             submetric: "Borough",
           },
         },
+        // Accessible alt table
+        altTable: {
+          caption:
+            "Percent of ED {view} with {virusLowercase} diagnosis by borough",
+          srOnly: true,
+          columns: [
+            { key: "date", header: "Week Ending", format: "date" },
+            { key: "submetric", header: "Borough", format: "text" },
+            { key: "value", header: "Percent of ED {view}", format: "percent" },
+          ],
+        },
       },
+    },
+
+    // --- RE Info Summary ---
+    {
+      id: "ed-info-re",
+      renderAs: "custom",
+      dataType: "ed",
+      dataSourceKey: "emergencyDeptData",
+      // title: "emergencyDeptPage.noRaceEthnicitySection.title",
+      textKey: "emergencyDeptPage.noRaceEthnicitySection.body", 
+      infoIcon: false,
+      wrapInChart: false,
+      downloadIcon: false,
+      animateOnScroll: true,
+      background: "transparent"
+
     },
   ],
 };

@@ -1,13 +1,13 @@
-
 const caseDataPageConfig = {
   id: "caseDataPage",
   titleKey: "caseDataPage.mainTitle",
   subtitleKey: "caseDataPage.mainSubtitle",
-  dataPath:  "/data/caseData.csv",
+  dataPath: "/data/caseData.csv",
+  dataType: "lab",
 
   controls: {
     dataTypeToggle: true,
-    virusToggle: false, 
+    virusToggle: false,
     viewToggle: false,
   },
 
@@ -22,25 +22,24 @@ const caseDataPageConfig = {
         id: "flu-peds-deaths",
         renderAs: "custom",
         component: "SeasonalBullet",
-        // This drives which hydrated slice the component receives as `dataSource`
         dataSourceKey: "deathData",
         componentProps: {
           dataPath: "/data/deathData.csv",
           diseaseLabel: "Pediatric flu deaths",
-          season: { start: { month: 10, day: 1 }, end: { month: 5, day: 31 } },
-          filters: { metric: "Pediatric influenza deaths", submetric: "Weekly" },
+          season: { start: { month: 10, day: 4 }, end: { month: 5, day: 31 } },
+          filters: { metric: "Pediatric influenza deaths", submetric: "Seasonal 2025-2026" },
           weeklyField: "value",
-          seasonalSubmetric: "Seasonal total",
+          seasonalSubmetric: "Seasonal 2025-2026",
           dateField: "date",
-          showWhen: ({ virus, dataType }) =>
-            virus === "Flu" && dataType === "lab",
+          showWhen: ({ virus, dataType }) => virus === "Flu" && dataType === "lab",
           as: "p",
           className: "seasonal-bullet",
         },
       },
     ],
-    metricLabel: "cases", // Used when no viewToggle
+    metricLabel: "cases",
   },
+
   sections: [
     {
       id: "case-reports-season",
@@ -49,44 +48,50 @@ const caseDataPageConfig = {
       subtitle: "caseDataPage.charts.seasonalComparison.subtitle",
       infoIcon: true,
       downloadIcon: true,
-      trendEnabled: true, 
+      trendEnabled: true,
       animateOnScroll: true,
       modal: {
         title: "caseDataPage.charts.seasonalComparison.title",
-        markdownPath: "/content/modals/cases-explainer.md"
+        markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
-      type: "lineChart",
-      props: {
-        dataSourceKey: "seasonalCaseTrends",
-        dataSource: null,
-        seasonal: true,
-        // title: "Counts of {virusLowercase} laboratory-reported cases by season",
-        metricName: "{virus} cases",
-        submetric: "Total", // explicitly set for non-grouped
-        xField: "dayOfSeason",
-        yField: "value",
-        colorField: "season",
-        tooltipFields: ["date", "season", "value"],
-        defaultDisplay: "Number",
-        isPercent: false,   
-        columnLabels: {
-          date: "Date",
-          season: "Season",
-          value: "Confirmed cases",
-        }
-      }
-      }
+        type: "lineChart",
+        props: {
+          dataSourceKey: "seasonalCaseTrends",
+          dataSource: null,
+          seasonal: true,
+          metricName: "{virus} cases",
+          submetric: "Total",
+          xField: "dayOfSeason",
+          yField: "value",
+          colorField: "season",
+          tooltipFields: ["date", "season", "value"],
+          defaultDisplay: "Number",
+          isPercent: false,
+          columnLabels: {
+            date: "Date",
+            season: "Season",
+            value: "Confirmed cases",
+          },
+        },
+        altTable: {
+          caption: "{virus} confirmed cases by season",
+          srOnly: true,
+          columns: [
+            { key: "date",   header: "Date",            format: "date" },
+            { key: "season", header: "Season",          format: "text" },
+            { key: "value",  header: "Confirmed cases", format: "number" },
+          ],
+        },
+      },
     },
-  
-    
+
     {
       id: "case-reports-test-type",
       dataType: "lab",
       title: "caseDataPage.charts.reportsByTestType.title",
       subtitle: null,
-      showIfVirus: "COVID-19", 
-      // subtitle: "Cases for {virus} are {trend} this week than last week.",
+      showIfVirus: "COVID-19",
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
@@ -100,14 +105,11 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByType",
           dataSource: null,
           metricName: "{virus} cases by test type",
-          // title: "Counts of {virusLowercase} laboratory-reported cases by test type",
           groupField: "submetric",
           field: "isoWeek",
           yField: "value",
-          // colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
-          defaultDisplay: "Number", 
-          // legendTitle: "Type",
+          defaultDisplay: "Number",
           showRollingAvg: false,
           customColorScale: {
             domain: ["Confirmed", "Probable"],
@@ -117,58 +119,72 @@ const caseDataPageConfig = {
             date: "Date",
             value: "Cases",
             // submetric: "Test Type",
-          }
-        }
+          },
+        },
+        altTable: {
+          caption: "{virus} cases by test type",
+          srOnly: true,
+          columns: [
+            { key: "date",      header: "Date",       format: "date" },
+            { key: "submetric", header: "Test Type",  format: "text" },
+            { key: "value",     header: "Cases",      format: "number" },
+          ],
+        },
       },
     },
 
     {
       id: "case-reports-subtype",
       dataType: "lab",
-
       title: "caseDataPage.charts.reportsBySubtype.title",
       subtitle: null,
-      showIfVirus: "Flu", 
+      showIfVirus: "Flu",
       infoIcon: true,
       downloadIcon: true,
-      trendEnabled: true, 
+      trendEnabled: true,
       animateOnScroll: true,
       modal: {
         title: "caseDataPage.charts.reportsBySubtype.title",
-        markdownPath: "/content/modals/cases-explainer.md"
+        markdownPath: "/content/modals/cases-explainer.md",
       },
       chart: {
-      type: "yearComparisonChart",
-      props: {
-        dataSourceKey: "casesBySubType",
-        dataSource: null,
-        // title: "Counts of {virusLowercase} laboratory-reported cases by subtype",
-        metricName: "{virus} cases by subtype",
-        groupField: "submetric",
-        xField: "date",
-        yField: "value",
-        colorField: "submetric",
-        tooltipFields: ["date", "value"],
-        defaultDisplay: "Number", 
-        // legendTitle: "Subtype",
-        showRollingAvg: false, 
-        customColorScale: {
-          domain: ["Influenza A not subtyped", "Influenza A H1", "Influenza A H3", "Influenza B" ],
-          range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
+        type: "yearComparisonChart",
+        props: {
+          dataSourceKey: "casesBySubType",
+          dataSource: null,
+          metricName: "{virus} cases by subtype",
+          groupField: "submetric",
+          xField: "date",
+          yField: "value",
+          colorField: "submetric",
+          tooltipFields: ["date", "value"],
+          defaultDisplay: "Number",
+          showRollingAvg: false,
+          customColorScale: {
+            domain: ["Influenza A not subtyped", "Influenza A H1", "Influenza A H3", "Influenza B"],
+            range: ["#3F007D", "#6A51A3", "#807DBA", "#9E9AC8"],
+          },
+          columnLabels: {
+            date: "Date",
+            value: "Confirmed cases",
+            submetric: "Subtype",
+          },
         },
-        columnLabels: {
-          date: "Date",
-          value: "Confirmed cases",
-          submetric: "Subtype"
-        }
-      }
-      }
+        altTable: {
+          caption: "{virus} confirmed cases by subtype",
+          srOnly: true,
+          columns: [
+            { key: "date",      header: "Date",            format: "date" },
+            { key: "submetric", header: "Subtype",         format: "text" },
+            { key: "value",     header: "Confirmed cases", format: "number" },
+          ],
+        },
+      },
     },
 
     {
       id: "case-reports-age",
       dataType: "lab",
-
       title: "caseDataPage.charts.reportsByAge.title",
       subtitle: null,
       infoIcon: true,
@@ -183,30 +199,37 @@ const caseDataPageConfig = {
         props: {
           dataSourceKey: "casesByAge",
           dataSource: null,
-          footnote: "Y-axis scales are different to clearly show trends for any one age range.",
+          footnote: "Y-axis scales are different to clearly show trends for a given age group.",
           seasonal: null,
           metricName: "{virus} cases by age group",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          // title: "Counts of {virusLowercase} laboratory-reported cases by age group",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
-          defaultDisplay: "Number", 
-          customColor: '#4F32B3',
+          defaultDisplay: "Number",
+          customColor: "#4F32B3",
           columnLabels: {
             date: "Date",
             value: "Confirmed cases",
-            submetric: "Age Group"
-          }
-
-        }
+            submetric: "Age Group",
+          },
+        },
+        altTable: {
+          caption: "{virus} confirmed cases by age group",
+          srOnly: true,
+          columns: [
+            { key: "date",      header: "Date",            format: "date" },
+            { key: "submetric", header: "Age Group",       format: "text" },
+            { key: "value",     header: "Confirmed cases", format: "number" },
+          ],
+        },
       },
     },
+
     {
       id: "case-reports-borough",
       dataType: "lab",
-
       title: "caseDataPage.charts.reportsByBorough.title",
       subtitle: null,
       infoIcon: true,
@@ -222,32 +245,38 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByBorough",
           dataSource: null,
           seasonal: null,
-          footnote: "Y-axis scales are different to clearly show trends for any one borough.",
+          footnote: "Y-axis scales are different to clearly show trends for a given borough.",
           metricName: "{virus} cases by borough",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          // title: "Counts of {virusLowercase} laboratory-reported cases by borough",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
           defaultDisplay: "Number",
           columnLabels: {
             date: "Date",
             value: "Confirmed cases",
-            submetric: "Borough"
-          } 
-
-        }
+            submetric: "Borough",
+          },
+        },
+        altTable: {
+          caption: "{virus} confirmed cases by borough",
+          srOnly: true,
+          columns: [
+            { key: "date",      header: "Date",            format: "date" },
+            { key: "submetric", header: "Borough",         format: "text" },
+            { key: "value",     header: "Confirmed cases", format: "number" },
+          ],
+        },
       },
     },
+
     {
       id: "case-reports-re",
       dataType: "lab",
-
       title: "caseDataPage.charts.reportsByRE.title",
       subtitle: null,
-      showIfVirus: "COVID-19", 
-      // subtitle: "Cases for {virus} are {trend} this week than last week.",
+      showIfVirus: "COVID-19",
       infoIcon: true,
       downloadIcon: true,
       animateOnScroll: true,
@@ -261,24 +290,62 @@ const caseDataPageConfig = {
           dataSourceKey: "casesByRE",
           dataSource: null,
           seasonal: null,
-          footnote: "Y-axis scales are different to clearly show trends for any one race & ethnicity.",
+          footnote: "Y-axis scales are different to clearly show trends for a given race and ethnicity.",
           metricName: "{virus} cases by race and ethnicity",
           groupField: "submetric",
           xField: "date",
           yField: "value",
-          // title: "Counts of {virusLowercase} laboratory-reported cases by race and ethnicity",
           colorField: "submetric",
           tooltipFields: ["date", "submetric", "value"],
-          defaultDisplay: "Number", 
+          defaultDisplay: "Number",
           columnLabels: {
             date: "Date",
             value: "Confirmed cases",
-            submetric: "Race & Ethnicity"
-          }
-
-        }
+            submetric: "Race & Ethnicity",
+          },
+        },
+        altTable: {
+          caption: "{virus} confirmed cases by race and ethnicity",
+          srOnly: true,
+          columns: [
+            { key: "date",      header: "Date",                 format: "date" },
+            { key: "submetric", header: "Race & Ethnicity",     format: "text" },
+            { key: "value",     header: "Confirmed cases",      format: "number" },
+          ],
+        },
       },
     },
+    {
+      id: "case-info-flu-re",
+      dataType: "lab",
+      renderAs: "custom",
+      // title: "caseDataPage.noRaceEthnicitySection.title",
+      textKey: "caseDataPage.noRaceEthnicitySection.body", 
+      showIfVirus: "Flu",
+      infoIcon: false,
+      downloadIcon: false,
+      animateOnScroll: true,
+      background: "transparent"
+
+    },
+
+    {
+      id: "case-info-rsv-re",
+      dataType: "lab",
+      renderAs: "custom",
+      dataSourceKey: "casesByAge",
+      wrapInChart: false,
+      // title: "caseDataPage.noRaceEthnicitySection.title",
+      textKey: "caseDataPage.noRaceEthnicitySection.body", 
+      showIfVirus: "RSV",
+      infoIcon: false,
+      downloadIcon: false,
+      animateOnScroll: true,
+      background: "transparent"
+
+    },
+
+    
   ],
 };
 
